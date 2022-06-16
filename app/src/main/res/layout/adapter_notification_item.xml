@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_margin="5dp"
+    android:layout_height="wrap_content">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_profile"
+        android:layout_width="50dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/img_place_holder"
+        app:civ_border_color="#FFFFFF"
+        app:civ_border_width="2dp"
+        android:layout_height="50dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_marginStart="10dp"
+        android:layout_gravity="center_vertical"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_title"
+            style="@style/BoldText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/add_family_my_family"
+            android:textColor="@color/black"
+            android:textSize="@dimen/common_text_size" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_des"
+            style="@style/RegularText"
+            android:layout_marginTop="3dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/add_family_my_family"
+            android:textColor="@color/black"
+            android:textSize="@dimen/common_hint_text_size" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_time"
+            style="@style/RegularText"
+            android:layout_marginTop="3dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/add_family_my_family"
+            android:textColor="@color/hint_color"
+            android:textSize="@dimen/common_small_text_size" />
+
+    </LinearLayout>
+</LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/bottom_line_color"
+        android:layout_height="0.5dp" />
+</LinearLayout>

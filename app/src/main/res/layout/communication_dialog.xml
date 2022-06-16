@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/common_margin_size"
+        android:layout_margin="@dimen/common_margin_size"
+        android:background="@drawable/bg_white_cornor_radius">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/msgContentTextView"
+            style="@style/RegularText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:textSize="@dimen/common_header_text_size"
+            tools:text="content message"/>
+
+        <LinearLayout
+            android:id="@+id/btnLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/common_margin_size"
+            app:layout_constraintTop_toBottomOf="@+id/msgContentTextView">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/negativeBtn"
+                style="@style/ButtonBoldWithStrockBg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:layout_weight="1"
+                app:cornerRadius="30dp"
+                android:layout_marginEnd="@dimen/add_family_parent_margin"
+                android:textSize="@dimen/common_hint_text_size"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/positiveBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cornerRadius="30dp"
+                android:layout_marginStart="@dimen/add_family_parent_margin"
+                android:textSize="@dimen/common_hint_text_size"
+                android:textColor="@color/white"
+                style="@style/ButtonBoldWithBg"/>
+
+        </LinearLayout>
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

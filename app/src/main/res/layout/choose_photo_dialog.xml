@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/common_margin_size">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/cameraTextView"
+            style="@style/RegularText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_camera"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:padding="@dimen/common_action_left_space"
+            android:textSize="@dimen/common_header_text_size"
+            android:background="@drawable/bg_white_cornor_radius"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="2dp"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/galleryTextView"
+            style="@style/RegularText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_gallery"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:padding="@dimen/common_action_left_space"
+            android:textSize="@dimen/common_header_text_size"
+            android:background="@drawable/bg_white_cornor_radius"
+            android:layout_marginTop="@dimen/common_margin_top"
+            app:layout_constraintTop_toBottomOf="@id/cameraTextView"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/cancelTextView"
+            style="@style/RegularText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_cancel"
+            android:textColor="@color/red"
+            android:gravity="center"
+            android:padding="@dimen/common_action_left_space"
+            android:textSize="@dimen/common_header_text_size"
+            android:background="@drawable/bg_white_cornor_radius"
+            android:layout_marginTop="@dimen/add_family_parent_margin"
+            app:layout_constraintTop_toBottomOf="@id/galleryTextView"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="do_nothing" type="id"/>
+    <item name="storage_camera_permission" type="id"/>
+    <item name="profile_update_success" type="id"/>
+    <item name="add_family_success" type="id"/>
+    <item name="delete_account_id" type="id"/>
+    <item name="delete_account_res_id" type="id"/>
+    <item name="app_update_dialog_id" type="id"/>
+    <item name="add_story_success_id" type="id"/>
+    
+</resources>

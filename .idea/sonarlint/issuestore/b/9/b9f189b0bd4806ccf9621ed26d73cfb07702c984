@@ -1,0 +1,14 @@
+
+Ukotlin:S1172ª"7Use "_" instead of this unused lambda parameter "view".(õóÆÿÿÿÿÿ
+Kkotlin:S1172ú"2Use "_" instead of these unused lambda parameters.(œÌìœ
+Akotlin:S1874¶"#Deprecated code should not be used.(÷é›„øÿÿÿÿ
+kkotlin:S3776ç"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(ƒÌ¿
+pkotlin:S3776¤"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(ƒö¨ñùÿÿÿÿ
+pkotlin:S3776Ø"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(§ûè±ùÿÿÿÿ
+kkotlin:S3776ò"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(ÄØˆï
+pkotlin:S3776Ë"RRefactor this method to reduce its Cognitive Complexity from 40 to the 15 allowed.(íƒ»ùÿÿÿÿÿ
+pkotlin:S117…"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(åÔ©Óıÿÿÿÿ
+Kkotlin:S1144´"2Remove this unused private "dismissDialog" method.(„öÊ
+skotlin:S1186‚"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ˆŒèÅ
+xkotlin:S1186ƒ"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ÎÙÁıÿÿÿÿ
+Lkotlin:S1066Ÿ".Merge this "if" statement with the nested one.(Şû¶›ûÿÿÿÿ

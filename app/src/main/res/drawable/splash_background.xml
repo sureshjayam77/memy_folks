@@ -1,0 +1,10 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:drawable="@color/background_color"/>
+<item
+    android:left="@dimen/common_margin_size"
+    android:right="@dimen/common_margin_size">
+    <bitmap
+        android:gravity="center"
+        android:src="@drawable/splash_logo"/>
+</item>
+</layer-list>

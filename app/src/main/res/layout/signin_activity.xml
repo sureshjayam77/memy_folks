@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.memy.viewModel.SignInViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background_color">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/common_margin_size">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/logoImageView"
+                    android:layout_width="200dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/app_logo"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/contentImageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="220dp"
+                    android:layout_marginTop="@dimen/common_margin_size"
+                    android:src="@drawable/ic_mobile_content_img"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/logoImageView" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/phoneLabelTextView"
+                    style="@style/SemiBoldText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/common_margin_size"
+                    android:paddingTop="@dimen/common_margin_size"
+                    android:text="@string/enter_your_phone_number"
+                    android:textColor="@color/label_phone_number_color"
+                    android:textSize="@dimen/enter_phone_number_label_size"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/contentImageView"
+                    app:layout_goneMarginTop="@dimen/common_margin_top" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/otpContentTextView"
+                    style="@style/MediumText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/common_edit_txt_padding"
+                    android:paddingBottom="@dimen/common_edit_txt_padding"
+                    android:text="@string/will_sent_otp"
+                    android:textColor="@color/otp_content_color"
+                    android:layout_marginRight="@dimen/phone_number_margin_top"
+                    android:layout_marginLeft="@dimen/phone_number_margin_top"
+                    android:textSize="@dimen/common_hint_text_size"
+                    android:gravity="center"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/phoneLabelTextView" />
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/mobileNumberCardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/phone_number_margin_top"
+                    android:layout_marginBottom="@dimen/common_margin_size"
+                    android:backgroundTint="@color/white"
+                    android:elevation="@dimen/signin_content_padding"
+                    android:layout_marginStart="@dimen/signin_content_padding"
+                    android:layout_marginEnd="@dimen/signin_content_padding"
+                    app:cardCornerRadius="@dimen/signin_content_padding"
+                    app:cardElevation="@dimen/signin_content_padding"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/otpContentTextView">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:padding="@dimen/otp_padding">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/countryCodeTextView"
+                            style="@style/MediumText"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:hint="@string/static_country_code"
+                            android:includeFontPadding="false"
+                            android:onClick="countryListDropDown"
+                            android:padding="0dp"
+                            android:text="@={viewModel.countryCode}"
+                            android:textColor="@color/edit_phone_number_color"
+                            android:textSize="@dimen/common_btn_text_size" />
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/mobileNumberEditText"
+                            style="@style/MediumText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:hint="9876543210"
+                            android:includeFontPadding="false"
+                            android:inputType="phone"
+                            android:maxLength="10"
+                            android:singleLine="true"
+                            android:text="@={viewModel.phoneNumber}"
+                            android:textColor="@color/edit_phone_number_color"
+                            android:textSize="@dimen/common_btn_text_size" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/termsConditionLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/common_edit_txt_padding"
+                    android:layout_marginBottom="@dimen/common_edit_txt_padding"
+                    android:layout_marginRight="@dimen/signin_content_padding"
+                    android:layout_marginLeft="@dimen/signin_content_padding"
+                    app:layout_constraintTop_toBottomOf="@+id/mobileNumberCardView">
+
+                    <CheckBox
+                        android:id="@+id/termsCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:minWidth="@dimen/common_icon_size"
+                        android:minHeight="@dimen/common_icon_size"
+                        android:checked="@={viewModel.isTermsChecked()}"
+                        app:layout_constraintStart_toStartOf="parent"/>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/agreeTermsTextView"
+                        style="@style/MediumText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/common_edit_txt_padding"
+                        android:paddingBottom="@dimen/common_edit_txt_padding"
+                        android:text="@string/i_agreed_terms_condition"
+                        android:textColor="@color/otp_content_color"
+                        android:textSize="@dimen/common_hint_text_size"
+                        app:layout_constraintStart_toEndOf="@+id/termsCheckBox"
+                        app:layout_constraintTop_toTopOf="@id/termsCheckBox"
+                        app:layout_constraintBottom_toBottomOf="@id/termsCheckBox" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/generateOtpBtn"
+                    style="@style/ButtonBoldWithBg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/common_margin_size"
+                    android:layout_marginBottom="@dimen/common_edit_txt_padding"
+                    android:enabled="@{safeUnbox(viewModel.isEnableGenerateOtpBtn)}"
+                    android:onClick="navigateOTPScreen"
+                    android:padding="@dimen/common_edit_txt_padding"
+                    android:text="@string/generate_otp_btn"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/common_text_size"
+                    app:cornerRadius="30dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/termsConditionLayout" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <include android:id="@+id/progressInclude"
+                layout="@layout/progressbar_layout"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

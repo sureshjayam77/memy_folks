@@ -1,0 +1,7 @@
+
+2kotlin:S1128"Remove this unused import.(Ζ‡¥³
+7kotlin:S1128"Remove this unused import.(ϊ…Υψÿÿÿÿ
+;kotlin:S1874"#Deprecated code should not be used.(λ§‡γ
+;kotlin:S1874"#Deprecated code should not be used.(µ¤ε―
+jkotlin:S3776&"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(Άύο›
+jkotlin:S117O"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ορ·ώÿÿÿÿ

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="common_text_size">15sp</dimen>
+    <dimen name="close_icon_height">24dp</dimen>
+    <dimen name="otp_text_size">20sp</dimen>
+    <dimen name="common_header_text_size">18sp</dimen>
+    <dimen name="common_btn_text_size">16sp</dimen>
+    <dimen name="common_hint_text_size">12sp</dimen>
+    <dimen name="common_small_text_size">10sp</dimen>
+    <dimen name="common_margin_size">25dp</dimen>
+    <dimen name="common_edit_txt_padding">10dp</dimen>
+    <dimen name="common_margin_top">5dp</dimen>
+    <dimen name="common_btn_padding">5dp</dimen>
+    <dimen name="common_down_arrow_height">30dp</dimen>
+    <dimen name="common_action_left_space">10dp</dimen>
+    
+    //Sign in
+    <dimen name="enter_phone_number_label_size">16sp</dimen>
+    <dimen name="we_will_send_otp_label_size">12sp</dimen>
+    <dimen name="phone_number_margin_top">10dp</dimen>
+    <dimen name="otp_padding">15dp</dimen>
+    <dimen name="signin_content_padding">5dp</dimen>
+    
+    //Add Family
+    <dimen name="add_family_parent_margin">10dp</dimen>
+    <dimen name="add_family_photo_height">90dp</dimen>
+    <dimen name="field_margin_top">10dp</dimen>
+    <dimen name="back_icon_height">25dp</dimen>
+
+
+    //Dashboard
+    <dimen name="search_icon_height">24dp</dimen>
+    <dimen name="card_corners">5dp</dimen>
+    <dimen name="profile_image_height">60dp</dimen>
+    <dimen name="profile_card_padding">10dp</dimen>
+    <dimen name="drawable_padding">5dp</dimen>
+    <dimen name="social_icon_height">18dp</dimen>
+    <dimen name="social_icon_margin">10dp</dimen>
+    <dimen name="call_btn_padding">15dp</dimen>
+    <dimen name="footer_icon_height">30dp</dimen>
+    <dimen name="footer_icon_big_height">60dp</dimen>
+    <dimen name="footer_height">70dp</dimen>
+    <dimen name="calendar_icon_size">20dp</dimen>
+
+    //Add Story
+    <dimen name="story_content_min_height">150dp</dimen>
+    <dimen name="story_content_top_margin">10dp</dimen>
+    <dimen name="story_media_icon_height">50dp</dimen>
+    <dimen name="story_post_type_text_size">13sp</dimen>
+    <dimen name="story_submit_btn_padding_size">8dp</dimen>
+    <dimen name="story_user_profile_height">45dp</dimen>
+    <dimen name="story_list_margin_start">12dp</dimen>
+    <dimen name="story_margin_top">15dp</dimen>
+    <dimen name="story_title_left_margin">10dp</dimen>
+    <dimen name="story_feed_item_top_space">7dp</dimen>
+
+
+    //Feed list
+    <dimen name="common_icon_size">24dp</dimen>
+    <dimen name="comment_icon_size">20dp</dimen>
+</resources>

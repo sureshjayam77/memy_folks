@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#0c8ab7</color>
+    <color name="colorPrimaryDark">#0c8ab7</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="bottom_line">#8C8A87</color>
+    <color name="transparent">#00000000</color>
+    <color name="search_bottom_line_light">#F3F3F3</color>
+    <color name="login_blue_button">#3b5997</color>
+    <color name="background_color">#FAFAFA</color>
+    <color name="otp_content_color">#3a5966</color>
+    <color name="edit_phone_number_color">#568193</color>
+    <color name="app_color">#0c8ab7</color>
+    <color name="disable_color_code">#70aabe</color>
+    <color name="label_phone_number_color">#1d2e35</color>
+    <color name="bottom_line_color">#ECECEC</color>
+    <color name="hint_color">#BBBBBB</color>
+    <color name="add_family_header_color">#8C8C8C</color>
+    <color name="red">#FF0000</color>
+    <color name="fifty_bg_color">#80000000</color>
+    <color name="gray_text_color">#b0b0b0</color>
+    <color name="footer_bar_txt_color">#8A8A8A</color>
+    <color name="footer_bar_color">#EDEDED</color>
+    <color name="gray_color">#EFEFEF</color>
+</resources>

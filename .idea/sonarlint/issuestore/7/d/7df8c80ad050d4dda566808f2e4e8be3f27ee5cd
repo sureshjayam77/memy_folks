@@ -1,0 +1,12 @@
+
+Gkotlin:S1481b"*Remove this unused "owner" local variable.(Òü‹«üÿÿÿÿ
+<kotlin:S1874‰"#Deprecated code should not be used.(ÏÊÈë
+<kotlin:S1874Þ"#Deprecated code should not be used.(ÏÊÈë
+okotlin:S3776N"RRefactor this method to reduce its Cognitive Complexity from 31 to the 15 allowed.(œ—´öûÿÿÿÿ
+kkotlin:S3776¢"RRefactor this method to reduce its Cognitive Complexity from 31 to the 15 allowed.(ð„øò
+okotlin:S117V"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(Ùê¬ƒýÿÿÿÿ
+jkotlin:S117^"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ýïªâ
+okotlin:S117_"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ºûá¼ÿÿÿÿÿ
+pkotlin:S117ª"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(Ùê¬ƒýÿÿÿÿ
+kkotlin:S117²"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ýïªâ
+pkotlin:S117³"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ºûá¼ÿÿÿÿÿ

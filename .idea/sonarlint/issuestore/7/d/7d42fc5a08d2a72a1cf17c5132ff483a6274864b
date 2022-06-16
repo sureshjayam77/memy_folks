@@ -1,0 +1,13 @@
+
+Qkotlin:S1172t"4Use "_" instead of this unused lambda parameter "s".(¿ëşÿıÿÿÿÿ
+Lkotlin:S1172w"4Use "_" instead of this unused lambda parameter "s".(ÿ°–
+Qkotlin:S1172z"4Use "_" instead of this unused lambda parameter "s".(ÌÔğ÷øÿÿÿÿ
+Pkotlin:S1172´"2Use "_" instead of these unused lambda parameters.(Ñöáâùÿÿÿÿ
+1kotlin:S1128"Remove this unused import.(îâœu
+7kotlin:S1128"Remove this unused import.(œô”şúÿÿÿÿ
+2kotlin:S1128"Remove this unused import.(´Ùí
+@kotlin:S1874\"#Deprecated code should not be used.(÷é›„øÿÿÿÿ
+pkotlin:S117¿"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(åÔ©Óıÿÿÿÿ
+pkotlin:S117„"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(àŒ›‘ıÿÿÿÿ
+skotlin:S1186¼"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ˆŒèÅ
+xkotlin:S1186½"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ÎÙÁıÿÿÿÿ

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:foo="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/parentDialogLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/app_color">
+
+            <LinearLayout
+                android:id="@+id/searchViewLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/phone_number_margin_top"
+                android:background="@drawable/appoint_card_bg"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/searchIconImageView"
+                    android:layout_width="@dimen/close_icon_height"
+                    android:layout_height="@dimen/close_icon_height"
+                    android:layout_marginStart="@dimen/phone_number_margin_top"
+                    android:gravity="center_vertical"
+                    android:src="@drawable/ic_search"/>
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/searchViewEditText"
+                    style="@style/RegularText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:hint="@string/login_search"
+                    android:inputType="textPersonName"
+                    android:singleLine="true"
+                    android:padding="@dimen/phone_number_margin_top"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/common_text_size" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/removeIconImageView"
+                    android:layout_width="@dimen/close_icon_height"
+                    android:layout_height="@dimen/close_icon_height"
+                    android:layout_gravity="start"
+                    android:gravity="center_vertical"
+                    android:src="@drawable/ic_close"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/countryCodeRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusableInTouchMode="true"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/emptyTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/empty_data"
+            android:textColor="@color/black"
+            android:textSize="@dimen/common_text_size" />
+
+    </LinearLayout>
+</LinearLayout>

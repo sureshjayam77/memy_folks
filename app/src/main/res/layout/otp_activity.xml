@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.memy.viewModel.OTPViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background_color">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/common_margin_size">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/logoImageView"
+                    android:layout_width="200dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/app_logo"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/contentImageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="@dimen/common_margin_size"
+                    android:src="@drawable/ic_otp_content_img"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/logoImageView" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/otpVerficationLabelTextView"
+                    style="@style/SemiBoldText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/common_margin_size"
+                    android:paddingTop="@dimen/common_margin_size"
+                    android:text="@string/label_otp_verification"
+                    android:textColor="@color/label_phone_number_color"
+                    android:textSize="@dimen/enter_phone_number_label_size"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/contentImageView"
+                    app:layout_goneMarginTop="@dimen/common_margin_top" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/otpSentContentTextView"
+                    style="@style/MediumText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/common_edit_txt_padding"
+                    android:paddingBottom="@dimen/common_edit_txt_padding"
+                    android:text="@string/will_sent_otp"
+                    android:textColor="@color/otp_content_color"
+                    android:textSize="@dimen/common_hint_text_size"
+                    android:gravity="center"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/otpVerficationLabelTextView" />
+
+                <LinearLayout
+                    android:id="@+id/otpParentLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/otpSentContentTextView">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/otpOneCardView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/phone_number_margin_top"
+                        android:layout_marginTop="@dimen/phone_number_margin_top"
+                        android:layout_marginRight="@dimen/phone_number_margin_top"
+                        android:layout_marginBottom="@dimen/phone_number_margin_top"
+                        android:elevation="5dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="5dp">
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/otpOneEditText"
+                            style="@style/MediumText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:hint="0"
+                            android:includeFontPadding="false"
+                            android:inputType="phone"
+                            android:maxLength="1"
+                            android:text="@={viewModel.otpCharOne}"
+                            android:padding="@dimen/otp_padding"
+                            android:singleLine="true"
+                            android:textColor="@color/edit_phone_number_color"
+                            android:textSize="@dimen/otp_text_size" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/otpTwoCardView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/phone_number_margin_top"
+                        android:layout_marginTop="@dimen/phone_number_margin_top"
+                        android:layout_marginRight="@dimen/phone_number_margin_top"
+                        android:layout_marginBottom="@dimen/phone_number_margin_top"
+                        android:elevation="5dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="5dp">
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/otpTwoEditText"
+                            style="@style/MediumText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:hint="0"
+                            android:text="@={viewModel.otpCharTwo}"
+                            android:includeFontPadding="false"
+                            android:inputType="phone"
+                            android:maxLength="1"
+                            android:padding="@dimen/otp_padding"
+                            android:singleLine="true"
+                            android:textColor="@color/edit_phone_number_color"
+                            android:textSize="@dimen/otp_text_size" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/otpThreeCardView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/phone_number_margin_top"
+                        android:layout_marginTop="@dimen/phone_number_margin_top"
+                        android:layout_marginRight="@dimen/phone_number_margin_top"
+                        android:layout_marginBottom="@dimen/phone_number_margin_top"
+                        android:elevation="5dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="5dp">
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/otpThreeEditText"
+                            style="@style/MediumText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:hint="0"
+                            android:includeFontPadding="false"
+                            android:inputType="phone"
+                            android:maxLength="1"
+                            android:text="@={viewModel.otpCharThree}"
+                            android:padding="@dimen/otp_padding"
+                            android:singleLine="true"
+                            android:textColor="@color/edit_phone_number_color"
+                            android:textSize="@dimen/otp_text_size" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/otpFourCardView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/phone_number_margin_top"
+                        android:layout_marginTop="@dimen/phone_number_margin_top"
+                        android:layout_marginRight="@dimen/phone_number_margin_top"
+                        android:layout_marginBottom="@dimen/phone_number_margin_top"
+                        android:elevation="5dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="5dp">
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/otpFourEditText"
+                            style="@style/MediumText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:hint="0"
+                            android:includeFontPadding="false"
+                            android:text="@={viewModel.otpCharFour}"
+                            android:inputType="phone"
+                            android:maxLength="1"
+                            android:padding="@dimen/otp_padding"
+                            android:singleLine="true"
+                            android:textColor="@color/edit_phone_number_color"
+                            android:textSize="@dimen/otp_text_size" />
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/otpNotReceiveTextView"
+                    style="@style/MediumText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/common_edit_txt_padding"
+                    android:paddingBottom="@dimen/common_edit_txt_padding"
+                    android:text="@string/label_otp_not_receive_1"
+                    android:textColor="@color/otp_content_color"
+                    android:textSize="@dimen/common_hint_text_size"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/otpParentLayout" />
+
+               <!-- <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/keyValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>-->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/continueBtn"
+                    style="@style/ButtonBoldWithBg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/common_margin_size"
+                    android:layout_marginBottom="@dimen/common_edit_txt_padding"
+                    android:padding="@dimen/common_edit_txt_padding"
+                    android:text="@string/label_verify_continue"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/common_text_size"
+                    app:cornerRadius="30dp"
+                    android:onClick="verifyOTP"
+                    android:enabled="@{viewModel.isEnableVerifyOtpBtn}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/otpNotReceiveTextView" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <include android:id="@+id/progressInclude"
+                layout="@layout/progressbar_layout"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/labelTextView"
+        style="@style/RegularText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_white_cornor_radius"
+        android:gravity="center"
+        android:padding="@dimen/common_action_left_space"
+        android:text="@string/label_camera"
+        android:textColor="@color/black"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="2dp"
+        android:textSize="@dimen/common_header_text_size"
+        app:layout_constraintTop_toTopOf="parent" />
+</layout>

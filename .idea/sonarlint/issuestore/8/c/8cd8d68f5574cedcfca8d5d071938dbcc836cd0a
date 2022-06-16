@@ -1,0 +1,25 @@
+
+b
+java:S1659!"GDeclare "likeSelect" and all following declarations on a separate line.(×Ó ÿüÿÿÿÿ
+I
+java:S1874,"3Remove this use of "getDrawable"; it is deprecated.(‚²™¤
+I
+java:S1874-"3Remove this use of "getDrawable"; it is deprecated.(–Ë¼™
+m
+java:S37762"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(¬‚çÃıÿÿÿÿ
+Q	java:S1258"<This block of commented-out lines of code should be removed.(Ô¸­
+V	java:S125?"<This block of commented-out lines of code should be removed.(éØ»Úûÿÿÿÿ
+Q	java:S125N"<This block of commented-out lines of code should be removed.(…¿£ÿ
+`
+java:S1659["JDeclare "titleTextView" and all following declarations on a separate line.(š•ğ‚
+C
+java:S1185{"(Remove this method to simply inherit it.(¬Œˆùûÿÿÿÿ
+Q	java:S125}"<This block of commented-out lines of code should be removed.(¶Ğœñ
+O
+java:S1068!"4Remove this unused "commentNonSelect" private field.(×Ó ÿüÿÿÿÿ
+L
+java:S1068!"1Remove this unused "commentSelect" private field.(×Ó ÿüÿÿÿÿ
+>
+java:S1604K"(Make this anonymous inner class a lambda(‰ı¥
+M
+java:S25895"7Remove this expression which always evaluates to "true"(‰Ÿ¬ë

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.memy.viewModel.AddStoryViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray_color"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/actionBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/backIconImageView"
+                    android:layout_width="@dimen/back_icon_height"
+                    android:layout_height="@dimen/back_icon_height"
+                    android:layout_marginStart="@dimen/common_action_left_space"
+                    android:src="@drawable/ic_back_arrow" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/titleTextView"
+                    style="@style/RegularText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/label_add_story"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/common_header_text_size" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/menuIconImageView"
+                    android:layout_width="@dimen/back_icon_height"
+                    android:layout_height="@dimen/back_icon_height"
+                    android:layout_gravity="end|center"
+                    android:layout_marginEnd="@dimen/common_margin_size"
+                    android:visibility="gone" />
+
+
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/story_content_top_margin"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="10dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/story_content_top_margin">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/add_family_parent_margin"
+                        android:layout_marginTop="@dimen/add_family_parent_margin"
+                        android:layout_marginEnd="@dimen/add_family_parent_margin"
+                        android:layout_marginBottom="@dimen/add_family_parent_margin"
+                        android:background="@drawable/bg_white_cornor_radius"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/titleEditText"
+                            style="@style/RegularText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/field_margin_top"
+                            android:background="@drawable/add_story_content_gray_stroke_bg"
+                            android:gravity="start|top"
+                            android:hint="@string/label_write_title"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@={viewModel.storyTitle}"
+                            android:padding="@dimen/field_margin_top"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/hint_color"
+                            android:textSize="@dimen/common_text_size"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/contentEditText"
+                            style="@style/RegularText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/field_margin_top"
+                            android:background="@drawable/add_story_content_gray_stroke_bg"
+                            android:gravity="start|top"
+                            android:hint="@string/label_write_something"
+                            android:minHeight="@dimen/story_content_min_height"
+                            android:padding="@dimen/field_margin_top"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/hint_color"
+                            android:textSize="@dimen/common_text_size"
+                            android:text="@={viewModel.storyDesc}"
+                            app:layout_constraintTop_toBottomOf="@+id/titleEditText" />
+
+                        <LinearLayout
+                            android:id="@+id/accessLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/story_content_top_margin"
+                            android:orientation="horizontal"
+                            app:layout_constraintTop_toBottomOf="@+id/contentEditText">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/privateTextView"
+                                style="@style/RegularText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="@dimen/story_content_top_margin"
+                                android:layout_marginBottom="@dimen/story_content_top_margin"
+                                android:layout_marginTop="@dimen/story_content_top_margin"
+                                android:background="@drawable/gray_stroke_bg"
+                                android:gravity="center"
+                                android:paddingTop="@dimen/drawable_padding"
+                                android:paddingBottom="@dimen/drawable_padding"
+                                android:paddingStart="@dimen/call_btn_padding"
+                                android:paddingEnd="@dimen/call_btn_padding"
+                                android:text="@string/label_private"
+                                android:onClick="updatePrivatePost"
+                                android:textColor="@color/gray_text_color"
+                                android:textSize="@dimen/story_post_type_text_size" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/myTreeTextView"
+                                style="@style/RegularText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/story_content_top_margin"
+                                android:background="@drawable/gray_stroke_bg"
+                                android:gravity="center"
+                                android:paddingTop="@dimen/drawable_padding"
+                                android:paddingBottom="@dimen/drawable_padding"
+                                android:paddingStart="@dimen/call_btn_padding"
+                                android:paddingEnd="@dimen/call_btn_padding"
+                                android:text="@string/label_my_tree"
+                                android:onClick="updateMyTreePost"
+                                android:textColor="@color/gray_text_color"
+                                android:textSize="@dimen/story_post_type_text_size" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/publicTextView"
+                                style="@style/RegularText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/story_content_top_margin"
+                                android:layout_marginBottom="@dimen/story_content_top_margin"
+                                android:layout_marginTop="@dimen/story_content_top_margin"
+                                android:background="@drawable/gray_stroke_bg"
+                                android:gravity="center"
+                                android:paddingTop="@dimen/drawable_padding"
+                                android:paddingBottom="@dimen/drawable_padding"
+                                android:paddingStart="@dimen/call_btn_padding"
+                                android:paddingEnd="@dimen/call_btn_padding"
+                                android:text="@string/label_public"
+                                android:onClick="updatePublicPost"
+                                android:textColor="@color/gray_text_color"
+                                android:textSize="@dimen/story_post_type_text_size" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/mediaLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/story_content_top_margin"
+                            android:layout_marginBottom="@dimen/add_family_parent_margin"
+                            android:gravity="center_vertical"
+                            android:onClick="photoChooseOption"
+                            android:orientation="horizontal"
+                            app:layout_constraintTop_toBottomOf="@+id/accessLayout"
+                            tools:ignore="MissingConstraints">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/mediaImageView"
+                                android:layout_width="@dimen/story_media_icon_height"
+                                android:layout_height="@dimen/story_media_icon_height"
+                                android:src="@drawable/ic_attach_media"/>
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/mediaTextView"
+                                style="@style/RegularText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/story_content_top_margin"
+                                android:gravity="center"
+                                android:text="@string/label_add_media"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/common_btn_text_size" />
+
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/selectedMediaRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/add_family_parent_margin"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            android:orientation="horizontal"
+                            app:layout_constraintTop_toBottomOf="@+id/mediaLayout"
+                            app:layout_constraintBottom_toTopOf="@+id/submitStory"/>
+
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/submitStory"
+                            style="@style/ButtonBoldWithBg"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/common_margin_size"
+                            android:layout_marginBottom="@dimen/common_edit_txt_padding"
+                            android:onClick="submitStory"
+                            android:padding="@dimen/story_submit_btn_padding_size"
+                            android:text="@string/label_add_story"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/common_text_size"
+                            app:cornerRadius="30dp"
+                            android:enabled="@{safeUnbox(viewModel.enableAddStoryBtn)}"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+        </androidx.core.widget.NestedScrollView>
+
+        <include android:id="@+id/progressInclude"
+            layout="@layout/progressbar_layout"/>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

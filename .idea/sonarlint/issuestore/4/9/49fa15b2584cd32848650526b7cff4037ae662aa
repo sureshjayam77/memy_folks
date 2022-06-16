@@ -1,0 +1,14 @@
+
+Lkotlin:S1172E"4Use "_" instead of this unused lambda parameter "v".(îã’†
+Qkotlin:S1172H"4Use "_" instead of this unused lambda parameter "v".(÷›¯ ûÿÿÿÿ
+Lkotlin:S1172K"4Use "_" instead of this unused lambda parameter "v".(›úùÓ
+Lkotlin:S1172N"4Use "_" instead of this unused lambda parameter "v".(îèË¢
+1kotlin:S1128"Remove this unused import.(é±§Q
+2kotlin:S1128"Remove this unused import.(ÅâÊ¸
+okotlin:S3776i"RRefactor this method to reduce its Cognitive Complexity from 27 to the 15 allowed.(ËÖéäøÿÿÿÿ
+pkotlin:S117«"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(Ç”´Íùÿÿÿÿ
+pkotlin:S117³"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ó•«¦ùÿÿÿÿ
+kkotlin:S117½"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ñ¥Ğ½
+skotlin:S1186Ä"ZAdd a nested comment explaining why this function is empty or complete the implementation.(…Şèü
+Kkotlin:S1066n".Merge this "if" statement with the nested one.(ßóµäûÿÿÿÿ
+Gkotlin:S1066ã".Merge this "if" statement with the nested one.(”ùÅˆ
