@@ -52,17 +52,22 @@ class AddStoryActivity : AppBaseActivity(), View.OnClickListener, ItemClickListe
         initRecyclerView()
         initObserver()
         PermissionUtil().initRequestPermissionForCamera(this, true)
+        updatePrivatePost(binding.privateTextView)
     }
 
     fun initView(){
         binding = DataBindingUtil.setContentView(this, R.layout.add_story_activity)
         binding.lifecycleOwner = this
+        binding.backIconImageView.setOnClickListener { onBackPressed()
+        }
     }
 
     fun initViewModel(){
         viewModel = ViewModelProvider(this).get(AddStoryViewModel::class.java)
         binding.viewModel = viewModel
-        viewModel.userData = prefhelper.fetchUserData()
+        if(intent != null) {
+            viewModel.userId = intent.getStringExtra(Constents.ADD_STORY_USER_ID_INTENT_TAG)!!
+        }
     }
 
     fun initObserver(){
@@ -295,7 +300,8 @@ class AddStoryActivity : AppBaseActivity(), View.OnClickListener, ItemClickListe
             var desc = viewModel.storyDesc.value?.trim()!!
             var storyAccess = viewModel.storyAccess.value!!
             var storyMedia = viewModel.storyMedia.value
-            val userId = viewModel.userData?.mid!!
+            val userId = prefhelper.fetchUserData()?.mid
+            val profileId = viewModel.userId!!
             val fileList = ArrayList<File>()
 
             if(storyMedia != null) {
@@ -304,7 +310,7 @@ class AddStoryActivity : AppBaseActivity(), View.OnClickListener, ItemClickListe
                 }
             }
 
-            val req = AddStoryReqObj(storyAccess,userId,userId,fileList,title, desc,0)
+            val req = AddStoryReqObj(storyAccess,userId?.toInt()!!,profileId.toInt(),fileList,title, desc,0)
             showProgressBar()
             viewModel.addStoryRepository.addStoryReq(req)
         }

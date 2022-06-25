@@ -23,6 +23,8 @@ class AddFamilyRepository : BaseRepository() {
     var profileUpdateRes = MutableLiveData<CommonResponse>()
     var addFamilyRes = MutableLiveData<CommonResponse>()
     var deleteAccountRes = MutableLiveData<CommonResponse>()
+    var isCusExistRes = MutableLiveData<ProfileVerificationResObj>()
+    var relationUpdateSuccessRes = MutableLiveData<CommonResponse>()
 
     fun fetchRelationShip() {
         val relationShipCall = retrofit.create(APIInterface::class.java)
@@ -259,6 +261,40 @@ class AddFamilyRepository : BaseRepository() {
 
             override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
                 deleteAccountRes.value = CommonResponse(null, 0, null)
+            }
+        })
+    }
+
+    fun checkCusExist(req: CommonMobileNumberObj?) {
+        val addFamilyCall = retrofit.create(APIInterface::class.java)
+            .checkIsExistingMember(req?.mobile,req?.country_code, BaseRepository.APP_KEY_VALUE)
+        addFamilyCall?.enqueue(object : Callback<ProfileVerificationResObj?> {
+            override fun onResponse(
+                call: Call<ProfileVerificationResObj?>?,
+                response: Response<ProfileVerificationResObj?>?
+            ) {
+                isCusExistRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<ProfileVerificationResObj?>?, t: Throwable) {
+                isCusExistRes.value = ProfileVerificationResObj(null, 0, null)
+            }
+        })
+    }
+
+    fun updateRelationShip(req: RelationShipUpdateReq?) {
+        val addFamilyCall = retrofit.create(APIInterface::class.java)
+            .updateRelation(req,BaseRepository.APP_KEY_VALUE)
+        addFamilyCall?.enqueue(object : Callback<CommonResponse?> {
+            override fun onResponse(
+                call: Call<CommonResponse?>?,
+                response: Response<CommonResponse?>?
+            ) {
+                relationUpdateSuccessRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
+                relationUpdateSuccessRes.value = CommonResponse(null, 0, null)
             }
         })
     }

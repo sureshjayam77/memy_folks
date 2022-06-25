@@ -66,7 +66,14 @@ interface APIInterface {
 
     @GET("api/v1/post/")
     fun fetchAllStory(@Query("apikey") apikey: String,@Query("author") loginUserId: Int?,@Query("familyId") familId: Int?,@Query("page") pageNo: Int?,@Query("limit") limitNo: Int? ) : Call<StoryListRes?>?
+
     @GET("api/v1/notifications/{id}/")
     fun getNotifications(@Path("id") apikey: String,@Query("apikey") loginUserId: String? ) : Call<NotificationRes?>?
+
+    @GET("api/v1/existing_member/")
+    fun checkIsExistingMember(@Query("mobile") mobile: String?,@Query("country_code") country_code: String?,@Query("apikey") loginUserId: String?) : Call<ProfileVerificationResObj?>?
+
+    @POST("api/v1/existing_member/")
+    fun updateRelation(@Body() req: RelationShipUpdateReq?,@Query("apikey") apikey: String?) : Call<CommonResponse?>?
 
 }

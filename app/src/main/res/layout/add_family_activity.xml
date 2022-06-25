@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -124,22 +125,46 @@
                         android:visibility="@{viewModel.isForAddFamily() ? View.VISIBLE : View.GONE}"
                         app:layout_constraintTop_toBottomOf="@id/photoCardView" />
 
-                    <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/firstNameEditText"
-                        style="@style/RegularText"
+                    <LinearLayout
+                        android:id="@+id/fNameLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/field_margin_top"
+                        android:orientation="horizontal"
                         android:background="@drawable/bottom_line"
-                        android:hint="@string/first_name"
-                        android:maxLines="1"
-                        android:padding="@dimen/field_margin_top"
-                        android:singleLine="true"
-                        android:text="@={viewModel.firstName}"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/hint_color"
-                        android:textSize="@dimen/common_text_size"
-                        app:layout_constraintTop_toBottomOf="@id/familyTagTextView" />
+                        android:paddingBottom="2dp"
+                        android:gravity="center_vertical"
+                        app:layout_constraintTop_toBottomOf="@id/familyTagTextView" >
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/firstNameEditText"
+                            style="@style/RegularText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/field_margin_top"
+                            android:hint="@string/first_name"
+                            android:maxLines="1"
+                            android:padding="@dimen/field_margin_top"
+                            android:singleLine="true"
+                            android:gravity="center_vertical"
+                            android:background="@null"
+                            android:text="@={viewModel.firstName}"
+                            android:textColor="@color/black"
+                            android:layout_weight="1"
+                            android:textColorHint="@color/hint_color"
+                            android:textSize="@dimen/common_text_size"/>
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/nameContactIcon"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:src="@drawable/ic_contacts"
+                            android:layout_gravity="bottom"
+                            android:onClick="contactChooseOption"
+                            android:visibility="@{viewModel.isForAddFamily() ? View.VISIBLE : View.GONE}"
+                            android:padding="5dp"/>
+
+                    </LinearLayout>
+
 
 
                     <androidx.appcompat.widget.AppCompatEditText
@@ -157,7 +182,7 @@
                         android:textColor="@color/black"
                         android:textColorHint="@color/hint_color"
                         android:textSize="@dimen/common_text_size"
-                        app:layout_constraintTop_toBottomOf="@id/firstNameEditText" />
+                        app:layout_constraintTop_toBottomOf="@id/fNameLayout" />
 
                     <LinearLayout
                         android:id="@+id/mobileNumberLayout"
@@ -191,15 +216,16 @@
                         <androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/mobileNumberEditText"
                             style="@style/RegularText"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:background="@null"
-                            android:hint="9876543210"
+                            android:hint="9XXXXXXXXX"
                             android:enabled="@{viewModel.allowEditMobileNumber ? true : false}"
                             android:includeFontPadding="false"
                             android:inputType="phone"
                             android:maxLength="10"
+                            android:layout_weight="1"
                             android:maxLines="1"
                             android:padding="@dimen/field_margin_top"
                             android:singleLine="true"
@@ -207,6 +233,16 @@
                             android:textColor="@color/black"
                             android:textColorHint="@color/hint_color"
                             android:textSize="@dimen/common_text_size" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/phoneContactIcon"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:src="@drawable/ic_contacts"
+                            android:onClick="contactChooseOption"
+                            android:layout_gravity="bottom"
+                            android:visibility="@{viewModel.isForAddFamily() ? View.VISIBLE : View.GONE}"
+                            android:padding="5dp"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -260,7 +296,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:background="@null"
-                            android:hint="9876543210"
+                            android:hint="9XXXXXXXXX"
                             android:includeFontPadding="false"
                             android:inputType="phone"
                             android:maxLength="10"
@@ -403,29 +439,33 @@
                         <CheckBox
                             android:id="@+id/livingRadioBtn"
                             style="@style/RegularText"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:button="@drawable/radio_view_btn"
                             android:checked="@{viewModel.living}"
                             android:onClick="@{() -> viewModel.livingClick()}"
                             android:padding="@dimen/field_margin_top"
                             android:text="@string/label_living"
+                            android:layout_weight="0.6"
                             android:textColor="@color/black"
                             android:textSize="@dimen/common_text_size" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/deathDateTextView"
                             style="@style/RegularText"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="0.4"
                             android:gravity="center|end"
                             android:hint="@string/label_death_date"
                             android:maxLines="1"
+                            android:textColorHint="@color/hint_color"
+                            android:padding="@dimen/field_margin_top"
                             android:onClick="openDatePicker"
                             android:text="@{viewModel.deathDateStr}"
                             android:textColor="@color/black"
                             android:textSize="@dimen/common_text_size"
+                            android:background="@drawable/bottom_line"
                             android:visibility="@{viewModel.living ? View.GONE : View.VISIBLE}" />
 
                     </LinearLayout>
@@ -544,28 +584,10 @@
                             app:layout_constraintTop_toBottomOf="@+id/addressEditText">
 
                             <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/stateTextView"
-                                style="@style/RegularText"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/field_margin_top"
-                                android:layout_weight="1"
-                                android:background="@drawable/bottom_line"
-                                android:hint="@string/label_state"
-                                android:maxLines="1"
-                                android:onClick="stateSpinnerClick"
-                                android:padding="@dimen/field_margin_top"
-                                android:text="@={viewModel.state}"
-                                android:textColor="@color/black"
-                                android:textColorHint="@color/hint_color"
-                                android:textSize="@dimen/common_text_size" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/countryTextView"
                                 style="@style/RegularText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/field_margin_top"
                                 android:layout_weight="1"
                                 android:background="@drawable/bottom_line"
                                 android:hint="@string/label_country"
@@ -576,6 +598,25 @@
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/hint_color"
                                 android:textSize="@dimen/common_text_size" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/stateTextView"
+                                style="@style/RegularText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="@dimen/field_margin_top"
+                                android:layout_weight="1"
+                                android:background="@drawable/bottom_line"
+                                android:layout_marginStart="@dimen/field_margin_top"
+                                android:hint="@string/label_state"
+                                android:maxLines="1"
+                                android:onClick="stateSpinnerClick"
+                                android:padding="@dimen/field_margin_top"
+                                android:text="@={viewModel.state}"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/hint_color"
+                                android:textSize="@dimen/common_text_size" />
+
 
 
                         </LinearLayout>
@@ -719,5 +760,97 @@
 
         <include android:id="@+id/progressInclude"
             layout="@layout/progressbar_layout"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/relationPopup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:visibility="@{viewModel.showRelationPopup ? View.VISIBLE : View.GONE, default=gone}"
+            android:background="@color/fifty_bg_color">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/relationSubPopup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/common_margin_size"
+            android:padding="@dimen/common_margin_size"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:paddingBottom="@dimen/common_margin_size"
+            android:background="@drawable/bg_white_cornor_radius">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/relationPhotoImageView"
+                android:layout_width="@dimen/add_family_photo_height"
+                android:layout_height="@dimen/add_family_photo_height"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/common_margin_size"
+                android:src="@drawable/ic_profile_male"
+                app:civ_border_color="#FFFFFF"
+                app:civ_border_width="2dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/relationPersonNameTextView"
+                style="@style/RegularText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/field_margin_top"
+                android:padding="@dimen/field_margin_top"
+                tools:text="@string/first_name"
+                android:textColor="@color/black"
+                android:textSize="@dimen/common_text_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/relationPhotoImageView" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/familyTagPopupTextView"
+                style="@style/RegularText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/field_margin_top"
+                android:background="@drawable/bottom_line"
+                android:drawableEnd="@drawable/ic_down_arrow"
+                android:hint="@string/add_family_my_family"
+                android:maxLines="1"
+                android:padding="@dimen/field_margin_top"
+                android:text="@{viewModel.familyTagName}"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color"
+                android:textSize="@dimen/common_text_size"
+                app:layout_constraintTop_toBottomOf="@id/relationPersonNameTextView" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/requestBtn"
+                style="@style/ButtonBoldWithBg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/common_margin_size"
+                android:padding="@dimen/common_edit_txt_padding"
+                android:text="@string/label_request"
+                android:textColor="@color/white"
+                android:textSize="@dimen/common_text_size"
+                app:cornerRadius="30dp"
+                app:layout_constraintTop_toBottomOf="@+id/familyTagPopupTextView" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/popupCancelBtn"
+                style="@style/ButtonBoldWithBg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/common_margin_size"
+                android:padding="@dimen/common_edit_txt_padding"
+                android:text="@string/label_cancel"
+                android:textColor="@color/white"
+                android:textSize="@dimen/common_text_size"
+                app:cornerRadius="30dp"
+                android:onClick="@{() -> viewModel.hideRelationPopup()}"
+                app:layout_constraintTop_toBottomOf="@+id/requestBtn" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

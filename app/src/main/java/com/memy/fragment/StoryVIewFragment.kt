@@ -1,8 +1,10 @@
 package com.memy.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,8 +22,14 @@ import com.memy.utils.Constents
 import com.memy.viewModel.DashboardViewModel
 import com.squareup.moshi.Moshi
 import android.webkit.WebViewClient
+import androidx.activity.result.ActivityResult
+import com.memy.activity.AddStoryActivity
+import androidx.activity.result.ActivityResultCallback
 
+import androidx.activity.result.contract.ActivityResultContracts.GetContent
 
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 
 
 class StoryVIewFragment : BaseFragment(){
@@ -49,8 +57,8 @@ class StoryVIewFragment : BaseFragment(){
         binding.webview.addJavascriptInterface(
             WebAppInterface(
                 activity,
-                binding.webview
-            ), "Android")
+                binding.webview,
+                        startForResult), "Android")
         loadStoryView()
     }
 
@@ -59,16 +67,27 @@ class StoryVIewFragment : BaseFragment(){
         binding.webview.loadUrl(storyURL)
     }
 
-    class WebAppInterface {
+    public val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+           // val intent = result.data
+            // Handle the Intent
+            val storyURL = BaseRepository.BASE_URL + "api/story_mobile_view/?userid=${viewModel.userData.value?.mid}&owner_id=${prefhelper.fetchUserData()?.mid}&apikey=${BaseRepository.APP_KEY_VALUE}&page=1"
+            binding.webview.loadUrl(storyURL)
+        }
+    }
+
+    public class WebAppInterface {
         var mContext: Context? = null
         var mView: WebView? = null
         lateinit var moshi: Moshi
+        var startForResult :ActivityResultLauncher<Intent>? = null
 
         /** Instantiate the interface and set the context  */
-        constructor(c: Context?, w: WebView?) {
+        constructor(c: Context?, w: WebView?,sResult :ActivityResultLauncher<Intent>?) {
             mContext = c
             mView = w
             moshi = Moshi.Builder().build()
+            startForResult = sResult
         }
 
         @JavascriptInterface
@@ -86,6 +105,13 @@ class StoryVIewFragment : BaseFragment(){
                 Intent.createChooser(intent, "share"),
                 false
             )
+        }
+
+        @JavascriptInterface
+        fun addStoryCallBack(userId: String?) {
+            val intent = Intent(mContext, AddStoryActivity::class.java)
+            intent.putExtra(Constents.ADD_STORY_USER_ID_INTENT_TAG, userId)
+            startForResult?.launch(intent)
         }
     }
 }

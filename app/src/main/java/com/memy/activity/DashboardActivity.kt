@@ -79,7 +79,7 @@ class DashboardActivity : AppBaseActivity() {
 
     private fun fetchProfileData(refreshStroy : Boolean) {
         if ((viewModel.userData.value != null) && (viewModel.userData.value?.mid != null)) {
-            binding.progressInclude.progressBarLayout.visibility = View.VISIBLE
+          //  binding.progressInclude.progressBarLayout.visibility = View.VISIBLE
             viewModel.fetchProfile(viewModel.userData.value?.mid)
             if (viewModel.isTreeView.value == true) {
                 val manager: FragmentManager = supportFragmentManager
@@ -163,7 +163,7 @@ class DashboardActivity : AppBaseActivity() {
     }
 
     fun navigateProfileScreen(v: View) {
-        val intent = Intent(this, ViewProfileActivity::class.java)
+        val intent = Intent(this, AddFamilyActivity::class.java)
         intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
         intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel?.userData?.value?.mid)
         startActivityIntent(intent, false);

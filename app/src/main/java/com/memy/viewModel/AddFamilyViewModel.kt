@@ -50,6 +50,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
     var isOtherGender: MutableLiveData<Boolean> = MutableLiveData()
     var profileBase64: MutableLiveData<String> = MutableLiveData()
     var profileUpdateRes = MutableLiveData<CommonResponse>()
+    var isCusExistRes = MutableLiveData<ProfileVerificationResObj>()
     var stateId = -1
     var countryId = -1
 
@@ -65,6 +66,10 @@ class AddFamilyViewModel : AppBaseViewModel() {
     var isAddFamilyClicked = true
     var deathDate : String? = null
     var deleteAccountRes = MutableLiveData<CommonResponse>()
+    var relationUpdateSuccessRes = MutableLiveData<CommonResponse>()
+
+
+    var showRelationPopup: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
 
     init {
         addFamilyRepository = AddFamilyRepository()
@@ -76,6 +81,8 @@ class AddFamilyViewModel : AppBaseViewModel() {
         profileUpdateRes = addFamilyRepository.profileUpdateRes
         addFamilyRes = addFamilyRepository.addFamilyRes
         deleteAccountRes = addFamilyRepository.deleteAccountRes
+        isCusExistRes = addFamilyRepository.isCusExistRes
+        relationUpdateSuccessRes = addFamilyRepository.relationUpdateSuccessRes
         moreInfoClicked.value = false
         isForPrimaryCountryCode = false
         isForAddFamily.value = false
@@ -181,5 +188,19 @@ class AddFamilyViewModel : AppBaseViewModel() {
 
     fun deleteAccount(id:Int?){
             addFamilyRepository.deleteAccount(id)
+    }
+
+    fun hideRelationPopup(){
+        showRelationPopup.value = false
+    }
+
+    fun callIsCusExits(){
+        val cusReq = CommonMobileNumberObj(mainCountryCode.value,mainMobileNumber.value)
+        addFamilyRepository.checkCusExist(cusReq)
+    }
+
+    fun callChangeRelationShip(loginUserId : Int?,pluseBtnClickUserId : Int?,relationId : String?,relationChangerId : Int?){
+        val cusReq = RelationShipUpdateReq(loginUserId,pluseBtnClickUserId,relationId,relationChangerId)
+        addFamilyRepository.updateRelationShip(cusReq)
     }
 }

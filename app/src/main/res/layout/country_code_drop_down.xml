@@ -9,6 +9,7 @@
         android:id="@+id/parentDialogLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -44,6 +45,7 @@
                     android:focusable="true"
                     android:gravity="center_vertical"
                     android:hint="@string/login_search"
+                    android:textColorHint="@color/gray_text_color"
                     android:inputType="textPersonName"
                     android:singleLine="true"
                     android:padding="@dimen/phone_number_margin_top"

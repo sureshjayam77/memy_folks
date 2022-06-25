@@ -18,7 +18,9 @@ import com.google.android.exoplayer2.util.EventLogger
 
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.memy.utils.Constents
 
 
@@ -54,15 +56,33 @@ class AddStoryMediaAdapter(val ctx : Context, val list : List<AddStoryMediaObj>)
                     }
                 }else{
                     holder.playerView.visibility = View.VISIBLE
+                    if((holder.playerView.player != null) && (holder.playerView.player?.isPlaying == true)){
+                        holder.playerView.player?.release()
+                    }
+
+                    if((holder.playerView.player != null) && (holder.playerView.player?.mediaItemCount!! > 0)) {
+                        holder.playerView.player?.removeMediaItem(0)
+                    }
                     var player = ExoPlayer.Builder( /* context= */ctx)
                         .build()
                     val mediaItem = MediaItem.fromUri(itemObj.fileURI)
                     player.addMediaItem(mediaItem)
                     player.setPlayWhenReady(true)
+                    player.seekTo(1)
                     holder.playerView.player = player
+                    player.addListener(object : Player.Listener   {
+                        override  fun onPlaybackStateChanged(state: Int) {
+                            if (state == Player.STATE_READY) {
+
+                            }
+                        }
+                    })
                 }
                 holder.closeImageView.tag = position.toString()
                 holder.closeImageView.setOnClickListener(View.OnClickListener { it ->
+                    if((holder.playerView.player != null) && (holder.playerView.player?.isPlaying == true)){
+                        holder.playerView.player?.release()
+                    }
                     if(listener != null){
                         listener.onItemClicked(Constents.ONCLICK_DELETE_MEDIA,it.getTag().toString())
                     }
@@ -70,6 +90,13 @@ class AddStoryMediaAdapter(val ctx : Context, val list : List<AddStoryMediaObj>)
             }
 
         }
+    }
+
+    override fun onViewRecycled(holder: ViewHolder) {
+        if((holder.playerView.player != null) && (holder.playerView.player?.isPlaying == true)){
+            holder.playerView.player?.release()
+        }
+        super.onViewRecycled(holder)
     }
 
     override fun getItemCount(): Int {

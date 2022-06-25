@@ -63,6 +63,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         binding.backIconImageView.setOnClickListener(View.OnClickListener {
             onBackPressed()
         })
+        binding.backIconImageView.setImageResource(R.drawable.ic_back_arrow)
         binding.bottomBarLayout.visibility = View.GONE
         binding.titleTextView.text = getString(R.string.label_profile)
         binding.menuIconImageView.visibility = View.GONE

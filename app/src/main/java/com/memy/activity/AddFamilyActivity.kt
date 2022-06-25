@@ -1,5 +1,7 @@
 package com.memy.activity
 
+import android.R.attr
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
@@ -52,6 +54,19 @@ import java.lang.reflect.Method
 import java.net.URI
 import java.util.*
 import kotlin.collections.ArrayList
+import android.provider.ContactsContract
+import androidx.activity.result.contract.ActivityResultContracts
+import android.R.attr.data
+import android.database.Cursor
+import android.annotation.SuppressLint
+import android.R.id
+import android.R.attr.phoneNumber
+
+
+
+
+
+
 
 
 class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListener {
@@ -70,20 +85,23 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     val PERMISSION_SETTINGS_NAVIGATION = 1002
     lateinit var countryListDropDown: CustomDropDownAdapter
     lateinit var stateListDropDown: CustomDropDownAdapter
+    var isMediaSelected = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupViewBinding()
         setupViewModel()
         setupObserver()
-        PermissionUtil().initRequestPermissionForCamera(this, true)
+        PermissionUtil().initRequestPermissionForCameraContact(this, true)
         initProfileData()
         showProgressBar()
     }
 
     override fun onBackPressed() {
         if(binding.progressInclude.progressBarLayout.visibility == View.GONE) {
-            if ((viewModel.isForNewOwnProfileUpdate.value != null) && (viewModel.isForNewOwnProfileUpdate.value == true)) {
+            if((viewModel.showRelationPopup.value != null) && (viewModel.showRelationPopup.value == true)){
+                viewModel.showRelationPopup.value = false
+            }else if ((viewModel.isForNewOwnProfileUpdate.value != null) && (viewModel.isForNewOwnProfileUpdate.value == true)) {
                 super.onBackPressed()
                 finishAffinity()
                 System.exit(0)
@@ -100,6 +118,8 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         binding.addFamilyBtnTextView.setOnClickListener(this)
         binding.backIconImageView.setOnClickListener(this)
         binding.saveBtnTextView.setOnClickListener(this)
+        binding.requestBtn.setOnClickListener(this)
+        binding.familyTagPopupTextView.setOnClickListener(this)
     }
 
     private fun setupViewModel() {
@@ -137,8 +157,11 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         viewModel.stateListResponse.observe(this, this::validateStateListRes)
         viewModel.profileUpdateRes.observe(this, this::validateProfileUpdateRes)
         viewModel.addFamilyRes.observe(this, this::validateAddFamilyRes)
+        viewModel.relationUpdateSuccessRes.observe(this, this::validateRelationUpdateRes)
+
         viewModel.profileVerificationResObj.observe(this, this::validateProfileRes)
         viewModel.deleteAccountRes.observe(this,this::validateDeleteAccountRes)
+        viewModel.isCusExistRes.observe(this,this::validateExisCusRes)
         viewModel.living.observe(this, Observer { v ->
             if(v) {
                 binding.deathDateTextView.text = ""
@@ -151,6 +174,8 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 viewModel.deathDateStr.value = getString(R.string.label_death)+":"+str
             }
         })
+        viewModel.mainMobileNumber.observe(this,this::validateMobileNumber)
+        viewModel.mainCountryCode.observe(this,this::validateMobileNumber)
     }
 
     private fun initProfileData() {
@@ -169,6 +194,81 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
     }
 
+    private fun openContactPicker(){
+        val pickContact = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
+        resultLauncher.launch(pickContact)
+    }
+
+    @SuppressLint("Range")
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if ((result.resultCode == Activity.RESULT_OK) && (result?.data != null)) {
+            val contactUri: Uri = result?.data?.data!!
+            if(contactUri != null) {
+                val cursor: Cursor? = this.contentResolver
+                    .query(contactUri, null, null, null, null)
+                try {
+                    if (cursor?.getCount() != 0) {
+                        var name = ""
+                        var mobileNumber = ""
+                        var emailId = ""
+                        cursor?.moveToFirst()
+                        val id = cursor?.getString(cursor?.getColumnIndex(ContactsContract.Contacts._ID))
+                        name = cursor?.getString(cursor?.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))!!
+                        if (cursor?.getString(cursor?.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))?.toInt()!! > 0
+                        ) {
+                            val pCur = contentResolver.query(
+                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                null,
+                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?",
+                                arrayOf(id),
+                                null
+                            )
+                            if(pCur != null) {
+                                while (pCur!!.moveToNext()) {
+                                    mobileNumber =
+                                        pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))!!
+                                }
+                                pCur?.close()
+                            }
+                        }
+
+                        val emailCur = contentResolver.query(
+                            ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                            arrayOf(id),
+                            null
+                        )
+                        if(emailCur != null){
+                        while (emailCur!!.moveToNext()) {
+                            // This would allow you get several email addresses
+                            // if the email addresses were stored in an array
+                            emailId = emailCur?.getString(
+                                emailCur?.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS))!!
+                        }
+                        emailCur?.close()
+                        }
+                        if((TextUtils.isEmpty(viewModel.firstName.value)) || ((TextUtils.isEmpty(viewModel.firstName.value?.trim())))){
+                            viewModel.firstName.value = name
+                        }
+                        if(!TextUtils.isEmpty(mobileNumber)) {
+                            viewModel.mainCountryCode.value = "+91"
+                            viewModel.mainMobileNumber.value =
+                                if (mobileNumber.length >= 10) mobileNumber.substring(
+                                    mobileNumber.length - 10
+                                ) else mobileNumber
+                        }
+                        if(!TextUtils.isEmpty(emailId)) {
+                            viewModel.email.value = emailId
+                        }
+                    }
+                } finally {
+                    cursor?.close()
+                }
+            }
+        }
+    }
+
     private fun openChoosePhoto() {
         photoBottomSheet = BottomSheetDialog(this, R.style.bottomSheetDialogTheme)
         val choosePhotoDialogBinding: ChoosePhotoDialogBinding = DataBindingUtil.inflate(
@@ -182,12 +282,24 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     }
 
     fun photoChooseOption(view: View) {
-        if (PermissionUtil().requestPermissionForCamera(this, false)) {
+        isMediaSelected = true
+        if (PermissionUtil().requestPermissionForCameraContact(this, false)) {
             openChoosePhoto()
-        } else if (PermissionUtil().isCameraStoragePermissionUnderDontAsk(this)) {
+        } else if (PermissionUtil().isCameraStorageContactPermissionUnderDontAsk(this)) {
             showPermissionDialog()
         } else {
-            PermissionUtil().requestPermissionForCamera(this, true)
+            PermissionUtil().requestPermissionForCameraContact(this, true)
+        }
+    }
+
+    fun contactChooseOption(view: View) {
+        isMediaSelected = false
+        if (PermissionUtil().requestPermissionForCameraContact(this, false)) {
+            openContactPicker()
+        } else if (PermissionUtil().isCameraStorageContactPermissionUnderDontAsk(this)) {
+            showPermissionDialog()
+        } else {
+            PermissionUtil().requestPermissionForCameraContact(this, true)
         }
     }
 
@@ -203,6 +315,9 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             R.id.galleryTextView -> {
                 dismissPhotoBottomSheet()
                 dispatchImagePickerIntent()
+            }
+            R.id.familyTagPopupTextView -> {
+                openFamilyTag()
             }
             R.id.familyTagTextView -> {
                 openFamilyTag()
@@ -226,6 +341,9 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             }
             R.id.backIconImageView -> {
                 onBackPressed()
+            }
+            R.id.requestBtn -> {
+                updateRelationShipReq()
             }
         }
     }
@@ -257,8 +375,14 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (PermissionUtil().requestPermissionForCamera(this, false)) {
-            openChoosePhoto()
+        if(isMediaSelected) {
+            if (PermissionUtil().requestPermissionForCamera(this, false)) {
+                openChoosePhoto()
+            }
+        }else{
+            if (PermissionUtil().requestPermissionForCameraContact(this, false)) {
+                contactChooseOption(binding.phoneContactIcon)
+            }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
@@ -285,8 +409,14 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 viewModel.photoFileUri = null
             }
         } else if (requestCode == PERMISSION_SETTINGS_NAVIGATION) {
-            if (PermissionUtil().requestPermissionForCamera(this, false)) {
-                openChoosePhoto()
+            if(isMediaSelected) {
+                if (PermissionUtil().requestPermissionForCamera(this, false)) {
+                    openChoosePhoto()
+                }
+            }else{
+                if (PermissionUtil().requestPermissionForCameraContact(this, false)) {
+                    contactChooseOption(binding.phoneContactIcon)
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, intent)
@@ -327,14 +457,18 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     }
 
     private fun openFamilyTag() {
-        if ((viewModel.familyTagList != null) && (viewModel.familyTagList.size > 0)) {
+        var relationList =  viewModel.familyTagList
+        if((viewModel.showRelationPopup.value == true) && (viewModel.isCusExistRes.value != null) && (viewModel.isCusExistRes.value?.data != null) && (viewModel.isCusExistRes.value?.data?.relations != null)){
+            relationList = viewModel.isCusExistRes.value?.data?.relations!!
+        }
+        if ((relationList != null) && (relationList.size > 0)) {
             familyBottomSheet = BottomSheetDialog(this, R.style.bottomSheetDialogTheme)
             val familyTagDialogBinding: FamilyTagDialogBinding = DataBindingUtil.inflate(
                 LayoutInflater.from(this), R.layout.family_tag_dialog, null, false
             )
             familyTagDialogBinding.cancelFamilyTagTextView.setOnClickListener(this)
             familyTagDialogBinding.tagLayout.removeAllViews()
-            for (i in viewModel.familyTagList) {
+            for (i in relationList) {
                 val familyTagItemLayoutBinding: FamilyTagItemLayoutBinding =
                     DataBindingUtil.inflate(
                         LayoutInflater.from(this), R.layout.family_tag_item_layout, null, false
@@ -388,7 +522,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 viewModel.deleteAccount(viewModel.userData?.mid!!)
             }
         }else if(id == R.id.delete_account_res_id){
-            if(viewModel.userData?.id == prefhelper.fetchUserData()?.id){
+            if(viewModel.userData?.mid == prefhelper.fetchUserData()?.mid){
                 prefhelper.clearPref()
                 val intent = Intent(this, SignInActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK )
@@ -944,6 +1078,27 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
     }
 
+    private fun validateRelationUpdateRes(res: CommonResponse) {
+        hideProgressBar()
+        if (res != null) {
+            if (res.statusCode == 200) {
+                if (res?.data != null) {
+                    showAlertDialog(
+                        R.id.add_family_success,
+                        getString(R.string.relation_updated_success_fully),
+                        getString(R.string.label_ok),
+                        ""
+                    )
+                } else {
+                    errorHandler(res)
+                }
+            } else {
+                errorHandler(res)
+            }
+        }
+    }
+
+
     private fun validateDeleteAccountRes(res: CommonResponse){
        hideProgressBar()
         if (res != null) {
@@ -964,6 +1119,51 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
     }
 
+    private fun validateExisCusRes(res: ProfileVerificationResObj){
+        hideProgressBar()
+        if (res != null) {
+            if (res.statusCode == 200) {
+                if ((res?.data != null) && (binding != null) && (prefhelper.fetchUserData()?.mid != res?.data?.mid)) {
+                    viewModel.familyTagId.value = ""
+                    viewModel.familyTagName.value = ""
+                    viewModel.showRelationPopup.value = true
+                    if (!TextUtils.isEmpty(res?.data.photo)) {
+                        Glide
+                            .with(this)
+                            .load(res?.data.photo)
+                            .centerCrop()
+                            .placeholder(R.drawable.ic_profile_male)
+                            .error(R.drawable.ic_profile_male)
+                            .into(binding.relationPhotoImageView)
+                    }else{
+                        binding.relationPhotoImageView.setImageResource(R.drawable.ic_profile_male)
+                    }
+                    binding.relationPersonNameTextView.setText(res?.data.firstname ?: "")
+                }
+            }
+        }
+    }
+
+    fun updateRelationShipReq(){
+        if(!TextUtils.isEmpty(viewModel.familyTagId.value)){
+            if (!Utils.isNetworkConnected(this)) {
+                showAlertDialog(
+                    R.id.do_nothing,
+                    getString(R.string.no_internet),
+                    getString(R.string.close_label),
+                    ""
+                )
+            }else{
+                showProgressBar()
+                viewModel.callChangeRelationShip(prefhelper.fetchUserData()?.mid!!,viewModel.addFamilyMemberId?.value!!,viewModel.familyTagId.value!!,viewModel.isCusExistRes.value?.data?.mid!!)
+            }
+        }else{
+            showAlertDialog(R.id.do_nothing, getString(R.string.select_relation_ship), getString(R.string.close_label), "")
+        }
+    }
+
+
+
     public fun deleteUser(v:View?){
         showAlertDialog(
             R.id.delete_account_id,
@@ -971,6 +1171,13 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             getString(R.string.label_yes),
             getString(R.string.label_cancel)
         )
+    }
+
+    fun validateMobileNumber(str : String){
+        if((viewModel.isForAddFamily.value != null) && (viewModel.isForAddFamily.value == true) && (viewModel.mainMobileNumber.value != null) && (viewModel.mainMobileNumber.value?.length!! > 9) && (viewModel.mainCountryCode.value != null) && (viewModel.mainCountryCode.value?.length!! > 1)){
+            showProgressBar()
+            viewModel.callIsCusExits()
+        }
     }
 
 }

@@ -82,6 +82,9 @@ data class ProfileData(
 	@Json(name="relation_id")
 	val relation_id: Int? = null,*/
 
+	@Json(name="relations")
+	val relations: List<RelationShipObj>? = null,
+
 	@Json(name="as_relation")
 	val as_relation: AsRelationObj? = null
 )

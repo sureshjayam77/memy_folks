@@ -15,9 +15,10 @@ class AddStoryViewModel : AppBaseViewModel() {
     var storyDesc : MutableLiveData<String> = MutableLiveData<String>()
     var storyAccess : MutableLiveData<String> = MutableLiveData()
     var storyMedia : MutableLiveData<ArrayList<AddStoryMediaObj>> = MutableLiveData()
-    var userData : ProfileData? = null
+  //  var userData : ProfileData? = null
     val addStoryRepository : StoryRepository = StoryRepository()
     var addStoryRes = MutableLiveData<CommonResponse>()
+    var userId : String = ""
 
     init {
         storyTitle.value = ""
@@ -34,7 +35,7 @@ class AddStoryViewModel : AppBaseViewModel() {
         var storyMedia = storyMedia.value
         var enable = false
 
-        if((!TextUtils.isEmpty(title)) && (!TextUtils.isEmpty(desc)) && (storyMedia?.size!! > 0)){
+        if((!TextUtils.isEmpty(title)) && (!TextUtils.isEmpty(desc)) /*&& (storyMedia?.size!! > 0)*/){
             enable = true
         }
         enableAddStoryBtn.value = enable
