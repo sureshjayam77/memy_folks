@@ -603,7 +603,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:hint="@string/label_settings"
+                    android:hint="@string/last_name"
                     android:textColor="@color/black"
                     android:textSize="@dimen/common_hint_text_size" />
                 <androidx.appcompat.widget.AppCompatTextView
@@ -613,19 +613,89 @@
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/label_settings"
+                    android:hint="9XXXXXXXXX"
                     android:textColor="@color/black"
                     android:textSize="@dimen/common_hint_text_size" />
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txt_des"
+                    android:id="@+id/txt_about"
                     style="@style/RegularText"
                     android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
-                    android:padding="15dp"
+                    android:padding="10dp"
+                    android:onClick="openAboutIntent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_about"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/common_text_size" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bottom_line_color"
+                    android:layout_height="0.5dp" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_blog"
+                    style="@style/RegularText"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:padding="10dp"
+                    android:onClick="openBlogIntent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_blog"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/common_text_size" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bottom_line_color"
+                    android:layout_height="0.5dp" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_help"
+                    style="@style/RegularText"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:padding="10dp"
+                    android:onClick="openHelpIntent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_help"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/common_text_size" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bottom_line_color"
+                    android:layout_height="0.5dp" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_trems_condition"
+                    style="@style/RegularText"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:padding="10dp"
+                    android:onClick="openTermsIntent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/terms_condition"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/common_text_size" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bottom_line_color"
+                    android:layout_height="0.5dp" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_settings"
+                    style="@style/RegularText"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:padding="10dp"
                     android:layout_height="wrap_content"
                     android:text="@string/label_settings"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/common_hint_text_size" />
+                    android:textSize="@dimen/common_text_size" />
                 <View
                     android:layout_width="match_parent"
                     android:layout_marginTop="5dp"
@@ -637,12 +707,12 @@
                     style="@style/RegularText"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
-                    android:padding="15dp"
+                    android:padding="10dp"
                     android:onClick="showMenuPopup"
                     android:layout_height="wrap_content"
                     android:text="@string/label_logout"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/common_hint_text_size" />
+                    android:textSize="@dimen/common_text_size" />
                 <View
                     android:layout_width="match_parent"
                     android:layout_marginTop="5dp"

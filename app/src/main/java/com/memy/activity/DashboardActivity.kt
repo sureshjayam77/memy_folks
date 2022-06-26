@@ -280,4 +280,26 @@ class DashboardActivity : AppBaseActivity() {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
+
+    fun openAboutIntent(v:View){
+        val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
+        defaultBrowser.data = Uri.parse("http://memyfolks.com/")
+        startActivity(defaultBrowser)
+    }
+
+    fun openBlogIntent(v:View){
+        val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
+        defaultBrowser.data = Uri.parse("https://blog.memyfolks.com/")
+        startActivity(defaultBrowser)
+    }
+
+    fun openTermsIntent(v:View){
+        startActivity(Intent(this,TermsAndConditionActivity::class.java))
+    }
+
+    fun openHelpIntent(v:View){
+        val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
+        defaultBrowser.data = Uri.parse("https://memyfolks.com/help/")
+        startActivity(defaultBrowser)
+    }
 }

@@ -126,6 +126,11 @@
     <string name="notification">Notification</string>
     <string name="no_data_found">No data found</string>
 
+    //Dashboard
+    <string name="label_about">About</string>
+    <string name="label_blog">Blog</string>
+    <string name="label_help">Help</string>
+
 
     <!--Country Code array-->
     <string-array name="countryCode">

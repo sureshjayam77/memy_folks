@@ -85,14 +85,14 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     val PERMISSION_SETTINGS_NAVIGATION = 1002
     lateinit var countryListDropDown: CustomDropDownAdapter
     lateinit var stateListDropDown: CustomDropDownAdapter
-    var isMediaSelected = false
+    var isMediaSelected : Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupViewBinding()
         setupViewModel()
         setupObserver()
-        PermissionUtil().initRequestPermissionForCameraContact(this, true)
+       // PermissionUtil().initRequestPermissionForCameraContact(this, true)
         initProfileData()
         showProgressBar()
     }
@@ -249,7 +249,13 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                         emailCur?.close()
                         }
                         if((TextUtils.isEmpty(viewModel.firstName.value)) || ((TextUtils.isEmpty(viewModel.firstName.value?.trim())))){
-                            viewModel.firstName.value = name
+                            val nameArray = name.split("\\s".toRegex()).toTypedArray()
+                            viewModel.firstName.value = nameArray[0]
+                            if(nameArray.size > 1){
+                                viewModel.lastName.value = nameArray[1]
+                            }else{
+                                viewModel.lastName.value = ""
+                            }
                         }
                         if(!TextUtils.isEmpty(mobileNumber)) {
                             viewModel.mainCountryCode.value = "+91"
@@ -283,23 +289,23 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
 
     fun photoChooseOption(view: View) {
         isMediaSelected = true
-        if (PermissionUtil().requestPermissionForCameraContact(this, false)) {
+        if (PermissionUtil().requestPermissionForCamera(this, false)) {
             openChoosePhoto()
-        } else if (PermissionUtil().isCameraStorageContactPermissionUnderDontAsk(this)) {
+        }/* else if (PermissionUtil().isCameraStorageContactPermissionUnderDontAsk(this)) {
             showPermissionDialog()
-        } else {
-            PermissionUtil().requestPermissionForCameraContact(this, true)
+        }*/ else {
+            PermissionUtil().requestPermissionForCamera(this, true)
         }
     }
 
     fun contactChooseOption(view: View) {
         isMediaSelected = false
-        if (PermissionUtil().requestPermissionForCameraContact(this, false)) {
+        if (PermissionUtil().requestPermissionForContact(this, false)) {
             openContactPicker()
-        } else if (PermissionUtil().isCameraStorageContactPermissionUnderDontAsk(this)) {
+        }/* else if (PermissionUtil().isCameraStorageContactPermissionUnderDontAsk(this)) {
             showPermissionDialog()
-        } else {
-            PermissionUtil().requestPermissionForCameraContact(this, true)
+        }*/ else {
+            PermissionUtil().requestPermissionForContact(this, true)
         }
     }
 
@@ -375,13 +381,19 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if(isMediaSelected) {
-            if (PermissionUtil().requestPermissionForCamera(this, false)) {
-                openChoosePhoto()
-            }
-        }else{
-            if (PermissionUtil().requestPermissionForCameraContact(this, false)) {
-                contactChooseOption(binding.phoneContactIcon)
+        if(isMediaSelected != null) {
+            if (isMediaSelected == true) {
+                if (PermissionUtil().requestPermissionForCamera(this, false)) {
+                    openChoosePhoto()
+                }else if (PermissionUtil().isCameraStoragePermissionUnderDontAsk(this)) {
+                    showPermissionDialog()
+                }
+            } else {
+                if (PermissionUtil().requestPermissionForContact(this, false)) {
+                    contactChooseOption(binding.phoneContactIcon)
+                }else if (PermissionUtil().isContactPermissionUnderDontAsk(this)) {
+                    showPermissionDialog()
+                }
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -408,17 +420,19 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 viewModel.photoFileUri = null
             }
-        } else if (requestCode == PERMISSION_SETTINGS_NAVIGATION) {
-            if(isMediaSelected) {
-                if (PermissionUtil().requestPermissionForCamera(this, false)) {
-                    openChoosePhoto()
-                }
-            }else{
-                if (PermissionUtil().requestPermissionForCameraContact(this, false)) {
-                    contactChooseOption(binding.phoneContactIcon)
+        }/* else if (requestCode == PERMISSION_SETTINGS_NAVIGATION) {
+            if(isMediaSelected != null) {
+                if (isMediaSelected == true) {
+                    if (PermissionUtil().requestPermissionForCamera(this, false)) {
+                        openChoosePhoto()
+                    }
+                } else {
+                    if (PermissionUtil().requestPermissionForContact(this, false)) {
+                        contactChooseOption(binding.phoneContactIcon)
+                    }
                 }
             }
-        }
+        }*/
         super.onActivityResult(requestCode, resultCode, intent)
     }
 
@@ -850,7 +864,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         val familyTag: String? = viewModel.familyTagId.value
         val firstName: String? = viewModel.firstName.value?.trim()
         val lastName: String? = viewModel.lastName.value?.trim()
-        val primaryCC: String? = viewModel.mainCountryCode.value?.trim()
+        var primaryCC: String? = viewModel.mainCountryCode.value?.trim()
         val primaryMobileNumber: String? = viewModel.mainMobileNumber.value?.trim()
         var gender: String? = ""
         if(viewModel.isMale.value == true){
@@ -860,6 +874,10 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }else if(viewModel.isOtherGender.value == true){
             gender = Constents.GENDER_OTHER
         }
+        if(TextUtils.isEmpty(primaryMobileNumber)){
+            primaryCC = ""
+            viewModel.mainCountryCode.value = ""
+        }
         val email: String? = viewModel.email.value?.trim()
         val dateOfBirth: String? = viewModel.dob.value?.trim()
         val profession: String? = viewModel.profession.value?.trim()
@@ -868,10 +886,15 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         val countryId: Int? = viewModel.countryId!!
         val stateId: Int? = viewModel.stateId!!
         val address: String? = viewModel.address.value?.trim()
-        val altCC: String? = viewModel.altCountryCode.value
+        var altCC: String? = viewModel.altCountryCode.value
         val altMobile: String? = viewModel.altMobileNumber.value
         val living: Boolean? = viewModel.living.value
         val deathDate: String? = if(viewModel.deathDate != null) (viewModel.deathDate?.trim()) else null
+
+        if(TextUtils.isEmpty(altMobile)){
+            altCC = ""
+            viewModel.altCountryCode.value = ""
+        }
 
         var msg: String = ""
         if ((TextUtils.isEmpty(firstName)) || (firstName?.length!! < 2)) {
