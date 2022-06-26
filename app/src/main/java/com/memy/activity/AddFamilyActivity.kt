@@ -248,7 +248,8 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                         }
                         emailCur?.close()
                         }
-                        if((TextUtils.isEmpty(viewModel.firstName.value)) || ((TextUtils.isEmpty(viewModel.firstName.value?.trim())))){
+                       // if((TextUtils.isEmpty(viewModel.firstName.value)) || ((TextUtils.isEmpty(viewModel.firstName.value?.trim())))){
+                        if(!TextUtils.isEmpty(name)) {
                             val nameArray = name.split("\\s".toRegex()).toTypedArray()
                             viewModel.firstName.value = nameArray[0]
                             if(nameArray.size > 1){
@@ -256,16 +257,25 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                             }else{
                                 viewModel.lastName.value = ""
                             }
+                        }else{
+                            viewModel.firstName.value = ""
+                            viewModel.lastName.value = ""
                         }
+                     //   }
                         if(!TextUtils.isEmpty(mobileNumber)) {
                             viewModel.mainCountryCode.value = "+91"
                             viewModel.mainMobileNumber.value =
                                 if (mobileNumber.length >= 10) mobileNumber.substring(
                                     mobileNumber.length - 10
                                 ) else mobileNumber
+                        }else{
+                            viewModel.mainCountryCode.value = ""
+                            viewModel.mainMobileNumber.value = ""
                         }
                         if(!TextUtils.isEmpty(emailId)) {
                             viewModel.email.value = emailId
+                        }else{
+                            viewModel.email.value = ""
                         }
                     }
                 } finally {

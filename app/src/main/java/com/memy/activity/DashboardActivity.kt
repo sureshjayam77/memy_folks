@@ -283,7 +283,7 @@ class DashboardActivity : AppBaseActivity() {
 
     fun openAboutIntent(v:View){
         val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
-        defaultBrowser.data = Uri.parse("http://memyfolks.com/")
+        defaultBrowser.data = Uri.parse("https://memyfolks.com/")
         startActivity(defaultBrowser)
     }
 
