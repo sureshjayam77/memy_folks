@@ -131,6 +131,9 @@
     <string name="label_blog">Blog</string>
     <string name="label_help">Help</string>
 
+   // Firebase messaging
+    <string name="notification_channel_id"></string>
+    <string name="notification_channel_name">PromoNotification</string>
 
     <!--Country Code array-->
     <string-array name="countryCode">

@@ -1,10 +1,7 @@
 package com.memy.viewModel
 
 import androidx.lifecycle.MutableLiveData
-import com.memy.pojo.ProfileData
-import com.memy.pojo.ProfileVerificationResObj
-import com.memy.pojo.StoryFeedData
-import com.memy.pojo.StoryListRes
+import com.memy.pojo.*
 import com.memy.retrofit.DashboardRepository
 import com.memy.retrofit.StoryRepository
 
@@ -26,11 +23,14 @@ class DashboardViewModel : AppBaseViewModel() {
     var pageNumber = 1
     var feedLimit = 10
     var isTreeSwitched = false
+    var updateFcmRes = MutableLiveData<CommonResponse>()
+    var fcmStrKey = ""
 
     init {
         dashboardRepository = DashboardRepository()
         storyRepository = StoryRepository()
         profileVerificationResObj = dashboardRepository.profileVerificationResObj
+        updateFcmRes = dashboardRepository.updateFcmRes
         storyListRes = storyRepository.storyListRes
         isTreeView.value = true
     }
@@ -39,9 +39,13 @@ class DashboardViewModel : AppBaseViewModel() {
         dashboardRepository.fetchUserProfile(userId)
     }
 
-
+    fun updateFCMToken(req : FCMTokenUpdateReq?){
+        dashboardRepository.updateFCMToken(req)
+    }
 
     fun fetchAllStory(userId : Int?,familyMemId : Int?,pageNumber : Int?,itemLimit : Int?){
         storyRepository.fetchStory(userId,0,pageNumber,itemLimit)
     }
+
+
 }

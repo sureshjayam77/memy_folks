@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "591607460746",
+    "project_id": "memyfolks-342a9",
+    "storage_bucket": "memyfolks-342a9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591607460746:android:d06dc4c8af25fa35058e73",
+        "android_client_info": {
+          "package_name": "com.memyfolks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "591607460746-nsi8oa743ugu2n5rp4diegqv35ormtdr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAlapzEJXyEBle78KU-Z593aXYCogrLTM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "591607460746-nsi8oa743ugu2n5rp4diegqv35ormtdr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "591607460746-8p6g2tf9odfubicul7rrtt6hnt5o68ln.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.memyfolks"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

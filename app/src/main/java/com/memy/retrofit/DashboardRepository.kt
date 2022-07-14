@@ -3,7 +3,10 @@ package com.memy.retrofit
 import androidx.lifecycle.MutableLiveData
 import com.memy.api.APIInterface
 import com.memy.api.BaseRepository
+import com.memy.pojo.CommonResponse
+import com.memy.pojo.FCMTokenUpdateReq
 import com.memy.pojo.ProfileVerificationResObj
+import com.memy.pojo.RelationShipUpdateReq
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -11,6 +14,7 @@ import retrofit2.Response
 class DashboardRepository : BaseRepository() {
 
     var profileVerificationResObj = MutableLiveData<ProfileVerificationResObj>()
+    var updateFcmRes = MutableLiveData<CommonResponse>()
 
     fun fetchUserProfile(userId : Int?){
         val mobileNumberVerifyCall = retrofit.create(APIInterface::class.java).fetchProfile(BaseRepository.APP_KEY_VALUE,userId)
@@ -40,6 +44,23 @@ class DashboardRepository : BaseRepository() {
 
             override fun onFailure(call: Call<ProfileVerificationResObj?>?, t: Throwable) {
                 profileVerificationResObj.value = ProfileVerificationResObj(null,0,null)
+            }
+        })
+    }
+
+    fun updateFCMToken(req: FCMTokenUpdateReq?) {
+        val updateFCMTokenCall = retrofit.create(APIInterface::class.java)
+            .updateFCMToken(req,BaseRepository.APP_KEY_VALUE)
+        updateFCMTokenCall?.enqueue(object : Callback<CommonResponse?> {
+            override fun onResponse(
+                call: Call<CommonResponse?>?,
+                response: Response<CommonResponse?>?
+            ) {
+                updateFcmRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
+                updateFcmRes.value = CommonResponse(null, 0, null)
             }
         })
     }

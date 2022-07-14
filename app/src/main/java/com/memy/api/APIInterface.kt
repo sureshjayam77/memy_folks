@@ -76,4 +76,7 @@ interface APIInterface {
     @POST("api/v1/existing_member/")
     fun updateRelation(@Body() req: RelationShipUpdateReq?,@Query("apikey") apikey: String?) : Call<CommonResponse?>?
 
+    @POST("api/v1/sns_token/")
+    fun updateFCMToken(@Body() req: FCMTokenUpdateReq?,@Query("apikey") apikey: String?) : Call<CommonResponse?>?
+
 }

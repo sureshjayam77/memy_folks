@@ -263,13 +263,13 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                         }
                      //   }
                         if(!TextUtils.isEmpty(mobileNumber)) {
-                            viewModel.mainCountryCode.value = "+91"
+                           // viewModel.mainCountryCode.value = "+91"
                             viewModel.mainMobileNumber.value =
                                 if (mobileNumber.length >= 10) mobileNumber.substring(
                                     mobileNumber.length - 10
                                 ) else mobileNumber
                         }else{
-                            viewModel.mainCountryCode.value = ""
+                           // viewModel.mainCountryCode.value = ""
                             viewModel.mainMobileNumber.value = ""
                         }
                         if(!TextUtils.isEmpty(emailId)) {
@@ -532,7 +532,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 viewModel.lastName.value = ""
                 viewModel.familyTagId.value = ""
                 viewModel.familyTagName.value = ""
-                viewModel.mainCountryCode.value = ""
+                viewModel.mainCountryCode.value = "+91"
                 viewModel.mainMobileNumber.value = ""
                 viewModel.altCountryCode.value = ""
                 viewModel.altMobileNumber.value = ""
@@ -886,7 +886,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
         if(TextUtils.isEmpty(primaryMobileNumber)){
             primaryCC = ""
-            viewModel.mainCountryCode.value = ""
+            //viewModel.mainCountryCode.value = ""
         }
         val email: String? = viewModel.email.value?.trim()
         val dateOfBirth: String? = viewModel.dob.value?.trim()
@@ -911,7 +911,11 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             msg = getString(R.string.first_name_error)
         }/* else if ((TextUtils.isEmpty(lastName)) || (firstName?.length!! < 0)) {
             msg = getString(R.string.last_name_error)
-        }*/ else if (((TextUtils.isEmpty(altCC)) && (!TextUtils.isEmpty(altMobile))) || ((!TextUtils.isEmpty(
+        }*/else if ((!TextUtils.isEmpty(primaryMobileNumber)) && (primaryMobileNumber?.length!! > 0) && (primaryMobileNumber?.length!! <= 9)
+        )
+        {
+            msg = getString(R.string.mobile_number_error)
+        } else if (((TextUtils.isEmpty(altCC)) && (!TextUtils.isEmpty(altMobile))) || ((!TextUtils.isEmpty(
                 altCC
             )) && (TextUtils.isEmpty(altMobile)))
         ) {
@@ -926,9 +930,11 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         if((viewModel.isForAddFamily.value != null) && (viewModel.isForAddFamily.value == true)){
             if(TextUtils.isEmpty(familyTag)){
                 msg = getString(R.string.select_relation_ship)
-            }else if (((TextUtils.isEmpty(primaryCC)) && (!TextUtils.isEmpty(primaryMobileNumber))) || ((!TextUtils.isEmpty(
+            }/*else if (((TextUtils.isEmpty(primaryCC)) && (!TextUtils.isEmpty(primaryMobileNumber))) || ((!TextUtils.isEmpty(
                     primaryCC
                 )) && (TextUtils.isEmpty(primaryMobileNumber)))
+            )*/
+            else if ((!TextUtils.isEmpty(primaryMobileNumber)) && (primaryMobileNumber?.length!! > 0) && (primaryMobileNumber?.length!! <= 9)
             )
              {
                 msg = getString(R.string.mobile_number_error)
@@ -1207,7 +1213,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     }
 
     fun validateMobileNumber(str : String){
-        if((viewModel.isForAddFamily.value != null) && (viewModel.isForAddFamily.value == true) && (viewModel.mainMobileNumber.value != null) && (viewModel.mainMobileNumber.value?.length!! > 9) && (viewModel.mainCountryCode.value != null) && (viewModel.mainCountryCode.value?.length!! > 1)){
+        if((viewModel.isForAddFamily.value != null) && (viewModel.isForAddFamily.value == true) && (viewModel.mainMobileNumber.value != null) && (viewModel.mainMobileNumber.value?.length!! > 9)/* && (viewModel.mainCountryCode.value != null) && (viewModel.mainCountryCode.value?.length!! > 1)*/){
             showProgressBar()
             viewModel.callIsCusExits()
         }

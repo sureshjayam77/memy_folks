@@ -16,6 +16,7 @@ class PreferenceHelper {
     private val USER_DATA_KEY = "USER_DATA_KEY"
     private val APP_UPDATE_FCM_DATA = "APP_UPDATE_FCM_DATA"
     private val APP_UPDATE_SKIP_TIME = "APP_UPDATE_SKIP_TIME"
+    private val FCM_PUSH_NOTIFICATION_DATA_KEY = "FCM_PUSH_NOTIFICATION_DATA_KEY"
 
     companion object {
         var commonPreference: SharedPreferences? = null
@@ -100,5 +101,17 @@ class PreferenceHelper {
         val editor: SharedPreferences.Editor = commonPreference?.edit()!!
         editor.clear()
         editor.commit()
+    }
+
+    fun saveFCMTokenData(fcmToken : String?){
+        saveString(FCM_PUSH_NOTIFICATION_DATA_KEY,fcmToken)
+    }
+
+    fun fetchFCMTokenData():String?{
+        val strProfileData = fetchString(FCM_PUSH_NOTIFICATION_DATA_KEY)
+        if(!TextUtils.isEmpty(strProfileData)) {
+            return strProfileData
+        }
+        return ""
     }
 }

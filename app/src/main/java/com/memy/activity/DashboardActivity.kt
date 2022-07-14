@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
+import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
@@ -16,6 +17,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.memy.R
 import com.memy.databinding.DashboardActivityBinding
 import com.memy.fragment.StoryVIewFragment
@@ -36,6 +39,7 @@ class DashboardActivity : AppBaseActivity() {
         setupViewModel()
         setupObservers()
         PermissionUtil().initRequestPermissionForCamera(this, true)
+        updateFCMToken()
     }
 
     override fun dialogPositiveCallBack(id: Int?) {
@@ -111,6 +115,7 @@ class DashboardActivity : AppBaseActivity() {
         viewModel.isTreeView.observe(this, { v ->
             fetchProfileData(true)
         })
+        viewModel.updateFcmRes.observe(this,this::validateFCMRes)
     }
 
     private fun validateProfileRes(res: ProfileVerificationResObj) {
@@ -301,5 +306,28 @@ class DashboardActivity : AppBaseActivity() {
         val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
         defaultBrowser.data = Uri.parse("https://memyfolks.com/help/")
         startActivity(defaultBrowser)
+    }
+
+    fun updateFCMToken(){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+            viewModel.fcmStrKey = task.result
+            val prefToken = prefhelper.fetchFCMTokenData()
+            if((!TextUtils.isEmpty(viewModel.fcmStrKey)) && ((TextUtils.isEmpty(prefToken)) || (!prefToken.equals(viewModel.fcmStrKey)))){
+                val req = FCMTokenUpdateReq((prefhelper.fetchUserData()?.mid).toString(),viewModel.fcmStrKey)
+                viewModel.updateFCMToken(req);
+            }
+        })
+    }
+
+    fun validateFCMRes(res : CommonResponse?){
+        if (res != null) {
+            if ((res.statusCode == 200) && (res.data != null)) {
+                prefhelper.saveFCMTokenData(viewModel.fcmStrKey)
+            }
+        }
     }
 }

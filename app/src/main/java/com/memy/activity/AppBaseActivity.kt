@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.messaging.FirebaseMessaging
 import com.memy.BuildConfig
 import com.memy.R
 import com.memy.dialog.CommunicationDialog
@@ -82,4 +83,6 @@ open abstract class AppBaseActivity : AppCompatActivity(), DialogClickCallBack {
         }
         return ""
     }
+
+
 }

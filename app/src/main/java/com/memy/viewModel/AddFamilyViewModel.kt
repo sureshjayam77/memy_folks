@@ -94,6 +94,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
         isOtherGender.value = false
         addFamilyMemberId.value = -1
         familyTagId.value = ""
+        mainCountryCode.value = "+91"
     }
 
     fun moreInfoClicked() {
@@ -145,23 +146,24 @@ class AddFamilyViewModel : AppBaseViewModel() {
             isMale.value = true
             isOtherGender.value = false
         }
-        mainCountryCode.value = data?.country_code
-        mainMobileNumber.value = data?.mobile
+        var ccMain = data?.country_code ?: "+91"
+        mainCountryCode.value = if(TextUtils.isEmpty(ccMain)) ("+91") else(ccMain)
+        mainMobileNumber.value = data?.mobile ?: ""
         altCountryCode.value = ""
         altMobileNumber.value = ""
-        dob.value = data?.dateofbirth
-        email.value = data?.email
-        profession.value = data?.profession
-        popularlyKnowAs.value = data?.popularlyknownas
-        address.value = data?.address
+        dob.value = data?.dateofbirth ?: ""
+        email.value = data?.email ?: ""
+        profession.value = data?.profession ?: ""
+        popularlyKnowAs.value = data?.popularlyknownas ?: ""
+        address.value = data?.address ?: ""
         if(data?.state_id != null) {
             stateId = data?.state_id
         }
         if(data?.country_id != null) {
             countryId = data?.country_id
         }
-        living.value = data?.isliving
-        deathDateStrMap.value = data?.dateofdeath
+        living.value = data?.isliving ?: true
+        deathDateStrMap.value = data?.dateofdeath ?: ""
         deathDate = if(data?.dateofdeath != null) (data?.dateofdeath!!) else null
 
         if ((data?.altmobiles != null) && (data?.altmobiles.size > 0)) {
