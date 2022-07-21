@@ -40,6 +40,7 @@ class DashboardActivity : AppBaseActivity() {
         setupObservers()
         PermissionUtil().initRequestPermissionForCamera(this, true)
         updateFCMToken()
+        checkDeepLink()
     }
 
     override fun dialogPositiveCallBack(id: Int?) {
@@ -316,10 +317,10 @@ class DashboardActivity : AppBaseActivity() {
             }
             viewModel.fcmStrKey = task.result
             val prefToken = prefhelper.fetchFCMTokenData()
-            if((!TextUtils.isEmpty(viewModel.fcmStrKey)) && ((TextUtils.isEmpty(prefToken)) || (!prefToken.equals(viewModel.fcmStrKey)))){
+           // if((!TextUtils.isEmpty(viewModel.fcmStrKey)) && ((TextUtils.isEmpty(prefToken)) || (!prefToken.equals(viewModel.fcmStrKey)))){
                 val req = FCMTokenUpdateReq((prefhelper.fetchUserData()?.mid).toString(),viewModel.fcmStrKey)
                 viewModel.updateFCMToken(req);
-            }
+          //  }
         })
     }
 
@@ -327,6 +328,16 @@ class DashboardActivity : AppBaseActivity() {
         if (res != null) {
             if ((res.statusCode == 200) && (res.data != null)) {
                 prefhelper.saveFCMTokenData(viewModel.fcmStrKey)
+            }
+        }
+    }
+
+    fun checkDeepLink(){
+        if(getIntent() != null) {
+            val deeplink = getIntent().getStringExtra(Constents.NOTIFICATION_INTENT_EXTRA_DEEPLINK)
+            intent.putExtra(Constents.NOTIFICATION_INTENT_EXTRA_DEEPLINK, deeplink)
+            if((!TextUtils.isEmpty(deeplink)) && (deeplink.equals(Constents.DEEPLINK_NOTIFICATION,true))){
+                navigateNotificationScreen(binding.menuIconImageView)
             }
         }
     }

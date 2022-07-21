@@ -132,7 +132,7 @@
     <string name="label_help">Help</string>
 
    // Firebase messaging
-    <string name="notification_channel_id"></string>
+    <string name="notification_channel_id">Activity</string>
     <string name="notification_channel_name">PromoNotification</string>
 
     <!--Country Code array-->

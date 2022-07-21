@@ -66,7 +66,7 @@ class TreeViewFragment : BaseFragment() {
 
         /** Show a toast from the web page  */
         @JavascriptInterface
-        fun addNewMember(userData: String?) {
+        fun addNewMember(userId: String?) {
             /*var userDataObj = moshi.adapter(ProfileData::class.java).fromJson(userData)
             if(userDataObj != null){
 
@@ -74,7 +74,21 @@ class TreeViewFragment : BaseFragment() {
 
             val intent = Intent(mContext, AddFamilyActivity::class.java)
             intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, false)
-            intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, userData?.toInt())
+            intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, userId?.toInt())
+            intent.putExtra(Constents.FAMILY_MEMBER_INTENT_TAG, true)
+            (mContext as AppBaseActivity).startActivityIntent(intent, false)
+        }
+
+        @JavascriptInterface
+        fun addNewMember(userId: String?,userName: String?) {
+            /*var userDataObj = moshi.adapter(ProfileData::class.java).fromJson(userData)
+            if(userDataObj != null){
+
+            }*/
+
+            val intent = Intent(mContext, AddFamilyActivity::class.java)
+            intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, false)
+            intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, userId?.toInt())
             intent.putExtra(Constents.FAMILY_MEMBER_INTENT_TAG, true)
             (mContext as AppBaseActivity).startActivityIntent(intent, false)
         }

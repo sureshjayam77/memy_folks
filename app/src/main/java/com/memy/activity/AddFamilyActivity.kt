@@ -61,12 +61,15 @@ import android.database.Cursor
 import android.annotation.SuppressLint
 import android.R.id
 import android.R.attr.phoneNumber
+import android.graphics.Color
+import android.widget.DatePicker
+import android.widget.Toast
 
+import com.memy.MainActivity
 
-
-
-
-
+import com.chivorn.datetimeoptionspicker.DateTimePickerView
+import com.chivorn.datetimeoptionspicker.DateTimePickerView.OnTimeSelectListener
+import java.text.SimpleDateFormat
 
 
 class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListener {
@@ -117,7 +120,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         binding.familyTagTextView.setOnClickListener(this)
         binding.addFamilyBtnTextView.setOnClickListener(this)
         binding.backIconImageView.setOnClickListener(this)
-        binding.saveBtnTextView.setOnClickListener(this)
+       // binding.saveBtnTextView.setOnClickListener(this)
         binding.requestBtn.setOnClickListener(this)
         binding.familyTagPopupTextView.setOnClickListener(this)
     }
@@ -346,15 +349,29 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 val textView = (v as AppCompatTextView)
                 viewModel.familyTagName.value = textView?.text?.toString()
                 viewModel.familyTagId.value = textView?.tag.toString()
+                if(viewModel.familyTagList != null) {
+                    for (i in viewModel.familyTagList) {
+                        if((i != null) && (i.id == (viewModel.familyTagId.value)?.toInt())){
+                            if(i.gender.equals(Constents.GENDER_MALE,true)){
+                                viewModel.isMale.value = true
+                            }else if(i.gender.equals(Constents.GENDER_FEMALE,true)){
+                                viewModel.isFeMale.value = true
+                            }else if(i.gender.equals(Constents.GENDER_OTHER,true)){
+                                viewModel.isOtherGender.value = true
+                            }
+                            break
+                        }
+                    }
+                }
             }
             R.id.addFamilyBtnTextView -> {
                 viewModel.isAddFamilyClicked = true
                 validateProfileSubmit()
             }
-            R.id.saveBtnTextView -> {
+           /* R.id.saveBtnTextView -> {
                 viewModel.isAddFamilyClicked = false
                 validateProfileSubmit()
-            }
+            }*/
             R.id.backIconImageView -> {
                 onBackPressed()
             }
@@ -575,11 +592,14 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         startActivityForResult(intent, PERMISSION_SETTINGS_NAVIGATION)
     }
 
-    fun openDatePicker(v: View) {
+   /* fun openDatePicker(v: View) {
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
+
+        val minYear = Calendar.getInstance()
+        minYear.set(Calendar.YEAR, 1500)
 
         val dpd = DatePickerDialog(this, { view, year, monthOfYear, dayOfMonth ->
             // Display Selected date in textbox
@@ -594,11 +614,52 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 }
             }
         }, year, month, day)
+        dpd.datePicker.minDate = minYear.time.time
         dpd.datePicker.maxDate = Date().time
         dpd.show()
         dpd.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(this,R.color.app_color));
         dpd.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(this,R.color.app_color));
-    }
+    }*/
+
+    fun openDatePicker(v1: View) {
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
+        val minYear = Calendar.getInstance()
+        minYear.set(Calendar.YEAR, 1500)
+
+       val dateTimePickerView = DateTimePickerView.Builder(
+            this
+        ) { date, v -> //Callback
+            //yourTextView.setText(NativeDate.getTime(date))
+           val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+           val dateValue : String= simpleDateFormat.format(date)
+           when (v1.id) {
+               R.id.deathDateTextView -> {
+                   viewModel.deathDateStr.value = getString(R.string.label_death) + ": " + dateValue
+                   viewModel.deathDate = ""+ dateValue
+               }
+               R.id.dateTextView -> {
+                   viewModel.dob.value = "" + dateValue
+               }
+           }
+        }
+           .setType(booleanArrayOf(
+               true,
+               true,
+               true,
+               false,
+
+               false,
+               false
+           ))   // year-month-day-hour-min-sec
+           .setRange(1500,year)
+            .build()
+        dateTimePickerView.show()
+
+        }
 
 
     /**
@@ -1210,6 +1271,10 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             getString(R.string.label_yes),
             getString(R.string.label_cancel)
         )
+    }
+
+    public fun cancelActivity(v:View?){
+        onBackPressed()
     }
 
     fun validateMobileNumber(str : String){

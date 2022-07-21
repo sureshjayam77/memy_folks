@@ -132,6 +132,11 @@ class SplashActivity : AppBaseActivity(), FirebaseCallBack {
                 intent.putExtra(Constents.OWN_NEW_PROFILE_INTENT_TAG, true)
             } else {
                 intent = Intent(this, DashboardActivity::class.java)
+                if(getIntent() != null) {
+                    val deeplink =
+                        getIntent().getStringExtra(Constents.NOTIFICATION_INTENT_EXTRA_DEEPLINK)
+                    intent.putExtra(Constents.NOTIFICATION_INTENT_EXTRA_DEEPLINK, deeplink)
+                }
             }
             startActivityIntent(intent, false)
         } else {

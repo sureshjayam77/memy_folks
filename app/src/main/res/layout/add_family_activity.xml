@@ -44,8 +44,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
                     android:text="@string/label_add_family"
                     android:textColor="@color/white"
+                    android:singleLine="true"
+                    android:maxLines="1"
                     android:textSize="@dimen/common_header_text_size" />
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -70,6 +73,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -659,7 +663,7 @@
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/app_color"
                         android:layout_marginTop="@dimen/common_action_left_space"
-                        app:cardCornerRadius="30dp"
+                        app:cardCornerRadius="25dp"
                         app:layout_constraintTop_toBottomOf="@+id/moreInfoLayout">
 
                         <LinearLayout
@@ -674,7 +678,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:enabled="true"
-                                android:background="@color/button_bg_enable_disable_color"
+                                android:background="@color/app_color"
                                 android:gravity="center"
                                 android:padding="@dimen/field_margin_top"
                                 android:text="@{viewModel.isForAddFamily ? @string/label_add_family : @string/label_update}"
@@ -684,7 +688,7 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
-                            <View
+                           <!-- <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
                                 android:visibility="@{viewModel.isForAddFamily ? View.VISIBLE : View.GONE}"
@@ -697,7 +701,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:enabled="true"
-                                android:background="@color/button_bg_enable_disable_color"
+                                android:background="@color/app_color"
                                 android:gravity="center"
                                 android:padding="@dimen/field_margin_top"
                                 android:textAllCaps="true"
@@ -706,7 +710,7 @@
                                 android:textSize="@dimen/common_text_size"
                                 android:visibility="@{viewModel.isForAddFamily ? View.VISIBLE : View.GONE}"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                app:layout_constraintTop_toTopOf="parent" />-->
 
                             <View
                                 android:layout_width="1dp"
@@ -743,7 +747,7 @@
                         style="@style/ButtonBoldWithRedBg"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/common_margin_size"
+                        android:layout_marginTop="@dimen/common_edit_txt_padding"
                         android:layout_marginBottom="@dimen/common_edit_txt_padding"
                         android:onClick="deleteUser"
                         android:padding="@dimen/common_edit_txt_padding"
@@ -752,8 +756,23 @@
                         android:textSize="@dimen/common_text_size"
                         android:visibility="@{viewModel.showMoreOnfoOption ? View.VISIBLE : View.GONE}"
                         app:cornerRadius="30dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/btnCardView" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/cancelBtn"
+                        style="@style/ButtonBoldWithBg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/common_edit_txt_padding"
+                        android:layout_marginBottom="@dimen/common_edit_txt_padding"
+                        android:onClick="cancelActivity"
+                        android:padding="@dimen/common_edit_txt_padding"
+                        android:text="@string/label_cancel"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/common_text_size"
+                        app:cornerRadius="30dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/deleteBtn" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

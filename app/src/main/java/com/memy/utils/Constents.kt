@@ -22,5 +22,8 @@ open class Constents {
 
         val ONCLICK_DELETE_MEDIA = "onclick_delete_media"
         val ADD_STORY_USER_ID_INTENT_TAG : String = "add_story_user_id_intent_tag"
+
+        val NOTIFICATION_INTENT_EXTRA_DEEPLINK = "notification_intent_extra_deeplink"
+        val DEEPLINK_NOTIFICATION = "NN001"
     }
 }
