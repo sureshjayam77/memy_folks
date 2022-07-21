@@ -13,7 +13,7 @@ android {
         applicationId "com.memyfolks"
         minSdk 21
         targetSdk 31
-        versionCode 18
+        versionCode 20
         versionName "0.35"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -90,7 +90,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:30.2.0')
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-config'
+    implementation 'com.google.firebase:firebase-config:21.1.1'
     implementation 'com.google.firebase:firebase-core'
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
