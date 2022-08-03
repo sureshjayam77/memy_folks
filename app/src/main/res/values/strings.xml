@@ -135,6 +135,13 @@
     <string name="notification_channel_id">Activity</string>
     <string name="notification_channel_name">PromoNotification</string>
 
+    //Feedback
+    <string name="label_feedback">Feedback</string>
+    <string name="label_subject">Subject</string>
+    <string name="label_comments">Comments</string>
+    <string name="label_submit">Submit</string>
+    <string name="feedback_submit_success_fully">Feedback submitted successfully</string>
+
     <!--Country Code array-->
     <string-array name="countryCode">
         <item> AF,93</item>

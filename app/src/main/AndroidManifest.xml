@@ -93,6 +93,11 @@
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.Memy"/>
 
+        <activity android:name=".activity.FeedbackActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.Memy"/>
+
         <!--<activity android:name=".activity.AddStoryActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
@@ -123,6 +128,8 @@
                 <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED"/>
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".receiver.NotificationActionReceiver" android:exported="true"/>
 
         <service
             android:name=".receiver.MyFirebaseMessagingService"

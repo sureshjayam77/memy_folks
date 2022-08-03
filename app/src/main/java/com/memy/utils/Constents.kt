@@ -25,5 +25,11 @@ open class Constents {
 
         val NOTIFICATION_INTENT_EXTRA_DEEPLINK = "notification_intent_extra_deeplink"
         val DEEPLINK_NOTIFICATION = "NN001"
+
+        val NOTIFICATION_ACTION_ACCEPT = "ACCEPT"
+        val NOTIFICATION_ACTION_REJECT = "REJECT"
+
+        val NOTIFICATION_TYPE_ADD_STORY = 1
+        val NOTIFICATION_TYPE_ADD_FAMILY_MEMBER = 2
     }
 }

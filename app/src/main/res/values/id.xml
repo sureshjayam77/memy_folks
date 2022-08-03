@@ -8,5 +8,6 @@
     <item name="delete_account_res_id" type="id"/>
     <item name="app_update_dialog_id" type="id"/>
     <item name="add_story_success_id" type="id"/>
+    <item name="submit_feedback_success_id" type="id"/>
     
 </resources>

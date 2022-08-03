@@ -79,4 +79,10 @@ interface APIInterface {
     @PUT("api/v1/sns_token/")
     fun updateFCMToken(@Body() req: FCMTokenUpdateReq?,@Query("apikey") apikey: String?) : Call<CommonResponse?>?
 
+    @POST("api/v1/feedback/")
+    fun submitFeedback(@Body() req: FeedbackReqObj?,@Query("apikey") apikey: String?) : Call<CommonResponse?>?
+
+    @PUT("api/v1/existing_member/")
+    fun addFamilyAction(@Query("apikey") apikey: String?,@Query("request_id") request_id: Int?,@Query("action") action: String?) : Call<CommonResponse?>?
+
 }

@@ -22,7 +22,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 open class BaseRepository {
-    var retrofit: Retrofit
+    public var retrofit: Retrofit
     lateinit var LEVEL: HttpLoggingInterceptor.Level
     companion object{
        // val BASE_URL = "https://stage.memyfolks.com/"

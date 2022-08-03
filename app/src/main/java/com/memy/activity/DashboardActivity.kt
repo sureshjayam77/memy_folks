@@ -67,7 +67,7 @@ class DashboardActivity : AppBaseActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.dashboard_activity)
         binding.lifecycleOwner = this
         binding.backIconImageView.setOnClickListener(View.OnClickListener {
-            binding.drwayerLay.openDrawer(Gravity.START)
+            binding.drwayerLay.openDrawer(Gravity.LEFT)
         })
         binding.bottomTempView.visibility = View.GONE
         binding.bottomBarLayout.visibility = View.GONE
@@ -288,25 +288,35 @@ class DashboardActivity : AppBaseActivity() {
     }
 
     fun openAboutIntent(v:View){
+        binding.drwayerLay.closeDrawer(Gravity.LEFT)
         val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
         defaultBrowser.data = Uri.parse("https://memyfolks.com/")
         startActivity(defaultBrowser)
     }
 
     fun openBlogIntent(v:View){
+        binding.drwayerLay.closeDrawer(Gravity.LEFT)
         val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
         defaultBrowser.data = Uri.parse("https://blog.memyfolks.com/")
         startActivity(defaultBrowser)
     }
 
     fun openTermsIntent(v:View){
+        binding.drwayerLay.closeDrawer(Gravity.LEFT)
         startActivity(Intent(this,TermsAndConditionActivity::class.java))
     }
 
     fun openHelpIntent(v:View){
+        binding.drwayerLay.closeDrawer(Gravity.LEFT)
+        binding.drwayerLay.closeDrawer(Gravity.LEFT)
         val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
         defaultBrowser.data = Uri.parse("https://memyfolks.com/help/")
         startActivity(defaultBrowser)
+    }
+
+    fun openFeedbackIntent(v:View){
+        binding.drwayerLay.closeDrawer(Gravity.LEFT)
+        startActivity(Intent(this,FeedbackActivity::class.java))
     }
 
     fun updateFCMToken(){
