@@ -104,13 +104,19 @@ class FamilyWallActivity : AppBaseActivity(), AdapterListener {
             if (res.data?.walls!=null&&res.data?.walls?.isNotEmpty()!!) {
                 val grouppedByDate =
                     res.data!!.walls.groupBy {
-                        it.media[0].uploaded_at.split("T")[0]
+                        if((it != null) && (it.media != null) && (it.media.size > 0)) {
+                            it.media[0].uploaded_at.split("T")[0]
+                        }
                     }
                 var grouppedEventsByDate: Map<String, List<WallData>?>? = null
                 if (res.data!!.events != null) {
                     grouppedEventsByDate =
                         res.data!!.events.groupBy {
-                            it.media[0].uploaded_at.split("T")[0]
+                            if((it != null) && (it.media != null) && (it.media.size > 0)) {
+                                it.media[0].uploaded_at.split("T")[0]
+                            }else{
+                                ""
+                            }
                         }
                 }
                 var eventsHashMap: HashMap<String, List<WallData>?>? = null
