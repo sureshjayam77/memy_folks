@@ -301,6 +301,7 @@ class DashboardActivity : AppBaseActivity() {
         startActivity(defaultBrowser)
     }
     fun openFamilyWall(v:View){
+        binding.drwayerLay.closeDrawer(Gravity.LEFT)
       startActivity(Intent(this,FamilyWallActivity::class.java))
     }
     fun openTermsIntent(v:View){

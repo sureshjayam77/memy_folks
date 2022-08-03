@@ -35,7 +35,7 @@ class WallImageAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         var viewHolder = holder as WallImageAdapter.VHItem
         viewHolder.sLay.visibility = View.GONE
-        if(data[position].media[0].file.contains(".mp4")){
+        if((data[position].media != null) && (data[position].media.size > 0) && (data[position].media[0].file.contains(".mp4"))){
             viewHolder.imgLay.visibility = View.GONE
             viewHolder.playerView.visibility = View.VISIBLE
             viewHolder.playLay.visibility = View.VISIBLE
@@ -58,23 +58,24 @@ class WallImageAdapter(
                 val pos=viewHolder.img_play.getTag() as Int?
                 itemClickListener.updateAction(1000,data[pos!!]);
             }
-        }else{
+        }else {
             viewHolder.imgLay.visibility = View.VISIBLE
             viewHolder.playerView.visibility = View.GONE
             viewHolder.playLay.visibility = View.GONE
-            var txtC=data[position].content
-           /* if(!TextUtils.isEmpty(data[position].location)){
+            var txtC = data[position].content
+            /* if(!TextUtils.isEmpty(data[position].location)){
                 txtC=txtC+"\n"+data[position].location
             }*/
-            viewHolder.txtContent.visibility=View.GONE
-            if(!TextUtils.isEmpty(txtC)){
-                viewHolder.txtContent.visibility=View.VISIBLE
-                viewHolder.txtContent.text=txtC
+            viewHolder.txtContent.visibility = View.GONE
+            if (!TextUtils.isEmpty(txtC)) {
+                viewHolder.txtContent.visibility = View.VISIBLE
+                viewHolder.txtContent.text = txtC
             }
-
-            Glide.with(context)
-                .load(data[position].media[0].file)
-                .into(viewHolder.wall_image)
+            if ((data[position].media != null) && (data[position].media.size > 0)){
+                Glide.with(context)
+                    .load(data[position].media[0].file)
+                    .into(viewHolder.wall_image)
+        }
             viewHolder.wall_image.setTag(position)
             viewHolder.wall_image.setOnClickListener {
                 val pos=viewHolder.wall_image.getTag() as Int?

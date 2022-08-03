@@ -106,6 +106,8 @@ class FamilyWallActivity : AppBaseActivity(), AdapterListener {
                     res.data!!.walls.groupBy {
                         if((it != null) && (it.media != null) && (it.media.size > 0)) {
                             it.media[0].uploaded_at.split("T")[0]
+                        }else{
+                            ""
                         }
                     }
                 var grouppedEventsByDate: Map<String, List<WallData>?>? = null

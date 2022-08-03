@@ -1,6 +1,7 @@
 package com.memy.adapter
 
 import android.content.Context
+import android.text.TextUtils
 import android.view.ViewGroup
 import com.memy.adapter.MyRecyclerAdapter
 import android.view.LayoutInflater
@@ -30,9 +31,11 @@ class MyRecyclerAdapter(var context:Context, var itemClickListener: AdapterListe
         itemHolder.recyWall.adapter=WallImageAdapter(context,position==1,itemClickListener,data[position].data)
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val simpleDateFormat1 = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-        val startDate=simpleDateFormat.parse(data[position].startedDate)
-        val formattedDate=simpleDateFormat1.format(startDate)
-        itemHolder.txtTitle.text=formattedDate
+        if(!TextUtils.isEmpty(data[position].startedDate)) {
+            val startDate = simpleDateFormat.parse(data[position].startedDate)
+            val formattedDate = simpleDateFormat1.format(startDate)
+            itemHolder.txtTitle.text = formattedDate
+        }
     }
 
     /*//    need to override this method
