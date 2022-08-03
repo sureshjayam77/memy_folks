@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/actionBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/backIconImageView"
+                    android:layout_width="@dimen/back_icon_height"
+                    android:layout_height="@dimen/back_icon_height"
+                    android:layout_marginStart="@dimen/common_action_left_space"
+                    android:src="@drawable/ic_back_arrow" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/titleTextView"
+                    style="@style/RegularText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/family_wall"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/common_header_text_size" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/menuIconImageView"
+                    android:layout_width="@dimen/back_icon_height"
+                    android:layout_height="@dimen/back_icon_height"
+                    android:layout_gravity="end|center"
+                    android:layout_marginEnd="@dimen/common_margin_size" />
+
+
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+        <RelativeLayout
+            android:id="@+id/lay_add_story"
+            android:layout_width="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/add_story_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_place_holder" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:backgroundTint="@color/white"
+                app:backgroundTint="@color/white"
+                app:fabSize="mini"
+                android:id="@+id/add_float"
+                android:src="@drawable/ic_baseline_add_24"
+                android:layout_centerInParent="true"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rec_family_wall"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp" />
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/progressBarLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@color/fifty_bg_color"
+        android:clickable="true"
+        android:elevation="8dp">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+</RelativeLayout>

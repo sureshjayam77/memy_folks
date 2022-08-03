@@ -78,6 +78,28 @@ interface APIInterface {
 
     @PUT("api/v1/sns_token/")
     fun updateFCMToken(@Body() req: FCMTokenUpdateReq?,@Query("apikey") apikey: String?) : Call<CommonResponse?>?
+    @Multipart
+    @POST("api/v1/event/")
+    fun addEventData(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>,@Part file: MultipartBody.Part?) : Call<CommonResponse?>?
+
+    @Multipart
+    @POST("api/v1/wall/")
+    fun addStatusEventData(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>,@Part file: MultipartBody.Part?) : Call<CommonResponse?>?
+
+    @GET("api/v1/walls_events/")
+    fun getWallData(@Query("apikey") apikey: String,@Query("mid") mid: String) : Call<WallResult?>?
+
+    @Multipart
+    @POST("api/v1/wall_comments/")
+    fun addWallComment(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>,@Part file: List<MultipartBody.Part>?) : Call<CommonResponse?>?
+
+    @Multipart
+    @POST("api/v1/wall_comments/")
+    fun addWallComment(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>) : Call<CommonResponse?>?
+
+
+    @GET("api/v1/wall_comments/")
+    fun getCommentList(@Query("apikey") apikey: String,@Query("wall_id") mid: String) : Call<CommentResult?>?
 
     @POST("api/v1/feedback/")
     fun submitFeedback(@Body() req: FeedbackReqObj?,@Query("apikey") apikey: String?) : Call<CommonResponse?>?
