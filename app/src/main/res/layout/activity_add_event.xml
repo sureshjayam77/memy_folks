@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/eventLay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/actionBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/colorPrimary"
+                    app:contentInsetLeft="0dp"
+                    app:contentInsetStart="0dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/backIconImageView"
+                        android:layout_width="@dimen/back_icon_height"
+                        android:layout_height="@dimen/back_icon_height"
+                        android:layout_marginStart="@dimen/common_action_left_space"
+                        android:src="@drawable/ic_back_arrow" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/titleTextView"
+                        style="@style/RegularText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/add_event"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/common_header_text_size" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/menuIconImageView"
+                        android:layout_width="@dimen/back_icon_height"
+                        android:layout_height="@dimen/back_icon_height"
+                        android:layout_gravity="end|center"
+                        android:layout_marginEnd="@dimen/common_margin_size" />
+
+
+                </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/startDateEditText"
+                style="@style/RegularText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="@dimen/field_margin_top"
+                android:background="@drawable/bottom_line"
+                android:hint="@string/start_date"
+                android:maxLines="1"
+                android:padding="@dimen/field_margin_top"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color"
+                android:textSize="@dimen/common_text_size" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/endDateEditText"
+                style="@style/RegularText"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="@dimen/field_margin_top"
+                android:background="@drawable/bottom_line"
+                android:hint="@string/end_date"
+                android:maxLines="1"
+                android:padding="@dimen/field_margin_top"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color"
+                android:textSize="@dimen/common_text_size" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/descEditText"
+                style="@style/RegularText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="@dimen/field_margin_top"
+                android:background="@drawable/bottom_line"
+                android:hint="@string/user_content"
+                android:padding="@dimen/field_margin_top"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color"
+                android:textSize="@dimen/common_text_size" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/locationEditText"
+                style="@style/RegularText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="@dimen/field_margin_top"
+                android:background="@drawable/bottom_line"
+                android:hint="@string/label_location"
+                android:padding="@dimen/field_margin_top"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color"
+                android:textSize="@dimen/common_text_size" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/popupCancelBtn"
+                style="@style/ButtonBoldWithBg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="10dp"
+                android:padding="@dimen/common_edit_txt_padding"
+                android:text="@string/continue_label"
+                android:textColor="@color/white"
+                android:textSize="@dimen/common_text_size"
+                app:cornerRadius="30dp" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/displayLay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/statusImage"
+                    android:layout_width="match_parent"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/event_template_1"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/contentTextView"
+                        style="@style/RegularText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/field_margin_top"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtInfo"
+                        style="@style/RegularText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:text="Invite you to a celebration of their\n love and commitment"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/common_hint_text_size" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/dateTextView"
+                        style="@style/RegularText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="35dp"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="24sp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/addressTextView"
+                        style="@style/RegularText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="35dp"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/common_hint_text_size" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addEventBtn"
+                style="@style/ButtonBoldWithBg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:padding="@dimen/common_edit_txt_padding"
+                android:text="@string/add_event"
+                android:textColor="@color/white"
+                android:textSize="@dimen/common_hint_text_size"
+                app:cornerRadius="30dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/fifty_bg_color"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/addCustomImage"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:visibility="visible"
+                    android:background="@color/white"
+                    android:gravity="center">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_add_family" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/img_template"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:background="@color/white"
+                    android:gravity="center">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/event_template_1" />
+                </LinearLayout>
+            </LinearLayout>
+            <include android:id="@+id/progressInclude"
+                layout="@layout/progressbar_layout"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+</layout>

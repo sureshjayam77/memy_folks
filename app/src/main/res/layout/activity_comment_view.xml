@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/parentLay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/rv_lay"
+            android:orientation="vertical">
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/actionBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/colorPrimary"
+                    app:contentInsetLeft="0dp"
+                    app:contentInsetStart="0dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/backIconImageView"
+                        android:layout_width="@dimen/back_icon_height"
+                        android:layout_height="@dimen/back_icon_height"
+                        android:layout_marginStart="@dimen/common_action_left_space"
+                        android:src="@drawable/ic_back_arrow" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/titleTextView"
+                        style="@style/RegularText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/comments"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/common_header_text_size" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/menuIconImageView"
+                        android:layout_width="@dimen/back_icon_height"
+                        android:layout_height="@dimen/back_icon_height"
+                        android:layout_gravity="end|center"
+                        android:layout_marginEnd="@dimen/common_margin_size" />
+
+
+                </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.AppBarLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_comments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rv_lay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txt_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="10dp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/common_text_size"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/edt_comment"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/edt_bg"
+                    android:hint="Type here..."
+                    android:padding="15dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/hint_color"
+                    android:textSize="@dimen/common_text_size"
+                    android:visibility="visible" />
+               <androidx.appcompat.widget.AppCompatImageView
+                   android:layout_width="30dp"
+                   android:id="@+id/attachment_img"
+                   android:layout_marginStart="5dp"
+                   android:layout_marginEnd="5dp"
+                   android:padding="5dp"
+                   android:src="@drawable/ic_baseline_attachment_24"
+                   android:layout_gravity="center_vertical"
+                   android:layout_height="30dp"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_post"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/colorPrimary"
+                    android:text="@string/label_post"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+           <RelativeLayout
+               android:id="@+id/capture_lay"
+               android:layout_width="100dp"
+               android:visibility="gone"
+               android:layout_height="100dp">
+               <androidx.appcompat.widget.AppCompatImageView
+                   android:id="@+id/capture_img"
+                   android:layout_width="100dp"
+                   android:layout_height="100dp"/>
+               <androidx.appcompat.widget.AppCompatImageView
+                   android:id="@+id/clear_img"
+                   android:layout_width="20dp"
+                   android:layout_alignParentTop="true"
+                   android:layout_alignParentEnd="true"
+                   android:padding="5dp"
+                   android:background="@drawable/close_circle_bg"
+                   android:src="@drawable/close_cross_icon"
+                   android:layout_height="20dp"/>
+           </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

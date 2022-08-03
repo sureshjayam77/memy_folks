@@ -343,4 +343,16 @@
         <item> ZW,263</item>
     </string-array>
 
+    <string name="family_wall">Family</string>
+    <string name="family_wall_label">Family Wall</string>
+    <string name="add_event">Add Event</string>
+    <string name="add_video">Add Video</string>
+    <string name="add_image">Add Image</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+    <string name="continue_label">Continue</string>
+    <string name="user_content">User content</string>
+    <string name="view_comments">View Comments</string>
+    <string name="comments">Comments</string>
+
 </resources>

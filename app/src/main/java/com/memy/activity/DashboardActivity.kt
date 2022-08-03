@@ -297,7 +297,9 @@ class DashboardActivity : AppBaseActivity() {
         defaultBrowser.data = Uri.parse("https://blog.memyfolks.com/")
         startActivity(defaultBrowser)
     }
-
+    fun openFamilyWall(v:View){
+      startActivity(Intent(this,FamilyWallActivity::class.java))
+    }
     fun openTermsIntent(v:View){
         startActivity(Intent(this,TermsAndConditionActivity::class.java))
     }

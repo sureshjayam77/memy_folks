@@ -22,6 +22,8 @@ class AddFamilyRepository : BaseRepository() {
     var stateListResponse = MutableLiveData<StateListRes>()
     var profileUpdateRes = MutableLiveData<CommonResponse>()
     var addFamilyRes = MutableLiveData<CommonResponse>()
+    var wallRes = MutableLiveData<WallResult>()
+    var commentRes = MutableLiveData<CommentResult>()
     var deleteAccountRes = MutableLiveData<CommonResponse>()
     var isCusExistRes = MutableLiveData<ProfileVerificationResObj>()
     var relationUpdateSuccessRes = MutableLiveData<CommonResponse>()
@@ -295,6 +297,166 @@ class AddFamilyRepository : BaseRepository() {
 
             override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
                 relationUpdateSuccessRes.value = CommonResponse(null, 0, null)
+            }
+        })
+    }
+    fun addEvent(req: AddEvent?) {
+
+        var stringHashMap: HashMap<String?, RequestBody?> = HashMap()
+        var arrayHashMap: HashMap<String?, List<CommonMobileNumberObj>?> = HashMap()
+        if (req != null) {
+
+            stringHashMap["mid"] = createPartFromString(req.mid)
+            stringHashMap["slug"] = createPartFromString(req.slug)
+            stringHashMap["event_type"] = createPartFromString(req.event_type)
+            stringHashMap["event_start_date"] = createPartFromString(req.event_start_date)
+            stringHashMap["event_end_date"] = createPartFromString(req.event_end_date)
+            stringHashMap["content"] = createPartFromString(req.content)
+            stringHashMap["location"] = createPartFromString(req.location)
+            stringHashMap["location_pin"] = createPartFromString(req.location_pin)
+            stringHashMap["alignment"] = createPartFromString(req.alignment)
+
+            var photoBody: MultipartBody.Part? = null
+            var file=req.file
+            val reqFile: RequestBody = RequestBody.create("*/*".toMediaTypeOrNull(), file)
+            photoBody = MultipartBody.Part.createFormData("file", file.name, reqFile)
+
+            var addFamilyCall: Call<CommonResponse?>? =
+                retrofit.create(APIInterface::class.java).addEventData(
+                    BaseRepository.APP_KEY_VALUE,
+                    stringHashMap,
+                    photoBody
+                )
+
+            addFamilyCall?.enqueue(object : Callback<CommonResponse?> {
+                override fun onResponse(
+                    call: Call<CommonResponse?>?,
+                    response: Response<CommonResponse?>?
+                ) {
+                    addFamilyRes.value = response?.body()
+                }
+
+                override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
+                    addFamilyRes.value = CommonResponse(null, 0, null)
+                }
+            })
+        }
+    }
+    fun addStatusEvent(mid:String,file:File,text:String) {
+
+        var stringHashMap: HashMap<String?, RequestBody?> = HashMap()
+
+        stringHashMap["mid"] = createPartFromString(mid)
+        var content=text
+
+        stringHashMap["content"] = RequestBody.create(MultipartBody.FORM, content)
+
+        var photoBody: MultipartBody.Part? = null
+        val reqFile: RequestBody = RequestBody.create("*/*".toMediaTypeOrNull(), file)
+        photoBody = MultipartBody.Part.createFormData("file", file.name, reqFile)
+
+        var addFamilyCall: Call<CommonResponse?>? =
+            retrofit.create(APIInterface::class.java).addStatusEventData(
+                BaseRepository.APP_KEY_VALUE,
+                stringHashMap,
+                photoBody
+            )
+
+        addFamilyCall?.enqueue(object : Callback<CommonResponse?> {
+            override fun onResponse(
+                call: Call<CommonResponse?>?,
+                response: Response<CommonResponse?>?
+            ) {
+                addFamilyRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
+                addFamilyRes.value = CommonResponse(null, 0, null)
+            }
+        })
+    }
+    fun addComment(mid:String, file: File?, text:String, cid:String) {
+
+        var stringHashMap: HashMap<String?, RequestBody?> = HashMap()
+
+        stringHashMap["mid"] = createPartFromString(mid)
+        stringHashMap["wall_id"] = createPartFromString(cid)
+        stringHashMap["comment"] = createPartFromString(text)
+
+        var photoBody: MultipartBody.Part? = null
+        var addFamilyCall: Call<CommonResponse?>? =
+            retrofit.create(APIInterface::class.java).addWallComment(
+                BaseRepository.APP_KEY_VALUE,
+                stringHashMap
+            )
+
+        if(file!=null){
+            val reqFile: RequestBody = RequestBody.create("*/*".toMediaTypeOrNull(), file)
+            photoBody = MultipartBody.Part.createFormData("files", file.name, reqFile)
+            val fileList:ArrayList<MultipartBody.Part>?=ArrayList()
+            fileList!!.add(photoBody)
+            addFamilyCall=
+                retrofit.create(APIInterface::class.java).addWallComment(
+                    BaseRepository.APP_KEY_VALUE,
+                    stringHashMap,
+                    fileList
+                )
+        }
+
+
+        addFamilyCall?.enqueue(object : Callback<CommonResponse?> {
+            override fun onResponse(
+                call: Call<CommonResponse?>?,
+                response: Response<CommonResponse?>?
+            ) {
+                addFamilyRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
+                addFamilyRes.value = CommonResponse(null, 0, null)
+            }
+        })
+    }
+
+    fun getWallMedia(mid:String) {
+
+        var addFamilyCall: Call<WallResult?>? =
+            retrofit.create(APIInterface::class.java).getWallData(
+                BaseRepository.APP_KEY_VALUE,
+                mid
+            )
+
+        addFamilyCall?.enqueue(object : Callback<WallResult?> {
+            override fun onResponse(
+                call: Call<WallResult?>?,
+                response: Response<WallResult?>?
+            ) {
+                wallRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<WallResult?>?, t: Throwable) {
+                wallRes.value = WallResult(null, null)
+            }
+        })
+    }
+    fun getCommentList(mid:String) {
+
+        var addFamilyCall: Call<CommentResult?>? =
+            retrofit.create(APIInterface::class.java).getCommentList(
+                BaseRepository.APP_KEY_VALUE,
+                mid
+            )
+
+        addFamilyCall?.enqueue(object : Callback<CommentResult?> {
+            override fun onResponse(
+                call: Call<CommentResult?>?,
+                response: Response<CommentResult?>?
+            ) {
+                commentRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<CommentResult?>?, t: Throwable) {
+                commentRes.value = CommentResult(null, null)
             }
         })
     }

@@ -90,7 +90,27 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.Memy"/>
+        <activity android:name=".activity.FamilyWallActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.Memy"/>
+        <activity android:name=".activity.CommentViewActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.Memy"/>
+        <activity android:name=".activity.PostViewActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.Memy"/>
 
+        <activity android:name=".activity.AddEventActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.Memy"/>
+        <activity android:name=".activity.WallPostActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.Memy"/>
         <!--<activity android:name=".activity.AddStoryActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"

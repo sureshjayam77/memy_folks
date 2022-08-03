@@ -28,4 +28,6 @@
     <color name="footer_bar_txt_color">#8A8A8A</color>
     <color name="footer_bar_color">#EDEDED</color>
     <color name="gray_color">#EFEFEF</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="purple">#673AB7</color>
 </resources>

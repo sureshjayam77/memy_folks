@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout
+    android:id="@+id/parentLay"
+    android:layout_width="match_parent"
+    android:background="@color/black"
+    android:layout_height="match_parent">
+    <com.teresaholfeld.stories.StoriesProgressView
+        android:id="@+id/stories"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_gravity="top"
+        app:progressBackgroundColor="@color/purple"
+        app:progressColor="@color/colorAccent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@+id/stories"
+        android:layout_height="match_parent">
+       <RelativeLayout
+           android:id="@+id/wall_image_lay"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent">
+           <androidx.appcompat.widget.AppCompatImageView
+               android:id="@+id/wall_image"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"/>
+           <LinearLayout
+               android:id="@+id/event_lay"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_margin="10dp"
+               android:gravity="center"
+               android:visibility="gone"
+               android:orientation="vertical">
+
+               <androidx.appcompat.widget.AppCompatTextView
+                   android:id="@+id/contentTextView"
+                   style="@style/RegularText"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="@dimen/field_margin_top"
+                   android:gravity="center"
+                   android:textColor="@color/black"
+                   android:textSize="30sp"
+                   android:textStyle="bold" />
+
+               <androidx.appcompat.widget.AppCompatTextView
+                   android:id="@+id/txtInfo"
+                   style="@style/RegularText"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="10dp"
+                   android:gravity="center"
+                   android:text="Invite you to a celebration of their\n love and commitment"
+                   android:textColor="@color/black"
+                   android:textSize="@dimen/common_hint_text_size" />
+
+               <androidx.appcompat.widget.AppCompatTextView
+                   android:id="@+id/dateTextView"
+                   style="@style/RegularText"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="35dp"
+                   android:gravity="center"
+                   android:textColor="@color/black"
+                   android:textSize="24sp" />
+
+               <androidx.appcompat.widget.AppCompatTextView
+                   android:id="@+id/addressTextView"
+                   style="@style/RegularText"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="35dp"
+                   android:gravity="center"
+                   android:textColor="@color/black"
+                   android:textSize="@dimen/common_hint_text_size" />
+           </LinearLayout>
+       </RelativeLayout>
+        <com.google.android.exoplayer2.ui.StyledPlayerView
+            android:id="@+id/videoPlayerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:controller_layout_id="@layout/exo_playback_control_view"
+            android:background="@color/black"
+            app:use_controller="true"
+            app:keep_content_on_player_reset="true"/>
+    </LinearLayout>
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:orientation="vertical"
+       android:paddingBottom="10dp"
+       android:paddingTop="10dp"
+       android:background="@color/fifty_bg_color"
+       android:layout_alignParentBottom="true"
+       android:layout_height="wrap_content">
+       <androidx.appcompat.widget.AppCompatTextView
+           android:id="@+id/txt_content"
+           android:textColor="@color/white"
+           android:gravity="center"
+           android:textStyle="bold"
+           android:padding="10dp"
+           android:textSize="@dimen/common_text_size"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"/>
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:orientation="horizontal"
+           android:layout_height="wrap_content">
+           <androidx.appcompat.widget.AppCompatEditText
+               android:id="@+id/edt_comment"
+               android:layout_width="0dp"
+               android:background="@drawable/edt_bg"
+               android:layout_weight="1"
+               android:padding="15dp"
+               android:visibility="gone"
+               android:textColorHint="@color/hint_color"
+               android:textColor="@color/black"
+               android:layout_marginStart="5dp"
+               android:layout_marginEnd="5dp"
+               android:textSize="@dimen/common_text_size"
+               android:hint="@string/comment_label"
+               android:layout_height="wrap_content"/>
+           <androidx.appcompat.widget.AppCompatButton
+               android:id="@+id/btn_post"
+               android:layout_width="match_parent"
+               android:text="@string/view_comments"
+               android:textColor="@color/white"
+               android:layout_marginEnd="30dp"
+               android:layout_marginStart="30dp"
+               android:background="@color/colorPrimary"
+               android:layout_height="wrap_content"/>
+       </LinearLayout>
+   </LinearLayout>
+</RelativeLayout>
+</layout>

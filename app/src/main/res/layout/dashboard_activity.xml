@@ -634,6 +634,23 @@
                     android:background="@color/bottom_line_color"
                     android:layout_height="0.5dp" />
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_family_wall"
+                    style="@style/RegularText"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:padding="10dp"
+                    android:onClick="openFamilyWall"
+                    android:layout_height="wrap_content"
+                    android:text="@string/family_wall_label"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/common_text_size" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/bottom_line_color"
+                    android:layout_height="0.5dp" />
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_blog"
                     style="@style/RegularText"
                     android:layout_marginTop="5dp"

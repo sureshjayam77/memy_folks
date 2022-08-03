@@ -62,13 +62,6 @@ import android.annotation.SuppressLint
 import android.R.id
 import android.R.attr.phoneNumber
 
-
-
-
-
-
-
-
 class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListener {
 
     lateinit var binding: AddFamilyActivityBinding
