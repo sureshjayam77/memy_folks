@@ -17,6 +17,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -28,6 +29,8 @@ import com.memy.databinding.ActivityAddEventBinding
 import com.memy.databinding.ChoosePhotoDialogBinding
 import com.memy.pojo.AddEvent
 import com.memy.pojo.CommonResponse
+import com.memy.pojo.FamilyMembersObject
+import com.memy.pojo.FamilyMembersResult
 import com.memy.viewModel.AddEventViewModel
 import java.io.File
 import java.io.FileOutputStream
@@ -42,15 +45,20 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
     lateinit var binding: ActivityAddEventBinding
     val REQUEST_IMAGE_CAPTURE: Int = 1001
     lateinit var viewModel: AddEventViewModel
+    var familyMembersList:List<FamilyMembersObject>? =ArrayList()
+    var familyMembersStringList:ArrayList<String>? =ArrayList()
     var mHour = 0
     var mMinute = 0
     var eventImageType=0
     var mFile:File?=null
+    var hostId=""
+    var hostId2=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_event)
         viewModel = ViewModelProvider(this).get(AddEventViewModel::class.java)
         viewModel.addFamilyRes.observe(this, this::validateAddFamilyRes)
+        viewModel.familyMemRes.observe(this, this::getFamilyResponse)
 
         binding.endDateEditText.setOnClickListener {
             openDatePicker(it)
@@ -60,6 +68,9 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
         }
         binding.startDateEditText.setOnClickListener {
             openDatePicker(it)
+        }
+        binding.backIconImageView.setOnClickListener {
+            onBackPressed()
         }
         binding.popupCancelBtn.setOnClickListener {
             if (TextUtils.isEmpty(binding.startDateEditText.text.toString())) {
@@ -81,6 +92,20 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
                 binding.dateTextView.text = formattedDate
                 binding.contentTextView.text = binding.descEditText.text.toString()
                 binding.addressTextView.text = binding.locationEditText.text.toString()
+                binding.host1TextView.text = "Host: "+binding.hostEditText.text.toString()
+                if(!TextUtils.isEmpty(binding.host2EditText.text.toString())){
+                    binding.host1TextView.text =  binding.host1TextView.text.toString()+" & "+binding.host2EditText.text.toString()
+                }
+                if(!TextUtils.isEmpty(binding.host3EditText.text.toString())){
+                    binding.host3TextView.text ="Click here to view link"
+                    binding.host3TextView.setOnClickListener {
+                       try{
+                           startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(binding.host3EditText.text.toString())))
+                       }catch (ex:Exception){
+                           ex.message
+                       }
+                    }
+                }
             }
         }
 
@@ -94,7 +119,7 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
             }else{
                 destinationFilename= mFile!!
             }
-            val addEvent=AddEvent(prefhelper.fetchUserData()?.mid.toString(),"HBD163","2",binding.startDateEditText.text.toString(),binding.endDateEditText.text.toString(),binding.descEditText.text.toString(), binding.locationEditText.text.toString(),eventImageType.toString(),"center",destinationFilename);
+            val addEvent=AddEvent(prefhelper.fetchUserData()?.mid.toString(),"HBD163","2",binding.startDateEditText.text.toString(),binding.endDateEditText.text.toString(),binding.descEditText.text.toString(), binding.locationEditText.text.toString(),eventImageType.toString(),"center",destinationFilename,hostId,hostId2,binding.host3EditText.text.toString());
             viewModel.addEvent(addEvent)
         }
         binding.imgTemplate.setOnClickListener {
@@ -102,9 +127,36 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
             binding.txtInfo.setTextColor(ContextCompat.getColor(this,R.color.black))
             binding.dateTextView.setTextColor(ContextCompat.getColor(this,R.color.black))
             binding.addressTextView.setTextColor(ContextCompat.getColor(this,R.color.black))
+            binding.host1TextView.setTextColor(ContextCompat.getColor(this,R.color.black))
+            binding.host2TextView.setTextColor(ContextCompat.getColor(this,R.color.black))
+            binding.host3TextView.setTextColor(ContextCompat.getColor(this,R.color.black))
             eventImageType=0
             binding.statusImage.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.event_template_1))
         }
+        binding.hostEditText.setOnClickListener {
+            showUserDialog(0)
+        }
+        binding.host2EditText.setOnClickListener {
+            showUserDialog(1)
+        }
+        viewModel.getFamilyMembersList(prefhelper.fetchUserData()?.mid.toString())
+    }
+    fun showUserDialog(pos:Int){
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setTitle("Select")
+        builder.setItems(
+            familyMembersStringList?.toArray(arrayOfNulls<String>(0)),
+            { dialog, item -> // Do something with the selection
+                dialog.dismiss()
+                if(pos==1){
+                    hostId2=familyMembersList!![item].id
+                    binding.host2EditText.text=familyMembersList!![item].firstname
+                }else{
+                    hostId=familyMembersList!![item].id
+                    binding.hostEditText.text=familyMembersList!![item].firstname
+                }
+            })
+        builder.show()
     }
     fun saveBitmapToFile(
         dir: File?, bm: Bitmap,
@@ -126,6 +178,17 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
             }
         }
         return false
+    }
+    private fun getFamilyResponse(res: FamilyMembersResult) {
+        hideProgressBar()
+        if (res.statusCode == 200) {
+            familyMembersList=res.data?.Members
+            familyMembersList!!.forEach { family ->
+                familyMembersStringList!!.add(family.firstname)
+            }
+            hostId=familyMembersList!![0].id
+            binding.hostEditText.text=familyMembersList!![0].firstname
+        }
     }
     private fun validateAddFamilyRes(res: CommonResponse) {
         hideProgressBar()
@@ -231,10 +294,8 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
                     R.id.startDateEditText -> {
                         binding.startDateEditText.text =
                             binding.startDateEditText.text.toString() + " " + hrs + ":" + mins
-                    }
-                    R.id.endDateEditText -> {
-                        binding.endDateEditText.text =
-                            binding.endDateEditText.text.toString() + " " + hrs + ":" + mins
+                        binding.endDateEditText.text=
+                            binding.startDateEditText.text.toString()
                     }
                 }
             }, mHour, mMinute, true
@@ -269,6 +330,9 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
             binding.txtInfo.setTextColor(ContextCompat.getColor(this,R.color.white))
             binding.dateTextView.setTextColor(ContextCompat.getColor(this,R.color.white))
             binding.addressTextView.setTextColor(ContextCompat.getColor(this,R.color.white))
+            binding.host2TextView.setTextColor(ContextCompat.getColor(this,R.color.white))
+            binding.host1TextView.setTextColor(ContextCompat.getColor(this,R.color.white))
+            binding.host3TextView.setTextColor(ContextCompat.getColor(this,R.color.white))
             viewModel.photoFileUri = intent?.data
             eventImageType=1
             mFile= getFile(this, viewModel.photoFileUri!!)

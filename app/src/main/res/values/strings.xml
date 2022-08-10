@@ -361,5 +361,8 @@
     <string name="user_content">User content</string>
     <string name="view_comments">View Comments</string>
     <string name="comments">Comments</string>
+    <string name="host1">Host1</string>
+    <string name="host2">Host2</string>
+    <string name="drive_link">Drive link(Photo)</string>
 
 </resources>

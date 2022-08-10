@@ -16,16 +16,18 @@
           android:scaleType="fitXY"
           android:src="@drawable/ic_launcher_background"
           android:layout_height="100dp"/>
+
       <androidx.appcompat.widget.AppCompatTextView
           android:id="@+id/txt_content"
           android:layout_width="match_parent"
-          android:padding="5dp"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
           android:background="@color/fifty_bg_color"
           android:gravity="center"
+          android:padding="5dp"
+          android:maxLines="1"
           android:textColor="@color/white"
-          android:textSize="@dimen/common_small_text_size"
-          android:layout_alignParentBottom="true"
-          android:layout_height="wrap_content">
+          android:textSize="@dimen/common_small_text_size">
 
       </androidx.appcompat.widget.AppCompatTextView>
   </RelativeLayout>

@@ -75,7 +75,7 @@
                 android:id="@+id/endDateEditText"
                 style="@style/RegularText"
                 android:layout_width="match_parent"
-
+                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_marginTop="@dimen/field_margin_top"
@@ -96,7 +96,7 @@
                 android:layout_margin="10dp"
                 android:layout_marginTop="@dimen/field_margin_top"
                 android:background="@drawable/bottom_line"
-                android:hint="@string/user_content"
+                android:hint="Title"
                 android:padding="@dimen/field_margin_top"
                 android:singleLine="true"
                 android:textColor="@color/black"
@@ -117,7 +117,48 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/hint_color"
                 android:textSize="@dimen/common_text_size" />
-
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/hostEditText"
+                style="@style/RegularText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="@dimen/field_margin_top"
+                android:background="@drawable/bottom_line"
+                android:hint="@string/host1"
+                android:padding="@dimen/field_margin_top"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color"
+                android:textSize="@dimen/common_text_size" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/host2EditText"
+                style="@style/RegularText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="@dimen/field_margin_top"
+                android:background="@drawable/bottom_line"
+                android:hint="@string/host2"
+                android:padding="@dimen/field_margin_top"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color"
+                android:textSize="@dimen/common_text_size" />
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/host3EditText"
+                style="@style/RegularText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="@dimen/field_margin_top"
+                android:background="@drawable/bottom_line"
+                android:hint="@string/drive_link"
+                android:padding="@dimen/field_margin_top"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color"
+                android:textSize="@dimen/common_text_size" />
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/popupCancelBtn"
                 style="@style/ButtonBoldWithBg"
@@ -198,6 +239,33 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="35dp"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/common_hint_text_size" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/host1TextView"
+                        style="@style/RegularText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/common_hint_text_size" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/host2TextView"
+                        style="@style/RegularText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/common_hint_text_size" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/host3TextView"
+                        style="@style/RegularText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:gravity="center"
                         android:textColor="@color/black"
                         android:textSize="@dimen/common_hint_text_size" />

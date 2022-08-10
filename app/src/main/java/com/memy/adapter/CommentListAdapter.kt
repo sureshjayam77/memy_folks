@@ -1,6 +1,7 @@
 package com.memy.adapter
 
 import android.content.Context
+import android.text.TextUtils
 import android.view.ViewGroup
 import com.memy.adapter.MyRecyclerAdapter
 import android.view.LayoutInflater
@@ -29,22 +30,30 @@ class CommentListAdapter(var context:Context, var data:ArrayList<CommentObject>)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemHolder=holder as VHItem
-        val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-        val simpleDateFormat1 = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-        val startDate=simpleDateFormat.parse(data[position].created_at)
-        val formattedDate=simpleDateFormat1.format(startDate)
-        itemHolder.txtDate.text=formattedDate
+        if(!TextUtils.isEmpty(data[position].created_at)){
+            val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+            val simpleDateFormat1 = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+            val startDate=simpleDateFormat.parse(data[position].created_at)
+            val formattedDate=simpleDateFormat1.format(startDate)
+            itemHolder.txtDate.text=formattedDate
+        }
+
         itemHolder.txtContent.text=data[position].comment
         itemHolder.txtName.text=data[position].commenter.firstname
         Glide.with(context)
             .load(data[position].commenter.photo)   .placeholder(R.drawable.img_place_holder)
             .error(R.drawable.img_place_holder)
             .into(itemHolder.p_img)
-       /* Glide
-            .with(this)
-            .load(data[position].)
-            .centerCrop()
-            .into(itemHolder.capture_img)*/
+        holder.capture_img.visibility=View.GONE
+        if(data[position].files.isNotEmpty()){
+            holder.capture_img.visibility=View.VISIBLE
+            Glide
+                .with(context)
+                .load(data[position].files[0].file)
+                .centerCrop()
+                .into(itemHolder.capture_img)
+        }
+
     }
 
 

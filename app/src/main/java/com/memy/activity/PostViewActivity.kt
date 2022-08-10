@@ -2,6 +2,7 @@ package com.memy.activity
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.DisplayMetrics
@@ -76,6 +77,23 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
                 binding.addressTextView.text = wallData?.location
                 binding.contentTextView.text = wallData?.content
                 binding.dateTextView.text = formattedDate
+                binding.dateTextView.text = formattedDate
+                if(wallData?.host1_details?.size?:0>0){
+                    binding.host1TextView.text = "Host: "+ wallData?.host1_details?.get(0)?.firstname
+                    if(wallData?.host2_details?.size?:0> 0){
+                        binding.host1TextView.text =  binding.host1TextView.text.toString()+" & "+wallData?.host2_details?.get(0)?.firstname
+                    }
+                }
+                if(!TextUtils.isEmpty(wallData?.media_link)){
+                    binding.host3TextView.text ="Click here to view link"
+                    binding.host3TextView.setOnClickListener {
+                        try{
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(wallData?.media_link)))
+                        }catch (ex:Exception){
+                            ex.message
+                        }
+                    }
+                }
                 if (wallData?.location_pin.equals("0")) {
                     binding.contentTextView.setTextColor(
                         ContextCompat.getColor(
@@ -85,6 +103,9 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
                     )
                     binding.txtInfo.setTextColor(ContextCompat.getColor(this, R.color.black))
                     binding.dateTextView.setTextColor(ContextCompat.getColor(this, R.color.black))
+                    binding.host1TextView.setTextColor(ContextCompat.getColor(this, R.color.black))
+                    binding.host2TextView.setTextColor(ContextCompat.getColor(this, R.color.black))
+                    binding.host3TextView.setTextColor(ContextCompat.getColor(this, R.color.black))
                     binding.addressTextView.setTextColor(
                         ContextCompat.getColor(
                             this,
@@ -100,6 +121,9 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
                     )
                     binding.txtInfo.setTextColor(ContextCompat.getColor(this, R.color.white))
                     binding.dateTextView.setTextColor(ContextCompat.getColor(this, R.color.white))
+                    binding.host1TextView.setTextColor(ContextCompat.getColor(this, R.color.white))
+                    binding.host2TextView.setTextColor(ContextCompat.getColor(this, R.color.white))
+                    binding.host3TextView.setTextColor(ContextCompat.getColor(this, R.color.white))
                     binding.addressTextView.setTextColor(
                         ContextCompat.getColor(
                             this,
@@ -107,12 +131,18 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
                         )
                     )
                 }
+
             }
         }
+        Glide.with(this)
+            .load(wallData!!.photo)   .placeholder(R.drawable.img_place_holder)
+            .error(R.drawable.img_place_holder)
+            .into(binding.pImg)
+        binding.txtName.text=wallData!!.firstname
         binding.btnPost.setOnClickListener {
-          /*  val intent=Intent(this,CommentViewActivity::class.java)
+            val intent=Intent(this,CommentViewActivity::class.java)
             intent.putExtra("file",wallData)
-           startActivity(intent)*/
+           startActivity(intent)
         }
         binding.parentLay.setOnTouchListener({ v, event ->
             if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -126,6 +156,16 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
             }
             true
         })
+        binding.btnUpload.setOnClickListener {
+            val intent=Intent(this,CommentViewActivity::class.java)
+            intent.putExtra("file",wallData)
+            startActivity(intent)
+        }
+        binding.btnWish.setOnClickListener {
+            val intent=Intent(this,CommentViewActivity::class.java)
+            intent.putExtra("file",wallData)
+            startActivity(intent)
+        }
         binding.parentLay.viewTreeObserver.addOnGlobalLayoutListener(object :
             OnGlobalLayoutListener {
             override fun onGlobalLayout() {

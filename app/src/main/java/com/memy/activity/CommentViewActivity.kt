@@ -75,20 +75,29 @@ class CommentViewActivity : AppBaseActivity(){
             postComment()
         }
         binding.attachmentImg.setOnClickListener {
-           // openChoosePhoto()
+            openChoosePhoto()
         }
         binding.clearImg.setOnClickListener {
             uploadedFile=null
             binding.captureLay.visibility=View.GONE
         }
-        viewModel.getCommentList(wallData!!.id)
+        if(TextUtils.isEmpty(wallData!!.location)){
+            viewModel.getCommentList(wallData!!.id)
+        }else{
+            viewModel.getEventCommentList(wallData!!.id)
+        }
+
     }
     private fun validateAddFamilyRes(res: CommonResponse) {
         if (res.statusCode == 200) {
             showToast("Comment added successfully")
             uploadedFile=null
             binding.captureLay.visibility=View.GONE
-            viewModel.getCommentList(wallData!!.id)
+            if(TextUtils.isEmpty(wallData!!.location)){
+                viewModel.getCommentList(wallData!!.id)
+            }else{
+                viewModel.getEventCommentList(wallData!!.id)
+            }
         } else {
             res.errorDetails?.message?.let { showToast(it) }
         }
@@ -106,14 +115,26 @@ class CommentViewActivity : AppBaseActivity(){
     }
 
     private fun postComment() {
-        if (TextUtils.isEmpty(binding.edtComment.text.toString())) return
-        viewModel.addComment(
-            prefhelper.fetchUserData()?.mid.toString(),
-            uploadedFile,
-            binding.edtComment.text.toString(),
-            wallData!!.id
-        )
-        binding.edtComment.setText("")
+        if(TextUtils.isEmpty(wallData!!.location)){
+            if (TextUtils.isEmpty(binding.edtComment.text.toString())) return
+            viewModel.addComment(
+                prefhelper.fetchUserData()?.mid.toString(),
+                uploadedFile,
+                binding.edtComment.text.toString(),
+                wallData!!.id
+            )
+            binding.edtComment.setText("")
+        }else{
+            if (TextUtils.isEmpty(binding.edtComment.text.toString())&&uploadedFile==null)return
+            viewModel.addEventComment(
+                prefhelper.fetchUserData()?.mid.toString(),
+                uploadedFile,
+                binding.edtComment.text.toString(),
+                wallData!!.id
+            )
+            binding.edtComment.setText("")
+        }
+
     }
 
     fun showToast(text: String) {
@@ -132,6 +153,7 @@ class CommentViewActivity : AppBaseActivity(){
         val storyMediaBottomSheetBinding: StoryMediaBottomSheetBinding = DataBindingUtil.inflate(
             LayoutInflater.from(this), R.layout.story_media_bottom_sheet, null, false
         )
+        storyMediaBottomSheetBinding.videoTextView.visibility=View.GONE
         storyMediaBottomSheetBinding.photoTextView.setOnClickListener({photoBottomSheet.dismiss()
         photoPicker()})
        /* storyMediaBottomSheetBinding.videoTextView.setOnClickListener({photoBottomSheet.dismiss()

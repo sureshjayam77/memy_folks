@@ -78,7 +78,7 @@ class FamilyWallActivity : AppBaseActivity(), AdapterListener {
     }
 
     private fun loadProfileImage(url: String?) {
-        if (!TextUtils.isEmpty(url)) {
+       /* if (!TextUtils.isEmpty(url)) {
             Glide.with(this)
                 .load(url)
                 .centerCrop()
@@ -86,7 +86,7 @@ class FamilyWallActivity : AppBaseActivity(), AdapterListener {
                 .error(R.drawable.ic_profile_male)
                 .into(findViewById(R.id.add_story_image))
         }
-
+*/
     }
 
     private fun validateAddFamilyRes(res: CommonResponse) {

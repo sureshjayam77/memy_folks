@@ -107,4 +107,19 @@ interface APIInterface {
     @PUT("api/v1/existing_member/")
     fun addFamilyAction(@Query("apikey") apikey: String?,@Query("request_id") request_id: Int?,@Query("action") action: String?) : Call<CommonResponse?>?
 
+
+    @GET("api/v1/event_comments/")
+    fun getEventCommentList(@Query("apikey") apikey: String,@Query("event_id") mid: String) : Call<CommentResult?>?
+
+    @Multipart
+    @POST("api/v1/event_comments/")
+    fun addEventComment(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>,@Part file: List<MultipartBody.Part>?) : Call<CommonResponse?>?
+
+    @Multipart
+    @POST("api/v1/event_comments/")
+    fun addEventComment(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>) : Call<CommonResponse?>?
+
+    @GET("api/v1/family_members/")
+    fun getFamilyMembersList(@Query("apikey") apikey: String,@Query("mid") mid: String) : Call<FamilyMembersResult?>?
+
 }

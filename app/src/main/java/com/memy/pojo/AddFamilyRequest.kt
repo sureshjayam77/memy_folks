@@ -32,13 +32,19 @@ class AddFamilyRequest{
     var altmobiles : List<CommonMobileNumberObj>? = null
     var id : Int? = null
 }
-class AddEvent(var mid:String,var slug:String,var event_type:String,var event_start_date:String,var event_end_date:String,var content:String,var location:String,var location_pin:String,var alignment:String,var file: File)
+class AddEvent(var mid:String,var slug:String,var event_type:String,var event_start_date:String,var event_end_date:String,var content:String,var location:String,var location_pin:String,var alignment:String,var file: File,var host:String,var host2:String,var driveLink:String)
 class  WallResult(var statusCode:Int?, var data: WallEventResult?)
 class WallEventResult(var firstname:String,var photo:String,var mobile:String,var events:List<WallData>,var walls:List<WallData>)
-class WallData(var mid:String,var id:String,var slug:String,var content:String,var alignment:String,var location:String,var location_pin:String,var media:List<WallMediaData>,var startedDate:String,var event_start_date:String):Serializable
+class WallData(var mid:String,var id:String,var slug:String,var content:String,var alignment:String,var location:String,var location_pin:String,var media:List<WallMediaData>,var startedDate:String,var event_start_date:String,var firstname:String,var photo:String,var host1_details:List<HostData>,var host2_details:List<HostData>,var media_link:String):Serializable
+class HostData(var firstname: String):Serializable
 class WallGroupData(var startedDate:String,var data:List<WallData>)
 class WallMediaData(var id:String,var wall_id:String,var media_type:String,var uploaded_at:String,var file:String):Serializable
 
 class  CommentResult(var statusCode:Int?, var data: List<CommentObject>?)
-class CommentObject(var id:String,var wall_id:String,var comment:String,var created_at:String,var commenter:CommentUserObject)
+class CommentObject(var id:String,var wall_id:String,var comment:String,var created_at:String,var commenter:CommentUserObject,var files:List<WallMediaData>)
 class CommentUserObject(var mid:String,var firstname:String,var photo:String)
+
+
+class  FamilyMembersResult(var statusCode:Int?, var data: FamilyMembersData?)
+class  FamilyMembersData(var Members: List<FamilyMembersObject>?)
+class FamilyMembersObject(var firstname: String,var id:String)

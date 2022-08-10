@@ -76,6 +76,63 @@
                    android:gravity="center"
                    android:textColor="@color/black"
                    android:textSize="@dimen/common_hint_text_size" />
+               <androidx.appcompat.widget.AppCompatTextView
+                   android:id="@+id/host1TextView"
+                   style="@style/RegularText"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="5dp"
+                   android:gravity="center"
+                   android:textColor="@color/black"
+                   android:textSize="@dimen/common_hint_text_size" />
+               <androidx.appcompat.widget.AppCompatTextView
+                   android:id="@+id/host2TextView"
+                   style="@style/RegularText"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="5dp"
+                   android:gravity="center"
+                   android:textColor="@color/black"
+                   android:textSize="@dimen/common_hint_text_size" />
+               <androidx.appcompat.widget.AppCompatTextView
+                   android:id="@+id/host3TextView"
+                   style="@style/RegularText"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="5dp"
+                   android:gravity="center"
+                   android:textColor="@color/black"
+                   android:textSize="@dimen/common_hint_text_size" />
+               <LinearLayout
+                   android:orientation="horizontal"
+                   android:gravity="center"
+                   android:layout_marginTop="30dp"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content">
+                   <androidx.appcompat.widget.AppCompatButton
+                       android:id="@+id/btn_upload"
+                       android:layout_width="wrap_content"
+                       android:text="Upload photos"
+                       android:paddingStart="10dp"
+                       android:layout_marginBottom="5dp"
+                       android:paddingEnd="10dp"
+                       android:textColor="@color/black"
+                       android:layout_marginEnd="40dp"
+                       android:textSize="10sp"
+                       android:layout_gravity="center_vertical"
+                       android:background="@color/white"
+                       android:layout_height="40dp"/>
+                   <androidx.appcompat.widget.AppCompatButton
+                       android:id="@+id/btn_wish"
+                       android:layout_width="wrap_content"
+                       android:text="Wish them"
+                       android:layout_marginBottom="5dp"
+                       android:textSize="10sp"
+                       android:textColor="@color/black"
+                       android:layout_gravity="center_vertical"
+                       android:background="@color/white"
+                       android:layout_height="40dp"/>
+               </LinearLayout>
            </LinearLayout>
        </RelativeLayout>
         <com.google.android.exoplayer2.ui.StyledPlayerView
@@ -88,6 +145,7 @@
             app:use_controller="true"
             app:keep_content_on_player_reset="true"/>
     </LinearLayout>
+
    <LinearLayout
        android:layout_width="match_parent"
        android:orientation="vertical"
@@ -134,5 +192,40 @@
                android:layout_height="wrap_content"/>
        </LinearLayout>
    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/titleLay"
+        android:layout_margin="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/stories"
+        android:layout_height="wrap_content">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="40dp"
+            android:id="@+id/p_img"
+            android:layout_gravity="center_vertical"
+            android:layout_height="40dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txt_name"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/common_btn_text_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txt_date"
+                android:visibility="gone"
+                android:textColor="@color/bottom_line"
+                android:textSize="@dimen/common_small_text_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+
 </RelativeLayout>
 </layout>

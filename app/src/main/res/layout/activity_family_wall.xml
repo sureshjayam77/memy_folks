@@ -60,7 +60,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/img_place_holder" />
+                android:src="@drawable/casual_men" />
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:backgroundTint="@color/white"
