@@ -43,7 +43,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/terms_condition"
                     android:textColor="@color/white"
                     android:textSize="@dimen/common_header_text_size" />
 

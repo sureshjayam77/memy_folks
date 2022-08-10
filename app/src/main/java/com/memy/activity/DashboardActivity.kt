@@ -289,16 +289,23 @@ class DashboardActivity : AppBaseActivity() {
 
     fun openAboutIntent(v:View){
         binding.drwayerLay.closeDrawer(Gravity.LEFT)
-        val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
+        /*val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
         defaultBrowser.data = Uri.parse("https://memyfolks.com/")
-        startActivity(defaultBrowser)
+        startActivity(defaultBrowser)*/
+        val intent = Intent(this,TermsAndConditionActivity::class.java)
+        intent.putExtra(Constents.WEB_VIEW_INTENT_TAG,Constents.WEB_VIEW_ABOUT)
+        startActivity(intent)
     }
 
     fun openBlogIntent(v:View){
         binding.drwayerLay.closeDrawer(Gravity.LEFT)
-        val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
+        /*val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
         defaultBrowser.data = Uri.parse("https://blog.memyfolks.com/")
-        startActivity(defaultBrowser)
+        startActivity(defaultBrowser)*/
+
+        val intent = Intent(this,TermsAndConditionActivity::class.java)
+        intent.putExtra(Constents.WEB_VIEW_INTENT_TAG,Constents.WEB_VIEW_BLOG)
+        startActivity(intent)
     }
     fun openFamilyWall(v:View){
         binding.drwayerLay.closeDrawer(Gravity.LEFT)
@@ -306,15 +313,19 @@ class DashboardActivity : AppBaseActivity() {
     }
     fun openTermsIntent(v:View){
         binding.drwayerLay.closeDrawer(Gravity.LEFT)
-        startActivity(Intent(this,TermsAndConditionActivity::class.java))
+        val intent = Intent(this,TermsAndConditionActivity::class.java)
+        intent.putExtra(Constents.WEB_VIEW_INTENT_TAG,Constents.WEB_VIEW_TERMS_AND_CONDITION)
+        startActivity(intent)
     }
 
     fun openHelpIntent(v:View){
         binding.drwayerLay.closeDrawer(Gravity.LEFT)
-        binding.drwayerLay.closeDrawer(Gravity.LEFT)
-        val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
+        val intent = Intent(this,TermsAndConditionActivity::class.java)
+        intent.putExtra(Constents.WEB_VIEW_INTENT_TAG,Constents.WEB_VIEW_HELP)
+        startActivity(intent)
+        /*val defaultBrowser = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
         defaultBrowser.data = Uri.parse("https://memyfolks.com/help/")
-        startActivity(defaultBrowser)
+        startActivity(defaultBrowser)*/
     }
 
     fun openFeedbackIntent(v:View){

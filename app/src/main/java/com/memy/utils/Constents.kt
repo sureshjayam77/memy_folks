@@ -31,5 +31,11 @@ open class Constents {
 
         val NOTIFICATION_TYPE_ADD_STORY = 1
         val NOTIFICATION_TYPE_ADD_FAMILY_MEMBER = 2
+
+        val WEB_VIEW_INTENT_TAG = "web_view_intent_tag"
+        val WEB_VIEW_TERMS_AND_CONDITION = "web_view_terms_and_condition"
+        val WEB_VIEW_ABOUT = "web_view_about"
+        val WEB_VIEW_BLOG = "web_view_blog"
+        val WEB_VIEW_HELP = "web_view_help"
     }
 }

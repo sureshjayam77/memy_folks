@@ -260,7 +260,9 @@ class SignInActivity : AppBaseActivity(), AdapterListener {
         val SpanString = SpannableString(str)
         val teremsAndCondition: ClickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
-                startActivity(Intent(this@SignInActivity,TermsAndConditionActivity::class.java))
+                val intent = Intent(this@SignInActivity,TermsAndConditionActivity::class.java)
+                intent.putExtra(Constents.WEB_VIEW_INTENT_TAG,Constents.WEB_VIEW_TERMS_AND_CONDITION)
+                startActivity(intent)
             }
         }
 

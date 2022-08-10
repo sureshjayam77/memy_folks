@@ -605,7 +605,7 @@
                     android:layout_marginTop="5dp"
                     android:hint="@string/last_name"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/common_hint_text_size" />
+                    android:textSize="@dimen/common_text_size" />
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_mobile"
                     style="@style/RegularText"
