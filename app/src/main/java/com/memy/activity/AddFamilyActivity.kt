@@ -634,7 +634,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             this
         ) { date, v -> //Callback
             //yourTextView.setText(NativeDate.getTime(date))
-           val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+           val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
            val dateValue : String= simpleDateFormat.format(date)
            when (v1.id) {
                R.id.deathDateTextView -> {

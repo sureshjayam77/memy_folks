@@ -209,7 +209,7 @@ public class Utils {
 
     public static String getFormattedDate(String dateStr) {
         try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             Date date = simpleDateFormat.parse(dateStr);
             Calendar smsTime = Calendar.getInstance();

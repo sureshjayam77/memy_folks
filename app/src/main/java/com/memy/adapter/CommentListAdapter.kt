@@ -31,8 +31,8 @@ class CommentListAdapter(var context:Context, var data:ArrayList<CommentObject>)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemHolder=holder as VHItem
         if(!TextUtils.isEmpty(data[position].created_at)){
-            val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-            val simpleDateFormat1 = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+            val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
+            val simpleDateFormat1 = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
             val startDate=simpleDateFormat.parse(data[position].created_at)
             val formattedDate=simpleDateFormat1.format(startDate)
             itemHolder.txtDate.text=formattedDate

@@ -82,9 +82,9 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
             } else if (TextUtils.isEmpty(binding.locationEditText.text.toString())) {
                 showToast("Please enter the location")
             } else {
-                val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
+                val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.ENGLISH)
                 val simpleDateFormat1 =
-                    SimpleDateFormat("MMM dd,yyyy\n hh:mm a", Locale.getDefault())
+                    SimpleDateFormat("MMM dd,yyyy\n hh:mm a", Locale.ENGLISH)
                 val startDate = simpleDateFormat.parse(binding.startDateEditText.text.toString())
                 val formattedDate = simpleDateFormat1.format(startDate)
                 binding.displayLay.visibility = View.VISIBLE

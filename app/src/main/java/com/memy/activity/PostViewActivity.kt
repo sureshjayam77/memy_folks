@@ -51,6 +51,8 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
         storiesProgressView = binding.stories
         storiesProgressView?.setStoriesListener(this) // <- set listener
         storiesProgressView?.setStoriesCount(PROGRESS_COUNT) // <- set stories
+        binding.backIconImageView.setOnClickListener { onBackPressed()
+        }
         if (file!!.contains(".mp4")) {
             playVideo()
             binding.wallImageLay.visibility = View.GONE
@@ -70,7 +72,7 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
                 val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
                 val simpleDateFormat1 =
-                    SimpleDateFormat("MMM dd,yyyy\n hh:mm a", Locale.getDefault())
+                    SimpleDateFormat("MMM dd,yyyy\n hh:mm a", Locale.ENGLISH)
                 val startDate = simpleDateFormat.parse(wallData?.event_start_date)
                 val formattedDate = simpleDateFormat1.format(startDate)
                 binding.wallImageLay.visibility = View.VISIBLE
