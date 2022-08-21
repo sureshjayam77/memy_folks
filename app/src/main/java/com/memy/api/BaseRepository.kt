@@ -115,6 +115,6 @@ open class BaseRepository {
         if(!TextUtils.isEmpty(partString)) {
             return RequestBody.create(MultipartBody.FORM, partString ?: "")
         }
-        return null
+        return RequestBody.create(MultipartBody.FORM,  "")
     }
 }

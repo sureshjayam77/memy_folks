@@ -21,6 +21,7 @@ class AddFamilyRepository : BaseRepository() {
     var countryListRes = MutableLiveData<CountryListRes>()
     var stateListResponse = MutableLiveData<StateListRes>()
     var profileUpdateRes = MutableLiveData<CommonResponse>()
+    var profileSocialLinkUpdateRes = MutableLiveData<CommonResponse>()
     var addFamilyRes = MutableLiveData<CommonResponse>()
     var wallRes = MutableLiveData<WallResult>()
     var commentRes = MutableLiveData<CommentResult>()
@@ -547,5 +548,38 @@ class AddFamilyRepository : BaseRepository() {
                 familyMemRes.value = FamilyMembersResult(null, null)
             }
         })
+    }
+
+    fun updateSocialMediaLinks(userId : Int?,insta : String?,fb : String?,twi:String?,link : String?,abt:String?){
+        var stringHashMap: HashMap<String?, RequestBody?> = HashMap()
+        if (insta != null)
+            stringHashMap["instagram_link"] = createPartFromString(insta)
+        if (fb != null)
+            stringHashMap["facebook_link"] = createPartFromString(fb)
+        if (twi != null)
+            stringHashMap["twitter_link"] = createPartFromString(twi)
+        if (link != null)
+            stringHashMap["linkedin_link"] = createPartFromString(link)
+        if (abt != null)
+            stringHashMap["about_me"] = createPartFromString(abt)
+
+        var updateProfileCall: Call<CommonResponse?>? = retrofit.create(APIInterface::class.java).saveSocialMediaDetails(
+            userId,
+            APP_KEY_VALUE,
+            stringHashMap
+        )
+        updateProfileCall?.enqueue(object : Callback<CommonResponse?> {
+            override fun onResponse(
+                call: Call<CommonResponse?>?,
+                response: Response<CommonResponse?>?
+            ) {
+                profileSocialLinkUpdateRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
+                profileSocialLinkUpdateRes.value = CommonResponse(null, 0, null)
+            }
+        })
+
     }
 }

@@ -26,8 +26,9 @@
     <color name="fifty_bg_color">#80000000</color>
     <color name="gray_text_color">#b0b0b0</color>
     <color name="footer_bar_txt_color">#8A8A8A</color>
-    <color name="footer_bar_color">#EDEDED</color>
+    <color name="footer_bar_color">#F0F0F0</color>
     <color name="gray_color">#EFEFEF</color>
     <color name="colorAccent">#FF4081</color>
     <color name="purple">#673AB7</color>
+    <color name="fifty_app_color">#800C8AB7</color>
 </resources>

@@ -73,6 +73,10 @@
     <string name="delete_account_desc">Are you sure, Do you want to delete this account?</string>
     <string name="label_yes">Yes</string>
     <string name="label_request">Request</string>
+    <string name="label_bubbles">Bubbles</string>
+    <string name="label_story">Story</string>
+    <string name="label_notification">Notification</string>
+    <string name="label_edit">Edit</string>
 
 
 
@@ -130,6 +134,13 @@
     <string name="label_about">About</string>
     <string name="label_blog">Blog</string>
     <string name="label_help">Help</string>
+    <string name="label_facebook">Facebook</string>
+    <string name="label_instagram">Instagram</string>
+    <string name="label_twitter">Twitter</string>
+    <string name="label_linkedin">LinkedIn</string>
+    <string name="error_invalid_url">Enter valid URL</string>
+    <string name="error_invalid_about">Enter about</string>
+    <string name="label_about_me">About Me</string>
 
    // Firebase messaging
     <string name="notification_channel_id">Activity</string>

@@ -29,8 +29,8 @@ class MyRecyclerAdapter(var context:Context, var itemClickListener: AdapterListe
         val itemHolder=holder as VHItem
         itemHolder.recyWall.layoutManager=GridLayoutManager(context,3)
         itemHolder.recyWall.adapter=WallImageAdapter(context,position==1,itemClickListener,data[position].data)
-        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val simpleDateFormat1 = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+        val simpleDateFormat1 = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
         if(!TextUtils.isEmpty(data[position].startedDate)) {
             val startDate = simpleDateFormat.parse(data[position].startedDate)
             val formattedDate = simpleDateFormat1.format(startDate)

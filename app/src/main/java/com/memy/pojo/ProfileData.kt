@@ -86,6 +86,17 @@ data class ProfileData(
 	val relations: List<RelationShipObj>? = null,
 
 	@Json(name="as_relation")
-	val as_relation: AsRelationObj? = null
+	val as_relation: AsRelationObj? = null,
+
+	@Json(name="about_me")
+	var about_me: String? = null,
+	@Json(name="facebook_link")
+	var facebook_link: String? = null,
+	@Json(name="instagram_link")
+	var instagram_link: String? = null,
+	@Json(name="twitter_link")
+	var twitter_link: String? = null,
+	@Json(name="linkedin_link")
+	var linkedin_link: String? = null
 )
 

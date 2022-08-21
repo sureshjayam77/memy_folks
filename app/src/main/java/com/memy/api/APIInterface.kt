@@ -44,6 +44,11 @@ interface APIInterface {
 
     @Multipart
     @PUT("api/v1/member/{id}/")
+    fun saveSocialMediaDetails(@Path("id") id: Int?,@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>) : Call<CommonResponse?>?
+
+
+    @Multipart
+    @PUT("api/v1/member/{id}/")
     fun saveProfileDetails(@Path("id") id: Int?,@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>,@PartMap() partArrayMap :  HashMap<String?, List<CommonMobileNumberObj>?>) : Call<CommonResponse?>?
 
 

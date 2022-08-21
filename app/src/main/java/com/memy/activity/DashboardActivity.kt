@@ -1,6 +1,7 @@
 package com.memy.activity
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,8 +11,10 @@ import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
+import android.webkit.URLUtil
 import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -26,7 +29,16 @@ import com.memy.fragment.TreeViewFragment
 import com.memy.pojo.*
 import com.memy.utils.Constents
 import com.memy.utils.PermissionUtil
+import com.memy.utils.Utils
 import com.memy.viewModel.DashboardViewModel
+import android.widget.Toast
+import android.content.pm.PackageManager
+
+
+
+
+
+
 
 
 class DashboardActivity : AppBaseActivity() {
@@ -69,8 +81,9 @@ class DashboardActivity : AppBaseActivity() {
         binding.backIconImageView.setOnClickListener(View.OnClickListener {
             binding.drwayerLay.openDrawer(Gravity.LEFT)
         })
-        binding.bottomTempView.visibility = View.GONE
-        binding.bottomBarLayout.visibility = View.GONE
+        binding.bottomTempView.visibility = View.VISIBLE
+        binding.bottomBarLayout.visibility = View.VISIBLE
+       // binding.switchTreeFamily.visibility = View.GONE
     }
 
     private fun setupViewModel() {
@@ -92,19 +105,29 @@ class DashboardActivity : AppBaseActivity() {
                 transaction.replace(R.id.fragmentContainer, TreeViewFragment(), TreeViewFragment::javaClass.name)
                 transaction.addToBackStack(null)
                 transaction.commit()
+                binding.familyImageView.setImageResource(R.drawable.ic_mmf_select)
+                binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
+                binding.storyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+                binding.familyTextView.setTextColor(ContextCompat.getColor(this,R.color.app_color))
             }else if(refreshStroy){
                 val manager: FragmentManager = supportFragmentManager
                 val transaction: FragmentTransaction = manager.beginTransaction()
                 transaction.replace(R.id.fragmentContainer, StoryVIewFragment(), StoryVIewFragment::javaClass.name)
                 transaction.addToBackStack(null)
                 transaction.commit()
+                binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
+                binding.storyImageView.setImageResource(R.drawable.ic_story_select)
+                binding.storyTextView.setTextColor(ContextCompat.getColor(this,R.color.app_color))
+                binding.familyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
             }
             loadProfileImage(viewModel.userData.value?.photo)
         }
     }
 
     override fun onBackPressed() {
-        if (binding.progressInclude.progressBarLayout.visibility == View.GONE) {
+        if(viewModel.showSocialLinkAddView.value == true){
+            viewModel.showSocialLinkAddView.value = false
+        }else if (binding.progressInclude.progressBarLayout.visibility == View.GONE) {
             super.onBackPressed()
             finishAffinity()
             System.exit(0)
@@ -113,10 +136,26 @@ class DashboardActivity : AppBaseActivity() {
 
     private fun setupObservers() {
         viewModel.profileVerificationResObj.observe(this, this::validateProfileRes)
+        viewModel.profileSocialLinkUpdateRes.observe(this,this::validateSocialLinkRes)
         viewModel.isTreeView.observe(this, { v ->
             fetchProfileData(true)
         })
         viewModel.updateFcmRes.observe(this,this::validateFCMRes)
+        viewModel.instagramLink.observe(this,{
+            binding.instagramLayout.isErrorEnabled = false
+        })
+        viewModel.facebookLink.observe(this,{
+            binding.facebookLayout.isErrorEnabled = false
+        })
+        viewModel.twitterLink.observe(this,{
+            binding.twitterLayout.isErrorEnabled = false
+        })
+        viewModel.linkedInLink.observe(this,{
+            binding.linkedInLayout.isErrorEnabled = false
+        })
+        viewModel.aboutContent.observe(this,{
+            binding.aboutLayout.isErrorEnabled = false
+        })
     }
 
     private fun validateProfileRes(res: ProfileVerificationResObj) {
@@ -135,6 +174,34 @@ class DashboardActivity : AppBaseActivity() {
                     message = getString(R.string.something_went_wrong)
                 }
                // showAlertDialog(R.id.do_nothing, message, getString(R.string.close_label), "")
+            }
+        }
+    }
+
+    private fun validateSocialLinkRes(res: CommonResponse) {
+        binding.progressInclude.progressBarLayout.visibility = View.GONE
+        if (res != null) {
+            if ((res.statusCode == 200) && (res.data != null)) {
+                viewModel.showSocialLinkAddView.value = false
+                var userData = viewModel.userData.value
+
+                userData?.instagram_link = viewModel.instagramLink.value
+                userData?.facebook_link = viewModel.facebookLink.value
+                userData?.twitter_link = viewModel.twitterLink.value
+                userData?.linkedin_link = viewModel.linkedInLink.value
+                userData?.about_me = viewModel.aboutContent.value
+                viewModel.userData.value = userData
+                updateSocialMediaIcons()
+
+            } else {
+                var message = ""
+                if (res.errorDetails != null) {
+                    message = res.errorDetails.message!!
+                }
+                if (TextUtils.isEmpty(message)) {
+                    message = getString(R.string.something_went_wrong)
+                }
+                showAlertDialog(R.id.do_nothing, message, getString(R.string.close_label), "")
             }
         }
     }
@@ -158,6 +225,13 @@ class DashboardActivity : AppBaseActivity() {
         }
         binding.txtFirstname.text=viewModel.userData.value!!.firstname
         binding.txtMobile.text=viewModel.userData.value!!.mobile
+
+        viewModel.instagramLink.value = viewModel.userData.value?.instagram_link
+        viewModel.facebookLink.value = viewModel.userData.value?.facebook_link
+        viewModel.twitterLink.value = viewModel.userData.value?.twitter_link
+        viewModel.linkedInLink.value = viewModel.userData.value?.linkedin_link
+        viewModel.aboutContent.value = viewModel.userData.value?.about_me
+        updateSocialMediaIcons()
     }
 
     fun navigateAddFamily(v: View) {
@@ -176,6 +250,13 @@ class DashboardActivity : AppBaseActivity() {
     }
     fun navigateNotificationScreen(v: View) {
         val intent = Intent(this, NotificationActivity::class.java)
+        intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
+        intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel?.userData?.value?.mid)
+        startActivityIntent(intent, false);
+    }
+
+    fun navigateBottomProfileScreen(v: View) {
+        val intent = Intent(this, AddFamilyActivity::class.java)
         intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
         intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel?.userData?.value?.mid)
         startActivityIntent(intent, false);
@@ -263,14 +344,24 @@ class DashboardActivity : AppBaseActivity() {
         }
     }
 
-    fun switchTreeAndProfile(v:View){
+    fun switchTree(v:View){
         viewModel.isTreeSwitched = true
         val isTreeView = viewModel.isTreeView.value
         if((isTreeView == true) && (!(PermissionUtil().requestPermissionForCamera(this, false)))){
             validateOpenStoryView()
             return
         }
-        viewModel.isTreeView.value = if(viewModel.isTreeView.value == true) (false) else(true)
+        viewModel.isTreeView.value = true
+    }
+
+    fun switchProfile(v:View){
+        viewModel.isTreeSwitched = false
+        val isTreeView = viewModel.isTreeView.value
+        if((isTreeView == true) && (!(PermissionUtil().requestPermissionForCamera(this, false)))){
+            validateOpenStoryView()
+            return
+        }
+        viewModel.isTreeView.value = false
     }
 
     override fun onRequestPermissionsResult(
@@ -365,4 +456,92 @@ class DashboardActivity : AppBaseActivity() {
             }
         }
     }
+
+    fun updateSocialMediaIcons(){
+        if((!TextUtils.isEmpty(viewModel.instagramLink.value)) && (URLUtil.isValidUrl(viewModel.instagramLink.value?.trim()))){
+            binding.instagramIcon.setImageResource(R.drawable.ic_instagram)
+        }else{
+            binding.instagramIcon.setImageResource(R.drawable.ic_instagram_unselect)
+        }
+        if((!TextUtils.isEmpty(viewModel.facebookLink.value)) && (URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))){
+            binding.facebookIcon.setImageResource(R.drawable.ic_facebook)
+        }else{
+            binding.facebookIcon.setImageResource(R.drawable.ic_facebook_unselect)
+        }
+        if((!TextUtils.isEmpty(viewModel.twitterLink.value)) && (URLUtil.isValidUrl(viewModel.twitterLink.value?.trim()))){
+            binding.twitterIcon.setImageResource(R.drawable.ic_twitter)
+        }else{
+            binding.twitterIcon.setImageResource(R.drawable.ic_twitter_unselect)
+        }
+        if((!TextUtils.isEmpty(viewModel.linkedInLink.value)) && (URLUtil.isValidUrl(viewModel.linkedInLink.value?.trim()))){
+            binding.linkedInIcon.setImageResource(R.drawable.ic_linkedin)
+        }else{
+            binding.linkedInIcon.setImageResource(R.drawable.ic_linkedin_unselect)
+        }
+    }
+
+    fun validateSocialLinks(v:View){
+        if((!TextUtils.isEmpty(viewModel.instagramLink.value)) && (!URLUtil.isValidUrl(viewModel.instagramLink.value?.trim()))){
+            binding.instagramLayout.isErrorEnabled = true
+            binding.instagramLayout.error = getString(R.string.error_invalid_url)
+        }else if((!TextUtils.isEmpty(viewModel.facebookLink.value)) && (!URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))){
+            binding.facebookLayout.isErrorEnabled = true
+            binding.facebookLayout.error = getString(R.string.error_invalid_url)
+        }else if((!TextUtils.isEmpty(viewModel.twitterLink.value)) && (!URLUtil.isValidUrl(viewModel.twitterLink.value?.trim()))){
+            binding.twitterLayout.isErrorEnabled = true
+            binding.twitterLayout.error = getString(R.string.error_invalid_url)
+        }else if((!TextUtils.isEmpty(viewModel.linkedInLink.value)) && (!URLUtil.isValidUrl(viewModel.linkedInLink.value?.trim()))){
+            binding.linkedInLayout.isErrorEnabled = true
+            binding.linkedInLayout.error = getString(R.string.error_invalid_url)
+        }else if((TextUtils.isEmpty(viewModel.aboutContent.value))){
+            binding.aboutLayout.isErrorEnabled = true
+            binding.aboutLayout.error = getString(R.string.error_invalid_about)
+        }else{
+            binding.progressInclude.progressBarLayout.visibility = View.VISIBLE
+            viewModel.saveSocialMediaLink(prefhelper.fetchUserData()?.mid)
+        }
+    }
+
+    fun onFbClick(v:View){
+        if((!TextUtils.isEmpty(viewModel.facebookLink.value)) && (URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))){
+            openSocialMediaIntent(viewModel.facebookLink.value)
+        }else{
+            viewModel.showSocialLinkAddView.value = true
+        }
+    }
+
+    fun onInstaClick(v:View){
+        if((!TextUtils.isEmpty(viewModel.instagramLink.value)) && (URLUtil.isValidUrl(viewModel.instagramLink.value?.trim()))){
+            openSocialMediaIntent(viewModel.instagramLink.value)
+        }else{
+            viewModel.showSocialLinkAddView.value = true
+        }
+    }
+
+    fun onTwitterClick(v:View){
+        if((!TextUtils.isEmpty(viewModel.twitterLink.value)) && (URLUtil.isValidUrl(viewModel.twitterLink.value?.trim()))){
+            openSocialMediaIntent(viewModel.twitterLink.value)
+        }else{
+            viewModel.showSocialLinkAddView.value = true
+        }
+    }
+
+    fun onLinkedInClick(v:View){
+        if((!TextUtils.isEmpty(viewModel.linkedInLink.value)) && (URLUtil.isValidUrl(viewModel.linkedInLink.value?.trim()))){
+            openSocialMediaIntent(viewModel.linkedInLink.value)
+        }else{
+            viewModel.showSocialLinkAddView.value = true
+        }
+    }
+
+    fun openSocialMediaIntent(strUrl : String?){
+        try{
+            val browserIntent = Intent(Intent.ACTION_VIEW)
+            browserIntent.setData(Uri.parse(strUrl))
+            startActivity(browserIntent)
+        }catch(e:Exception){
+            e.printStackTrace()
+        }
+    }
+
 }

@@ -70,7 +70,7 @@
                     android:textColor="@color/otp_content_color"
                     android:layout_marginRight="@dimen/phone_number_margin_top"
                     android:layout_marginLeft="@dimen/phone_number_margin_top"
-                    android:textSize="@dimen/common_hint_text_size"
+                    android:textSize="@dimen/we_will_send_otp_label_size"
                     android:gravity="center"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -114,7 +114,7 @@
                             android:padding="0dp"
                             android:text="@={viewModel.countryCode}"
                             android:textColor="@color/edit_phone_number_color"
-                            android:textSize="@dimen/common_btn_text_size" />
+                            android:textSize="@dimen/common_header_text_size" />
 
                         <androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/mobileNumberEditText"
@@ -131,7 +131,7 @@
                             android:singleLine="true"
                             android:text="@={viewModel.phoneNumber}"
                             android:textColor="@color/edit_phone_number_color"
-                            android:textSize="@dimen/common_btn_text_size" />
+                            android:textSize="@dimen/common_header_text_size" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 

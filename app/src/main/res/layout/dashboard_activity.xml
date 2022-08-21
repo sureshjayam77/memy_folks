@@ -10,14 +10,15 @@
             type="com.memy.viewModel.DashboardViewModel" />
 
         <import type="android.view.View" />
+        <import type="android.text.TextUtils"/>
     </data>
 
 
     <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drwayer_lay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        android:id="@+id/drwayer_lay"
         tools:openDrawer="start">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -61,8 +62,8 @@
                         android:layout_height="@dimen/back_icon_height"
                         android:layout_gravity="end|center"
                         android:layout_marginEnd="@dimen/common_margin_size"
-                        android:onClick="navigateNotificationScreen"
-                        android:src="@drawable/ic_baseline_notifications_24" />
+                        android:src="@drawable/ic_baseline_notifications_24"
+                        android:visibility="invisible" />
 
 
                 </androidx.appcompat.widget.Toolbar>
@@ -134,215 +135,157 @@
                             android:orientation="horizontal"
                             android:padding="@dimen/profile_card_padding">
 
-                            <de.hdodenhof.circleimageview.CircleImageView
-                                android:id="@+id/profileImageView"
-                                android:layout_width="@dimen/profile_image_height"
-                                android:layout_height="@dimen/profile_image_height"
-                                android:layout_gravity="center"
-                                android:layout_marginEnd="@dimen/drawable_padding"
-                                android:onClick="navigateProfileScreen"
-                                android:src="@drawable/ic_profile_male" />
-
                             <LinearLayout
-                                android:id="@+id/profileNameLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/drawable_padding"
-                                android:layout_weight="1"
-                                android:gravity="center_vertical"
-                                android:orientation="vertical">
+                                android:layout_weight="0.45"
+                                android:gravity="center_vertical">
 
-                                <androidx.appcompat.widget.AppCompatTextView
-                                    android:id="@+id/nameTextView"
-                                    style="@style/RegularText"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:hint="@string/label_name"
-                                    android:singleLine="true"
-                                    android:text="@{viewModel.userData.firstname}"
-                                    android:textColor="@color/black"
-                                    android:textSize="@dimen/common_text_size"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
-
-                                <androidx.appcompat.widget.AppCompatTextView
-                                    android:id="@+id/callTextView"
-                                    style="@style/RegularText"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/field_margin_top"
-                                    android:background="@drawable/blue_stroke_btn_bg"
-                                    android:onClick="callUser"
-                                    android:paddingStart="@dimen/call_btn_padding"
-                                    android:paddingRight="@dimen/call_btn_padding"
-                                    android:text="@string/label_call"
-                                    android:textColor="@color/app_color"
-                                    android:textSize="@dimen/common_hint_text_size"
-                                    android:visibility="gone"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:id="@+id/profileImageView"
+                                    android:layout_width="@dimen/profile_image_height"
+                                    android:layout_height="@dimen/profile_image_height"
+                                    android:layout_gravity="center"
+                                    android:layout_marginEnd="@dimen/drawable_padding"
+                                    android:onClick="navigateProfileScreen"
+                                    android:src="@drawable/ic_profile_male" />
 
                                 <LinearLayout
-                                    android:id="@+id/socialIconLayout"
+                                    android:id="@+id/profileNameLayout"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/field_margin_top"
-                                    android:orientation="horizontal"
-                                    android:visibility="gone">
+                                    android:layout_marginStart="@dimen/drawable_padding"
+                                    android:gravity="center_vertical"
+                                    android:orientation="vertical">
 
-                                    <androidx.appcompat.widget.AppCompatImageView
-                                        android:id="@+id/instagramIcon"
-                                        android:layout_width="@dimen/social_icon_height"
-                                        android:layout_height="@dimen/social_icon_height"
-                                        android:src="@drawable/ic_instagram" />
+                                    <androidx.appcompat.widget.AppCompatTextView
+                                        android:id="@+id/nameTextView"
+                                        style="@style/RegularText"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:hint="@string/label_name"
+                                        android:singleLine="true"
+                                        android:text="@{viewModel.userData.firstname}"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/common_text_size"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
 
-                                    <androidx.appcompat.widget.AppCompatImageView
-                                        android:id="@+id/facebookIcon"
-                                        android:layout_width="@dimen/social_icon_height"
-                                        android:layout_height="@dimen/social_icon_height"
-                                        android:layout_marginStart="@dimen/social_icon_margin"
-                                        android:src="@drawable/ic_facebook" />
+                                    <androidx.appcompat.widget.AppCompatTextView
+                                        android:id="@+id/callTextView"
+                                        style="@style/RegularText"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="@dimen/card_corners"
+                                        android:background="@drawable/blue_stroke_btn_bg"
+                                        android:onClick="callUser"
+                                        android:paddingStart="@dimen/call_btn_padding"
+                                        android:paddingRight="@dimen/call_btn_padding"
+                                        android:text="@string/label_call"
+                                        android:textColor="@color/app_color"
+                                        android:textSize="@dimen/common_hint_text_size"
+                                        android:visibility="gone"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
 
-                                    <androidx.appcompat.widget.AppCompatImageView
-                                        android:id="@+id/twitterIcon"
-                                        android:layout_width="@dimen/social_icon_height"
-                                        android:layout_height="@dimen/social_icon_height"
-                                        android:layout_marginStart="@dimen/social_icon_margin"
-                                        android:src="@drawable/ic_twitter" />
+                                    <LinearLayout
+                                        android:id="@+id/socialIconLayout"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:orientation="horizontal">
 
-                                    <androidx.appcompat.widget.AppCompatImageView
-                                        android:id="@+id/linkedInIcon"
-                                        android:layout_width="@dimen/social_icon_height"
-                                        android:layout_height="@dimen/social_icon_height"
-                                        android:layout_marginStart="@dimen/social_icon_margin"
-                                        android:src="@drawable/ic_linkedin" />
+                                        <androidx.appcompat.widget.AppCompatImageView
+                                            android:id="@+id/instagramIcon"
+                                            android:layout_width="@dimen/social_icon_height"
+                                            android:layout_height="@dimen/social_icon_height"
+                                            android:onClick="onInstaClick"
+                                            android:padding="@dimen/social_icon_padding"
+                                            android:src="@drawable/ic_instagram" />
+
+                                        <androidx.appcompat.widget.AppCompatImageView
+                                            android:id="@+id/facebookIcon"
+                                            android:layout_width="@dimen/social_icon_height"
+                                            android:layout_height="@dimen/social_icon_height"
+                                            android:onClick="onFbClick"
+                                            android:padding="@dimen/social_icon_padding"
+                                            android:src="@drawable/ic_facebook" />
+
+                                        <androidx.appcompat.widget.AppCompatImageView
+                                            android:id="@+id/twitterIcon"
+                                            android:layout_width="@dimen/social_icon_height"
+                                            android:layout_height="@dimen/social_icon_height"
+                                            android:onClick="onTwitterClick"
+                                            android:padding="@dimen/social_icon_padding"
+                                            android:src="@drawable/ic_twitter" />
+
+                                        <androidx.appcompat.widget.AppCompatImageView
+                                            android:id="@+id/linkedInIcon"
+                                            android:layout_width="@dimen/social_icon_height"
+                                            android:layout_height="@dimen/social_icon_height"
+                                            android:onClick="onLinkedInClick"
+                                            android:padding="@dimen/social_icon_padding"
+                                            android:src="@drawable/ic_linkedin" />
+                                    </LinearLayout>
                                 </LinearLayout>
-
-
                             </LinearLayout>
 
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
+                                android:visibility="@{(TextUtils.isEmpty(viewModel.aboutContent)) ? View.GONE : View.VISIBLE,default=gone}"
                                 android:background="@color/bottom_line_color" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/drawable_padding"
-                                android:layout_weight="1"
+                                android:layout_weight="0.55"
                                 android:gravity="center"
+                                android:visibility="@{(TextUtils.isEmpty(viewModel.aboutContent)) ? View.GONE : View.VISIBLE,default=gone}"
                                 android:orientation="vertical">
 
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:background="@drawable/blue_stroke_btn_bg"
-                                    android:gravity="center"
-                                    android:onClick="switchTreeAndProfile"
-                                    android:orientation="horizontal">
-
-                                    <androidx.appcompat.widget.AppCompatTextView
-                                        android:id="@+id/treeTextView"
-                                        style="@style/RegularText"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:layout_margin="1dp"
-                                        android:background="@{viewModel.isTreeView() ? @drawable/blue_btn_bg :@drawable/white_btn_bg}"
-                                        android:maxLines="1"
-                                        android:paddingStart="@dimen/call_btn_padding"
-                                        android:paddingTop="@dimen/drawable_padding"
-                                        android:paddingEnd="@dimen/call_btn_padding"
-                                        android:paddingBottom="@dimen/drawable_padding"
-                                        android:singleLine="true"
-                                        android:text="@string/label_tree"
-                                        android:textColor="@{viewModel.isTreeView() ? @color/white : @color/app_color}"
-                                        android:textSize="@dimen/common_hint_text_size"
-                                        app:layout_constraintStart_toStartOf="parent"
-                                        app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
-
-                                    <androidx.appcompat.widget.AppCompatTextView
-                                        android:id="@+id/profileTextView"
-                                        style="@style/RegularText"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:layout_margin="1dp"
-                                        android:background="@{viewModel.isTreeView() ? @drawable/white_btn_bg : @drawable/blue_btn_bg}"
-                                        android:maxLines="1"
-                                        android:paddingStart="@dimen/field_margin_top"
-                                        android:paddingTop="@dimen/drawable_padding"
-                                        android:paddingEnd="@dimen/field_margin_top"
-                                        android:paddingBottom="@dimen/drawable_padding"
-                                        android:singleLine="true"
-                                        android:text="@string/label_profile"
-                                        android:textColor="@{viewModel.isTreeView() ? @color/app_color : @color/white}"
-                                        android:textSize="@dimen/common_hint_text_size"
-                                        app:layout_constraintStart_toStartOf="parent"
-                                        app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
-
-                                </LinearLayout>
-
-                                <androidx.appcompat.widget.AppCompatTextView
-                                    android:id="@+id/upComingEventTextView"
-                                    style="@style/RegularText"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/field_margin_top"
-                                    android:drawableLeft="@drawable/ic_calendar"
-                                    android:drawablePadding="@dimen/drawable_padding"
-                                    android:gravity="center"
-                                    android:paddingStart="@dimen/call_btn_padding"
-                                    android:paddingEnd="@dimen/call_btn_padding"
-                                    android:singleLine="true"
-                                    android:text="@string/label_up_coming_event"
-                                    android:textColor="@color/gray_text_color"
-                                    android:textSize="@dimen/common_hint_text_size"
-                                    android:visibility="gone"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
-
-                                <LinearLayout
-                                    android:id="@+id/eventLayout"
+                                <androidx.core.widget.NestedScrollView
+                                    android:id="@+id/aboutViewLayout"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/field_margin_top"
-                                    android:orientation="horizontal"
-                                    android:visibility="gone">
+                                    android:layout_height="@dimen/profile_card_height"
+                                    android:layout_marginTop="@dimen/card_corners"
+                                    android:orientation="vertical">
 
                                     <androidx.appcompat.widget.AppCompatTextView
-                                        android:id="@+id/eventLabelTextView"
+                                        android:id="@+id/aboutViewValueTextView"
                                         style="@style/RegularText"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:gravity="center"
-                                        android:paddingEnd="@dimen/call_btn_padding"
-                                        android:singleLine="true"
-                                        android:text="Event name"
-                                        android:textColor="@color/gray_text_color"
-                                        android:textSize="@dimen/common_hint_text_size"
-                                        tools:text="fsdfkjsdf jsdfkjs dkjf nskjdfn kjs" />
-
-                                    <androidx.appcompat.widget.AppCompatTextView
-                                        android:id="@+id/eventViewTextView"
-                                        style="@style/RegularText"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:background="@drawable/gray_stroke_bg"
-                                        android:gravity="center"
-                                        android:paddingStart="@dimen/call_btn_padding"
-                                        android:paddingEnd="@dimen/call_btn_padding"
-                                        android:text="@string/label_view"
-                                        android:textColor="@color/gray_text_color"
+                                        android:gravity="start"
+                                        android:text="@{viewModel.aboutContent}"
+                                        android:textColor="@color/app_color"
                                         android:textSize="@dimen/common_hint_text_size"
                                         app:layout_constraintStart_toStartOf="parent"
                                         app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
 
 
-                                </LinearLayout>
+                                </androidx.core.widget.NestedScrollView>
                             </LinearLayout>
                         </LinearLayout>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/editTextView"
+                            style="@style/RegularText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/label_name"
+                            android:singleLine="true"
+                            android:text="@string/label_edit"
+                            android:gravity="center"
+                            android:layout_gravity="end|bottom"
+                            android:textColor="@color/white"
+                            android:onClick="@{() -> viewModel.showSocialMediaLinkAddView()}"
+                            android:padding="@dimen/card_corners"
+                            android:background="@color/fifty_app_color"
+                            android:textSize="@dimen/common_text_size"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
 
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
@@ -399,7 +342,7 @@
                     android:id="@+id/bottomTempView"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/footer_height"
-                    android:background="@color/footer_bar_color"
+                    android:background="@color/white"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -413,28 +356,28 @@
                     app:layout_constraintBottom_toBottomOf="parent">
 
                     <LinearLayout
-                        android:id="@+id/addFamilyLayout"
+                        android:id="@+id/bubblesLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center_vertical|center"
-                        android:onClick="navigateAddFamily"
+                        android:onClick="openFamilyWall"
                         android:orientation="vertical"
                         android:padding="@dimen/field_margin_top">
 
                         <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/addFamilyImageView"
+                            android:id="@+id/bubblesImageView"
                             android:layout_width="@dimen/footer_icon_height"
                             android:layout_height="@dimen/footer_icon_height"
-                            android:src="@drawable/ic_add_family" />
+                            android:src="@drawable/ic_bubbles_unselect" />
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/addFamilyTextView"
+                            android:id="@+id/bubblesTextView"
                             style="@style/RegularText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:text="@string/label_add_family"
+                            android:text="@string/label_bubbles"
                             android:textColor="@color/footer_bar_txt_color"
                             android:textSize="@dimen/common_small_text_size"
                             app:layout_constraintStart_toStartOf="parent"
@@ -442,90 +385,63 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/publishLayout"
+                        android:id="@+id/storyLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center_vertical|center"
+                        android:onClick="switchProfile"
                         android:orientation="vertical"
                         android:padding="@dimen/field_margin_top">
 
                         <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/publishImageView"
+                            android:id="@+id/storyImageView"
                             android:layout_width="@dimen/footer_icon_height"
                             android:layout_height="@dimen/footer_icon_height"
-                            android:src="@drawable/ic_publish_select" />
+                            android:src="@drawable/ic_story_select" />
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/publishTextView"
+                            android:id="@+id/storyTextView"
                             style="@style/RegularText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:text="@string/label_publish"
-                            android:textColor="@color/footer_bar_txt_color"
-                            android:textSize="@dimen/common_hint_text_size"
+                            android:text="@string/label_story"
+                            android:textSize="@dimen/common_small_text_size"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/wallLayout"
+                        android:id="@+id/familyLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center_vertical|center"
+                        android:onClick="switchTree"
                         android:orientation="vertical"
                         android:padding="@dimen/field_margin_top">
 
                         <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/wallImageView"
+                            android:id="@+id/familyImageView"
                             android:layout_width="@dimen/footer_icon_big_height"
                             android:layout_height="@dimen/footer_icon_big_height"
                             android:background="@drawable/family_wall_circle_bg"
                             android:padding="3dp"
-                            android:src="@drawable/ic_family_wall" />
+                            android:src="@drawable/ic_mmf_unselect" />
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/wallTextView"
+                            android:id="@+id/familyTextView"
                             style="@style/RegularText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:text="@string/label_family_wall"
-                            android:textColor="@color/footer_bar_txt_color"
-                            android:textSize="@dimen/common_hint_text_size"
+                            android:text="@string/label_family_tree"
+                            android:textSize="@dimen/common_small_text_size"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/shareLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical|center"
-                        android:orientation="vertical"
-                        android:padding="@dimen/field_margin_top">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/shareImageView"
-                            android:layout_width="@dimen/footer_icon_height"
-                            android:layout_height="@dimen/footer_icon_height"
-                            android:src="@drawable/ic_share" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/shareTextView"
-                            style="@style/RegularText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:singleLine="true"
-                            android:text="@string/label_share"
-                            android:textColor="@color/footer_bar_txt_color"
-                            android:textSize="@dimen/common_hint_text_size"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
-                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/notificationLayout"
@@ -533,6 +449,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center_vertical|center"
+                        android:onClick="navigateNotificationScreen"
                         android:orientation="vertical"
                         android:padding="@dimen/field_margin_top">
 
@@ -540,7 +457,7 @@
                             android:id="@+id/notificationImageView"
                             android:layout_width="@dimen/footer_icon_height"
                             android:layout_height="@dimen/footer_icon_height"
-                            android:src="@drawable/ic_notification_select" />
+                            android:src="@drawable/ic_notification_unselect" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/notificationTextView"
@@ -548,12 +465,42 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:text="@string/label_share"
+                            android:text="@string/label_notification"
                             android:textColor="@color/footer_bar_txt_color"
-                            android:textSize="@dimen/common_hint_text_size"
+                            android:textSize="@dimen/common_small_text_size"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/profileLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical|center"
+                        android:onClick="navigateBottomProfileScreen"
+                        android:orientation="vertical"
+                        android:padding="@dimen/field_margin_top">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/profileViewImageView"
+                            android:layout_width="@dimen/footer_icon_height"
+                            android:layout_height="@dimen/footer_icon_height"
+                            android:src="@drawable/ic_profile_unselect" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/profileViewTextView"
+                            style="@style/RegularText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:text="@string/label_profile"
+                            android:textColor="@color/footer_bar_txt_color"
+                            android:textSize="@dimen/common_small_text_size"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -571,6 +518,193 @@
                     app:tint="@color/white" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:background="@color/fifty_bg_color"
+                android:visibility="@{viewModel.showSocialLinkAddView ? View.VISIBLE : View.GONE,default=gone}">
+
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingBottom="@dimen/add_family_parent_margin">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/add_family_parent_margin"
+                        android:layout_marginEnd="@dimen/add_family_parent_margin"
+                        android:background="@drawable/white_btn_bg"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="80dp"
+                        android:layout_marginTop="80dp"
+                        android:paddingBottom="@dimen/add_family_parent_margin">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/instagramLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/label_instagram"
+                            android:padding="@dimen/field_margin_top"
+                            app:hintTextColor="@color/gray_text_color">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/instagramEditText"
+                                style="@style/RegularText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bottom_line"
+                                android:text="@={viewModel.instagramLink}"
+                                android:textColor="@color/black"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:textColorHint="@color/hint_color"
+                                android:textSize="@dimen/common_text_size" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/facebookLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/label_facebook"
+                            android:padding="@dimen/field_margin_top"
+                            app:hintTextColor="@color/gray_text_color">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/facebookEditText"
+                                style="@style/RegularText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bottom_line"
+                                android:text="@={viewModel.facebookLink}"
+                                android:textColor="@color/black"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:textColorHint="@color/hint_color"
+                                android:textSize="@dimen/common_text_size" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/twitterLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/label_twitter"
+                            android:padding="@dimen/field_margin_top"
+                            app:hintTextColor="@color/gray_text_color">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/twitterEditText"
+                                style="@style/RegularText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bottom_line"
+                                android:text="@={viewModel.twitterLink}"
+                                android:textColor="@color/black"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:textColorHint="@color/hint_color"
+                                android:textSize="@dimen/common_text_size" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/linkedInLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/label_linkedin"
+                            android:padding="@dimen/field_margin_top"
+                            app:hintTextColor="@color/gray_text_color">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/linkedInEditText"
+                                style="@style/RegularText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bottom_line"
+                                android:text="@={viewModel.linkedInLink}"
+                                android:textColor="@color/black"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:textColorHint="@color/hint_color"
+                                android:textSize="@dimen/common_text_size" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/aboutLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/label_about"
+                            android:padding="@dimen/field_margin_top"
+                            app:hintTextColor="@color/gray_text_color">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/aboutEditText"
+                                style="@style/RegularText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bottom_line"
+                                android:maxLines="3"
+                                android:text="@={viewModel.aboutContent}"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/hint_color"
+                                android:textSize="@dimen/common_text_size" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/socialSubmitBtn"
+                                style="@style/ButtonBoldWithBg"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/card_corners"
+                                android:layout_marginTop="@dimen/common_margin_size"
+                                android:layout_marginEnd="@dimen/card_corners"
+                                android:layout_weight="1"
+                                android:onClick="validateSocialLinks"
+                                android:padding="@dimen/common_edit_txt_padding"
+                                android:text="@string/label_save"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/common_text_size"
+                                app:cornerRadius="30dp"
+                                app:layout_constraintTop_toBottomOf="@+id/familyTagPopupTextView" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/socialCancelBtn"
+                                style="@style/ButtonBoldWithBg"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/card_corners"
+                                android:layout_marginTop="@dimen/common_margin_size"
+                                android:layout_marginEnd="@dimen/card_corners"
+                                android:layout_weight="1"
+                                android:onClick="@{() -> viewModel.hideSocialMediaLinkAddView()}"
+                                android:padding="@dimen/common_edit_txt_padding"
+                                android:text="@string/label_cancel"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/common_text_size"
+                                app:cornerRadius="30dp"
+                                app:layout_constraintTop_toBottomOf="@+id/requestBtn" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </androidx.core.widget.NestedScrollView>
+
+            </FrameLayout>
+
             <include
                 android:id="@+id/progressInclude"
                 layout="@layout/progressbar_layout" />
@@ -580,188 +714,206 @@
             android:id="@+id/nav_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@color/white"
             android:layout_gravity="start"
-            android:fitsSystemWindows="true" >
+            android:background="@color/white"
+            android:fitsSystemWindows="true">
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/img_profile"
                     android:layout_width="100dp"
-                    android:layout_marginTop="50dp"
+                    android:layout_height="100dp"
                     android:layout_gravity="center"
+                    android:layout_marginTop="50dp"
                     android:src="@drawable/img_place_holder"
                     app:civ_border_color="#FFFFFF"
-                    app:civ_border_width="2dp"
-                    android:layout_height="100dp"/>
+                    app:civ_border_width="2dp" />
+
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_firstname"
                     style="@style/BoldText"
-                    android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:gravity="center"
                     android:hint="@string/last_name"
                     android:textColor="@color/black"
                     android:textSize="@dimen/common_text_size" />
+
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_mobile"
                     style="@style/RegularText"
-                    android:gravity="center"
-                    android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
                     android:hint="9XXXXXXXXX"
                     android:textColor="@color/black"
                     android:textSize="@dimen/common_hint_text_size" />
+
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_about"
                     style="@style/RegularText"
-                    android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
-                    android:padding="10dp"
-                    android:onClick="openAboutIntent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:onClick="openAboutIntent"
+                    android:padding="10dp"
                     android:text="@string/label_about"
                     android:textColor="@color/black"
                     android:textSize="@dimen/common_text_size" />
+
                 <View
                     android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/bottom_line_color"
-                    android:layout_height="0.5dp" />
+                    android:visibility="gone"
+                    android:background="@color/bottom_line_color" />
+
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_family_wall"
                     style="@style/RegularText"
-                    android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
-                    android:padding="10dp"
-                    android:onClick="openFamilyWall"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:onClick="openFamilyWall"
+                    android:padding="10dp"
                     android:text="@string/family_wall_label"
+                    android:visibility="gone"
                     android:textColor="@color/black"
                     android:textSize="@dimen/common_text_size" />
+
                 <View
                     android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/bottom_line_color"
-                    android:layout_height="0.5dp" />
+                    android:background="@color/bottom_line_color" />
+
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_blog"
                     style="@style/RegularText"
-                    android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
-                    android:padding="10dp"
-                    android:onClick="openBlogIntent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:onClick="openBlogIntent"
+                    android:padding="10dp"
                     android:text="@string/label_blog"
                     android:textColor="@color/black"
                     android:textSize="@dimen/common_text_size" />
+
                 <View
                     android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/bottom_line_color"
-                    android:layout_height="0.5dp" />
+                    android:background="@color/bottom_line_color" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_help"
                     style="@style/RegularText"
-                    android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
-                    android:padding="10dp"
-                    android:onClick="openHelpIntent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:onClick="openHelpIntent"
+                    android:padding="10dp"
                     android:text="@string/label_help"
                     android:textColor="@color/black"
                     android:textSize="@dimen/common_text_size" />
+
                 <View
                     android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/bottom_line_color"
-                    android:layout_height="0.5dp" />
+                    android:background="@color/bottom_line_color" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_trems_condition"
                     style="@style/RegularText"
-                    android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
-                    android:padding="10dp"
-                    android:onClick="openTermsIntent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:onClick="openTermsIntent"
+                    android:padding="10dp"
                     android:text="@string/terms_condition"
                     android:textColor="@color/black"
                     android:textSize="@dimen/common_text_size" />
+
                 <View
                     android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/bottom_line_color"
-                    android:layout_height="0.5dp" />
+                    android:background="@color/bottom_line_color" />
+
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_settings"
                     style="@style/RegularText"
-                    android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
-                    android:padding="10dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:padding="10dp"
                     android:text="@string/label_settings"
-                    android:visibility="gone"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/common_text_size" />
+                    android:textSize="@dimen/common_text_size"
+                    android:visibility="gone" />
+
                 <View
                     android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:visibility="gone"
                     android:background="@color/bottom_line_color"
-                    android:layout_height="0.5dp" />
+                    android:visibility="gone" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_feedback"
                     style="@style/RegularText"
-                    android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
-                    android:padding="10dp"
-                    android:onClick="openFeedbackIntent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:onClick="openFeedbackIntent"
+                    android:padding="10dp"
                     android:text="@string/label_feedback"
                     android:textColor="@color/black"
                     android:textSize="@dimen/common_text_size" />
+
                 <View
                     android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/bottom_line_color"
-                    android:layout_height="0.5dp" />
+                    android:background="@color/bottom_line_color" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_logout"
                     style="@style/RegularText"
-                    android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
-                    android:padding="10dp"
-                    android:onClick="showMenuPopup"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:onClick="showMenuPopup"
+                    android:padding="10dp"
                     android:text="@string/label_logout"
                     android:textColor="@color/black"
                     android:textSize="@dimen/common_text_size" />
+
                 <View
                     android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
                     android:layout_marginTop="5dp"
-                    android:background="@color/bottom_line_color"
-                    android:layout_height="0.5dp" />
+                    android:background="@color/bottom_line_color" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/make_india_img"/>
+                    app:srcCompat="@drawable/make_india_img" />
             </LinearLayout>
         </com.google.android.material.navigation.NavigationView>
     </androidx.drawerlayout.widget.DrawerLayout>

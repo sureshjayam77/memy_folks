@@ -6,10 +6,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
+import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
+import android.webkit.URLUtil
 import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -64,10 +67,11 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
             onBackPressed()
         })
         binding.backIconImageView.setImageResource(R.drawable.ic_back_arrow)
-        binding.bottomBarLayout.visibility = View.GONE
+        binding.bottomBarLayout.visibility = View.VISIBLE
         binding.titleTextView.text = getString(R.string.label_profile)
         binding.menuIconImageView.visibility = View.GONE
-        binding.bottomTempView.visibility = View.GONE
+        binding.bottomTempView.visibility = View.VISIBLE
+        binding.editTextView.visibility = View.GONE
     }
 
     private fun setupViewModel() {
@@ -76,8 +80,9 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
 
         viewModel.showProfile = intent?.getBooleanExtra(Constents.SHOW_PROFILE_INTENT_TAG, false);
         if (viewModel.showProfile == true) {
-            viewModel.isTreeSwitched = true
-            switchTreeAndProfile(null)
+            switchTree(null)
+        }else{
+            switchProfile(null)
         }
     }
 
@@ -126,6 +131,10 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                     )
                     transaction.addToBackStack(null)
                     transaction.commit()
+                    binding.familyImageView.setImageResource(R.drawable.ic_mmf_select)
+                    binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
+                    binding.storyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+                    binding.familyTextView.setTextColor(ContextCompat.getColor(this,R.color.app_color))
                 } else {
                     val manager: FragmentManager = supportFragmentManager
                     val transaction: FragmentTransaction = manager.beginTransaction()
@@ -136,6 +145,10 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                     )
                     transaction.addToBackStack(null)
                     transaction.commit()
+                    binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
+                    binding.storyImageView.setImageResource(R.drawable.ic_story_select)
+                    binding.storyTextView.setTextColor(ContextCompat.getColor(this,R.color.app_color))
+                    binding.familyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
                 }
                 loadProfileImage(viewModel.userData.value?.photo)
             } else {
@@ -160,6 +173,13 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                 .error(R.drawable.ic_profile_male)
                 .into(binding.profileImageView)
         }
+
+        viewModel.instagramLink.value = viewModel.userData.value?.instagram_link
+        viewModel.facebookLink.value = viewModel.userData.value?.facebook_link
+        viewModel.twitterLink.value = viewModel.userData.value?.twitter_link
+        viewModel.linkedInLink.value = viewModel.userData.value?.linkedin_link
+        viewModel.aboutContent.value = viewModel.userData.value?.about_me
+        updateSocialMediaIcons()
     }
 
     fun navigateAddFamily(v: View) {
@@ -241,14 +261,24 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
             }
         }
 
-    fun switchTreeAndProfile(v: View?) {
+    fun switchTree(v:View?){
         viewModel.isTreeSwitched = true
         val isTreeView = viewModel.isTreeView.value
-        if ((isTreeView == true) && (!(PermissionUtil().requestPermissionForCamera(this, false)))) {
+        if((isTreeView == true) && (!(PermissionUtil().requestPermissionForCamera(this, false)))){
             validateOpenStoryView()
             return
         }
-        viewModel.isTreeView.value = if (viewModel.isTreeView.value == true) (false) else (true)
+        viewModel.isTreeView.value = true
+    }
+
+    fun switchProfile(v:View?){
+        viewModel.isTreeSwitched = false
+        val isTreeView = viewModel.isTreeView.value
+        if((isTreeView == true) && (!(PermissionUtil().requestPermissionForCamera(this, false)))){
+            validateOpenStoryView()
+            return
+        }
+        viewModel.isTreeView.value = false
     }
 
     override fun onRequestPermissionsResult(
@@ -263,5 +293,83 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+
+    fun onFbClick(v:View){
+        if((!TextUtils.isEmpty(viewModel.facebookLink.value)) && (URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))){
+            openSocialMediaIntent(viewModel.facebookLink.value)
+        }
+    }
+
+    fun onInstaClick(v:View){
+        if((!TextUtils.isEmpty(viewModel.instagramLink.value)) && (URLUtil.isValidUrl(viewModel.instagramLink.value?.trim()))){
+            openSocialMediaIntent(viewModel.instagramLink.value)
+        }
+    }
+
+    fun onTwitterClick(v:View){
+        if((!TextUtils.isEmpty(viewModel.twitterLink.value)) && (URLUtil.isValidUrl(viewModel.twitterLink.value?.trim()))){
+            openSocialMediaIntent(viewModel.twitterLink.value)
+        }
+    }
+
+    fun onLinkedInClick(v:View){
+        if((!TextUtils.isEmpty(viewModel.linkedInLink.value)) && (URLUtil.isValidUrl(viewModel.linkedInLink.value?.trim()))){
+            openSocialMediaIntent(viewModel.linkedInLink.value)
+        }
+    }
+
+    fun openSocialMediaIntent(strUrl : String?){
+        try{
+            val browserIntent = Intent(Intent.ACTION_VIEW)
+            browserIntent.setData(Uri.parse(strUrl))
+            startActivity(browserIntent)
+        }catch(e:Exception){
+            e.printStackTrace()
+        }
+    }
+
+    fun updateSocialMediaIcons(){
+        if((!TextUtils.isEmpty(viewModel.instagramLink.value)) && (URLUtil.isValidUrl(viewModel.instagramLink.value?.trim()))){
+            binding.instagramIcon.setImageResource(R.drawable.ic_instagram)
+        }else{
+            binding.instagramIcon.setImageResource(R.drawable.ic_instagram_unselect)
+        }
+        if((!TextUtils.isEmpty(viewModel.facebookLink.value)) && (URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))){
+            binding.facebookIcon.setImageResource(R.drawable.ic_facebook)
+        }else{
+            binding.facebookIcon.setImageResource(R.drawable.ic_facebook_unselect)
+        }
+        if((!TextUtils.isEmpty(viewModel.twitterLink.value)) && (URLUtil.isValidUrl(viewModel.twitterLink.value?.trim()))){
+            binding.twitterIcon.setImageResource(R.drawable.ic_twitter)
+        }else{
+            binding.twitterIcon.setImageResource(R.drawable.ic_twitter_unselect)
+        }
+        if((!TextUtils.isEmpty(viewModel.linkedInLink.value)) && (URLUtil.isValidUrl(viewModel.linkedInLink.value?.trim()))){
+            binding.linkedInIcon.setImageResource(R.drawable.ic_linkedin)
+        }else{
+            binding.linkedInIcon.setImageResource(R.drawable.ic_linkedin_unselect)
+        }
+    }
+
+    fun openFamilyWall(v:View){
+        binding.drwayerLay.closeDrawer(Gravity.LEFT)
+        startActivity(Intent(this,FamilyWallActivity::class.java))
+    }
+
+
+    fun navigateNotificationScreen(v: View) {
+        val intent = Intent(this, NotificationActivity::class.java)
+        intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
+        intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, prefhelper.fetchUserData()?.mid)
+        startActivityIntent(intent, false);
+    }
+
+    fun navigateBottomProfileScreen(v: View) {
+        val intent = Intent(this, AddFamilyActivity::class.java)
+        intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
+        intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, prefhelper.fetchUserData()?.mid)
+        startActivityIntent(intent, false);
     }
 }
