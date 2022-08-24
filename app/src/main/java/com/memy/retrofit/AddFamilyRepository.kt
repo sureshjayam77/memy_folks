@@ -22,6 +22,7 @@ class AddFamilyRepository : BaseRepository() {
     var stateListResponse = MutableLiveData<StateListRes>()
     var profileUpdateRes = MutableLiveData<CommonResponse>()
     var profileSocialLinkUpdateRes = MutableLiveData<CommonResponse>()
+    var addFamilyMemberRes = MutableLiveData<AddFamilyResponse>()
     var addFamilyRes = MutableLiveData<CommonResponse>()
     var wallRes = MutableLiveData<WallResult>()
     var commentRes = MutableLiveData<CommentResult>()
@@ -229,7 +230,7 @@ class AddFamilyRepository : BaseRepository() {
                 photoBody = MultipartBody.Part.createFormData("photo", file.name, reqFile)
             }
 
-            var addFamilyCall: Call<CommonResponse?>? =
+            var addFamilyCall: Call<AddFamilyResponse?>? =
                 retrofit.create(APIInterface::class.java).addFamilyData(
                     BaseRepository.APP_KEY_VALUE, owner,userId,
                     stringHashMap,
@@ -237,16 +238,16 @@ class AddFamilyRepository : BaseRepository() {
                     photoBody
                 )
 
-            addFamilyCall?.enqueue(object : Callback<CommonResponse?> {
+            addFamilyCall?.enqueue(object : Callback<AddFamilyResponse?> {
                 override fun onResponse(
-                    call: Call<CommonResponse?>?,
-                    response: Response<CommonResponse?>?
+                    call: Call<AddFamilyResponse?>?,
+                    response: Response<AddFamilyResponse?>?
                 ) {
-                    addFamilyRes.value = response?.body()
+                    addFamilyMemberRes.value = response?.body()
                 }
 
-                override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
-                    addFamilyRes.value = CommonResponse(null, 0, null)
+                override fun onFailure(call: Call<AddFamilyResponse?>?, t: Throwable) {
+                    addFamilyMemberRes.value = AddFamilyResponse(null, 0, null)
                 }
             })
         }

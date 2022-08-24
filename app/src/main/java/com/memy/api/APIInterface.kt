@@ -54,7 +54,7 @@ interface APIInterface {
 
     @Multipart
     @POST("api/v1/member/")
-    fun addFamilyData(@Query("apikey") apikey: String,@Query("owner_id") ownerId: Int?,@Query("parent_id") relationPersionId: Int?,@PartMap() partMap :  HashMap<String?, RequestBody?>,@PartMap() partArrayMap :  HashMap<String?, List<CommonMobileNumberObj>?>,@Part file: MultipartBody.Part?) : Call<CommonResponse?>?
+    fun addFamilyData(@Query("apikey") apikey: String,@Query("owner_id") ownerId: Int?,@Query("parent_id") relationPersionId: Int?,@PartMap() partMap :  HashMap<String?, RequestBody?>,@PartMap() partArrayMap :  HashMap<String?, List<CommonMobileNumberObj>?>,@Part file: MultipartBody.Part?) : Call<AddFamilyResponse?>?
 
     /*  @POST("api/familymember/")
       fun addFamilyData(@Body()  req: AddFamilyRequest?) : Call<CommonResponse?>?*/

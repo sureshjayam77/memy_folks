@@ -63,6 +63,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
     var userData: ProfileData? = null
     var updatedImageURI : Uri? = null
     var addFamilyRes = MutableLiveData<CommonResponse>()
+    var addFamilyMemberRes = MutableLiveData<AddFamilyResponse>()
     var isAddFamilyClicked = true
     var deathDate : String? = null
     var deleteAccountRes = MutableLiveData<CommonResponse>()
@@ -80,6 +81,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
         profileVerificationResObj = dashboardRepository.profileVerificationResObj
         profileUpdateRes = addFamilyRepository.profileUpdateRes
         addFamilyRes = addFamilyRepository.addFamilyRes
+        addFamilyMemberRes = addFamilyRepository.addFamilyMemberRes
         deleteAccountRes = addFamilyRepository.deleteAccountRes
         isCusExistRes = addFamilyRepository.isCusExistRes
         relationUpdateSuccessRes = addFamilyRepository.relationUpdateSuccessRes

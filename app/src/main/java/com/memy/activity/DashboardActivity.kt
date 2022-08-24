@@ -255,12 +255,12 @@ class DashboardActivity : AppBaseActivity() {
         startActivityIntent(intent, false);
     }
 
-    fun navigateBottomProfileScreen(v: View) {
+   /* fun navigateBottomProfileScreen(v: View) {
         val intent = Intent(this, AddFamilyActivity::class.java)
         intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
         intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel?.userData?.value?.mid)
         startActivityIntent(intent, false);
-    }
+    }*/
 
     fun callUser(v: View) {
         var number = ""

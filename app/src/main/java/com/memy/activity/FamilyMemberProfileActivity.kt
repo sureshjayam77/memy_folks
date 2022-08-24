@@ -80,9 +80,9 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
 
         viewModel.showProfile = intent?.getBooleanExtra(Constents.SHOW_PROFILE_INTENT_TAG, false);
         if (viewModel.showProfile == true) {
-            switchTree(null)
-        }else{
             switchProfile(null)
+        }else{
+            switchTree(null)
         }
     }
 
@@ -196,6 +196,8 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
             intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
             intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel?.userData?.value?.mid)
             startActivityIntent(intent, false);
+        }else{
+            navigateBottomProfileScreen()
         }
     }
 
@@ -366,7 +368,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         startActivityIntent(intent, false);
     }
 
-    fun navigateBottomProfileScreen(v: View) {
+    fun navigateBottomProfileScreen() {
         val intent = Intent(this, AddFamilyActivity::class.java)
         intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
         intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, prefhelper.fetchUserData()?.mid)

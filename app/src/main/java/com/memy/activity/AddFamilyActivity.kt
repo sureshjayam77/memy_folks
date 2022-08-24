@@ -159,7 +159,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         viewModel.countryListRes.observe(this, this::validateCountryListRes)
         viewModel.stateListResponse.observe(this, this::validateStateListRes)
         viewModel.profileUpdateRes.observe(this, this::validateProfileUpdateRes)
-        viewModel.addFamilyRes.observe(this, this::validateAddFamilyRes)
+        viewModel.addFamilyMemberRes.observe(this, this::validateAddFamilyRes)
         viewModel.relationUpdateSuccessRes.observe(this, this::validateRelationUpdateRes)
 
         viewModel.profileVerificationResObj.observe(this, this::validateProfileRes)
@@ -543,7 +543,11 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             }
         } else if(id == R.id.add_family_success){
             if ((viewModel.isAddFamilyClicked != null) && (viewModel.isAddFamilyClicked == true)) {
-                startActivityIntent(Intent(this, DashboardActivity::class.java), true)
+                val intent = Intent(this, FamilyMemberProfileActivity::class.java)
+                intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel.addFamilyMemberRes.value?.data?.mid?.toInt())
+                startActivityIntent(intent, false)
+                finish()
+               // startActivityIntent(Intent(this, DashboardActivity::class.java), true)
             } else {
                 viewModel.firstName.value = ""
                 viewModel.lastName.value = ""
@@ -1138,6 +1142,17 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         showAlertDialog(R.id.do_nothing, message, getString(R.string.close_label), "")
     }
 
+    private fun errorHandler(res: AddFamilyResponse) {
+        var message = ""
+        if ((res != null) && (res.errorDetails != null)) {
+            message = res.errorDetails.message!!
+        }
+        if (TextUtils.isEmpty(message)) {
+            message = getString(R.string.something_went_wrong)
+        }
+        showAlertDialog(R.id.do_nothing, message, getString(R.string.close_label), "")
+    }
+
     private fun validateProfileUpdateRes(res: CommonResponse) {
         hideProgressBar()
         if (res != null) {
@@ -1158,7 +1173,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
     }
 
-    private fun validateAddFamilyRes(res: CommonResponse) {
+    private fun validateAddFamilyRes(res: AddFamilyResponse) {
         hideProgressBar()
         if (res != null) {
             if (res.statusCode == 200) {
