@@ -127,4 +127,8 @@ interface APIInterface {
     @GET("api/v1/family_members/")
     fun getFamilyMembersList(@Query("apikey") apikey: String,@Query("mid") mid: String) : Call<FamilyMembersResult?>?
 
+    @GET("api/memberrelationships/")
+    fun getMemberRelationShip(@Query("apikey") apikey: String,@Query("mid") mid: String?) : Call<MemberRelationShipResData?>?
+
+
 }

@@ -482,28 +482,37 @@ class DashboardActivity : AppBaseActivity() {
 
     fun validateSocialLinks(v:View){
         if((!TextUtils.isEmpty(viewModel.instagramLink.value)) && (!URLUtil.isValidUrl(viewModel.instagramLink.value?.trim()))){
-            binding.instagramLayout.isErrorEnabled = true
-            binding.instagramLayout.error = getString(R.string.error_invalid_url)
-        }else if((!TextUtils.isEmpty(viewModel.facebookLink.value)) && (!URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))){
-            binding.facebookLayout.isErrorEnabled = true
-            binding.facebookLayout.error = getString(R.string.error_invalid_url)
-        }else if((!TextUtils.isEmpty(viewModel.twitterLink.value)) && (!URLUtil.isValidUrl(viewModel.twitterLink.value?.trim()))){
-            binding.twitterLayout.isErrorEnabled = true
-            binding.twitterLayout.error = getString(R.string.error_invalid_url)
-        }else if((!TextUtils.isEmpty(viewModel.linkedInLink.value)) && (!URLUtil.isValidUrl(viewModel.linkedInLink.value?.trim()))){
-            binding.linkedInLayout.isErrorEnabled = true
-            binding.linkedInLayout.error = getString(R.string.error_invalid_url)
-        }else if((TextUtils.isEmpty(viewModel.aboutContent.value))){
-            binding.aboutLayout.isErrorEnabled = true
-            binding.aboutLayout.error = getString(R.string.error_invalid_about)
-        }else{
+//            binding.instagramLayout.isErrorEnabled = true
+//            binding.instagramLayout.error = getString(R.string.error_invalid_url)
+            viewModel.instagramLink.value = "https://www.instagram.com/"+(viewModel.instagramLink.value)
+        }
+        if((!TextUtils.isEmpty(viewModel.facebookLink.value)) && (!URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))){
+//            binding.facebookLayout.isErrorEnabled = true
+//            binding.facebookLayout.error = getString(R.string.error_invalid_url)
+            viewModel.facebookLink.value = "https://www.facebook.com/"+viewModel.facebookLink.value
+        }
+        if((!TextUtils.isEmpty(viewModel.twitterLink.value)) && (!URLUtil.isValidUrl(viewModel.twitterLink.value?.trim()))){
+//            binding.twitterLayout.isErrorEnabled = true
+//            binding.twitterLayout.error = getString(R.string.error_invalid_url)
+            viewModel.twitterLink.value = "https://twitter.com/"+viewModel.twitterLink.value
+        }
+        if((!TextUtils.isEmpty(viewModel.linkedInLink.value)) && (!URLUtil.isValidUrl(viewModel.linkedInLink.value?.trim()))){
+//            binding.linkedInLayout.isErrorEnabled = true
+//            binding.linkedInLayout.error = getString(R.string.error_invalid_url)
+            viewModel.linkedInLink.value = "https://www.linkedin.com/"+viewModel.linkedInLink.value
+        }
+        if((TextUtils.isEmpty(viewModel.aboutContent.value))){
+//            binding.aboutLayout.isErrorEnabled = true
+//            binding.aboutLayout.error = getString(R.string.error_invalid_about)
+        }
+
             binding.progressInclude.progressBarLayout.visibility = View.VISIBLE
             viewModel.saveSocialMediaLink(prefhelper.fetchUserData()?.mid)
-        }
+
     }
 
     fun onFbClick(v:View){
-        if((!TextUtils.isEmpty(viewModel.facebookLink.value)) && (URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))){
+        if((!TextUtils.isEmpty(viewModel.facebookLink.value)) &&  (URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))){
             openSocialMediaIntent(viewModel.facebookLink.value)
         }else{
             viewModel.showSocialLinkAddView.value = true
@@ -542,6 +551,11 @@ class DashboardActivity : AppBaseActivity() {
         }catch(e:Exception){
             e.printStackTrace()
         }
+    }
+
+    fun fetchMemberRelationShipData(userId : String?){
+        binding.progressInclude.progressBarLayout.visibility = View.VISIBLE
+        viewModel.fetchMemberRelationShip(userId)
     }
 
 }

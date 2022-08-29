@@ -34,6 +34,8 @@ class DashboardViewModel : AppBaseViewModel() {
     var linkedInLink : MutableLiveData<String> = MutableLiveData()
     var aboutContent : MutableLiveData<String> = MutableLiveData()
     var showSocialLinkAddView : MutableLiveData<Boolean> = MutableLiveData()
+    var showAddRelationView : MutableLiveData<Boolean> = MutableLiveData()
+    var selectedMemberId : String? = ""
 
     init {
         dashboardRepository = DashboardRepository()
@@ -44,6 +46,7 @@ class DashboardViewModel : AppBaseViewModel() {
         storyListRes = storyRepository.storyListRes
         profileSocialLinkUpdateRes = addFamilyRepository.profileSocialLinkUpdateRes
         isTreeView.value = true
+        showAddRelationView.value = false
     }
 
     fun fetchProfile(userId : Int?){
@@ -75,4 +78,7 @@ class DashboardViewModel : AppBaseViewModel() {
         showSocialLinkAddView.value = true
     }
 
+    fun fetchMemberRelationShip(userId : String?){
+        dashboardRepository.fetchMemberRelationData(userId)
+    }
 }

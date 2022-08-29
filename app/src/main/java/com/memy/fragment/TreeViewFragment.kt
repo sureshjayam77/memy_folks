@@ -1,6 +1,7 @@
 package com.memy.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -43,6 +44,7 @@ class TreeViewFragment : BaseFragment() {
         binding.webview.addJavascriptInterface(
             WebAppInterface(
                 activity,
+                viewModel,
                 binding.webview
             ), "Android")
         loadProfileTree()
@@ -53,15 +55,17 @@ class TreeViewFragment : BaseFragment() {
     }
 
     class WebAppInterface {
-        var mContext: Context? = null
+        var mContext: Activity? = null
         var mView: WebView? = null
         lateinit var moshi: Moshi
+        var viewModel : DashboardViewModel? = null
 
         /** Instantiate the interface and set the context  */
-        constructor(c: Context?, w: WebView?) {
+        constructor(c: Activity?,vm : DashboardViewModel, w: WebView?) {
             mContext = c
             mView = w
             moshi = Moshi.Builder().build()
+            viewModel = vm
         }
 
         /** Show a toast from the web page  */
@@ -71,12 +75,14 @@ class TreeViewFragment : BaseFragment() {
             if(userDataObj != null){
 
             }*/
+            viewModel?.selectedMemberId = userId
+            (mContext as DashboardActivity).fetchMemberRelationShipData(userId)
 
-            val intent = Intent(mContext, AddFamilyActivity::class.java)
+            /*val intent = Intent(mContext, AddFamilyActivity::class.java)
             intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, false)
             intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, userId?.toInt())
             intent.putExtra(Constents.FAMILY_MEMBER_INTENT_TAG, true)
-            (mContext as AppBaseActivity).startActivityIntent(intent, false)
+            (mContext as AppBaseActivity).startActivityIntent(intent, false)*/
         }
 
         @JavascriptInterface
@@ -85,7 +91,6 @@ class TreeViewFragment : BaseFragment() {
             if(userDataObj != null){
 
             }*/
-
             val intent = Intent(mContext, AddFamilyActivity::class.java)
             intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, false)
             intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, userId?.toInt())
