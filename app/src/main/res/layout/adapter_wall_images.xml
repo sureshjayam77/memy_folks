@@ -13,7 +13,7 @@
       <androidx.appcompat.widget.AppCompatImageView
           android:id="@+id/wall_image"
           android:layout_width="100dp"
-          android:scaleType="fitXY"
+          android:background="@color/black"
           android:src="@drawable/ic_launcher_background"
           android:layout_height="100dp"/>
 

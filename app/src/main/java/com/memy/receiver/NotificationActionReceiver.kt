@@ -11,8 +11,6 @@ import androidx.lifecycle.MutableLiveData
 import com.memy.api.APIInterface
 import com.memy.api.BaseRepository
 import com.memy.pojo.CommonResponse
-import com.memy.pojo.FeedbackReqObj
-import com.memy.utils.Constents
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
