@@ -1,5 +1,6 @@
 package com.memy.activity
 
+import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
@@ -7,28 +8,24 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.OpenableColumns
-import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.FileProvider
-import androidx.core.net.toFile
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.memy.R
-import com.memy.adapter.ItemClickListener
 import com.memy.adapter.MyRecyclerAdapter
+import com.memy.databinding.ActivityFamilyWallBinding
 import com.memy.databinding.ChoosePhotoDialogBinding
 import com.memy.databinding.DialogStorySelectionBinding
+import com.memy.fragment.BaseFragment
 import com.memy.listener.AdapterListener
 import com.memy.pojo.CommonResponse
 import com.memy.pojo.WallData
@@ -39,11 +36,10 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.*
-import java.util.stream.Collectors
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class FamilyWallActivity : AppBaseActivity(), AdapterListener {
+class FamilyWallFragment : BaseFragment(), AdapterListener , LifecycleObserver {
     lateinit var photoBottomSheet: BottomSheetDialog
     val REQUEST_IMAGE_CAPTURE: Int = 1001
     lateinit var viewModel: AddEventViewModel
@@ -51,26 +47,35 @@ class FamilyWallActivity : AppBaseActivity(), AdapterListener {
     private val SELECT_VIDEO = 9002
 
     var wallList: ArrayList<WallGroupData>? = ArrayList()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_family_wall)
+    private lateinit var binding : ActivityFamilyWallBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = ActivityFamilyWallBinding.inflate(inflater,container,false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(AddEventViewModel::class.java)
-        viewModel.addFamilyRes.observe(this, this::validateAddFamilyRes)
-        viewModel.wallRes.observe(this, this::getWallDataResponse)
-        recylerView = findViewById<RecyclerView>(R.id.rec_family_wall)
-        val linearLayoutManager = LinearLayoutManager(this)
+        viewModel.addFamilyRes.observe(requireActivity(), this::validateAddFamilyRes)
+        viewModel.wallRes.observe(requireActivity(), this::getWallDataResponse)
+        recylerView = binding.recFamilyWall
+        val linearLayoutManager = LinearLayoutManager(requireActivity())
         linearLayoutManager.orientation = RecyclerView.VERTICAL
         recylerView?.layoutManager = linearLayoutManager
         var imgUrl = prefhelper.fetchUserData()?.photo
-        findViewById<FloatingActionButton>(R.id.add_float).setOnClickListener {
+        binding.addFloat.setOnClickListener {
             openAddStoryDialog()
         }
-        findViewById<AppCompatImageView>(R.id.backIconImageView).setOnClickListener {
-            onBackPressed()
-        }
+
         loadProfileImage(imgUrl)
         showProgressBar()
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -147,7 +152,7 @@ class FamilyWallActivity : AppBaseActivity(), AdapterListener {
                     it.startedDate
                 }
                 wallList?.reverse()
-                recylerView?.adapter = MyRecyclerAdapter(this, this, wallList!!)
+                recylerView?.adapter = MyRecyclerAdapter(requireActivity(), this, wallList!!)
                 Log.d("", "")
             }else{
                 wallList = ArrayList()
@@ -167,7 +172,7 @@ class FamilyWallActivity : AppBaseActivity(), AdapterListener {
                         }
                     }
                     wallList?.reverse()
-                    recylerView?.adapter = MyRecyclerAdapter(this, this, wallList!!)
+                    recylerView?.adapter = MyRecyclerAdapter(requireActivity(), this, wallList!!)
                 }
             }
         } else {
@@ -176,25 +181,18 @@ class FamilyWallActivity : AppBaseActivity(), AdapterListener {
     }
 
     fun showToast(text: String) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireActivity(), text, Toast.LENGTH_SHORT).show()
     }
 
-    override fun dialogPositiveCallBack(id: Int?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun dialogNegativeCallBack() {
-        TODO("Not yet implemented")
-    }
 
     fun openAddStoryDialog() {
-        val bottomSheetDialog = BottomSheetDialog(this)
+        val bottomSheetDialog = BottomSheetDialog(requireActivity())
         val dialogStorySelectionBinding: DialogStorySelectionBinding = DataBindingUtil.inflate(
-            LayoutInflater.from(this), R.layout.dialog_story_selection, null, false
+            LayoutInflater.from(requireActivity()), R.layout.dialog_story_selection, null, false
         )
         dialogStorySelectionBinding.addEventLay.setOnClickListener {
             bottomSheetDialog.dismiss()
-            startActivity(Intent(this, AddEventActivity::class.java))
+            startActivity(Intent(requireActivity(), AddEventActivity::class.java))
         }
         dialogStorySelectionBinding.addImageLay.setOnClickListener {
             bottomSheetDialog.dismiss()
@@ -209,9 +207,9 @@ class FamilyWallActivity : AppBaseActivity(), AdapterListener {
     }
 
     private fun openChoosePhoto() {
-        photoBottomSheet = BottomSheetDialog(this, R.style.bottomSheetDialogTheme)
+        photoBottomSheet = BottomSheetDialog(requireActivity(), R.style.bottomSheetDialogTheme)
         val choosePhotoDialogBinding: ChoosePhotoDialogBinding = DataBindingUtil.inflate(
-            LayoutInflater.from(this), R.layout.choose_photo_dialog, null, false
+            LayoutInflater.from(requireActivity()), R.layout.choose_photo_dialog, null, false
         )
         choosePhotoDialogBinding.cameraTextView.setOnClickListener({
             photoBottomSheet.dismiss()
@@ -231,7 +229,7 @@ class FamilyWallActivity : AppBaseActivity(), AdapterListener {
     override fun updateAction(actionCode: Int, data: Any?) {
         if (actionCode == 1000) {
             val url = data as WallData
-            val intent = Intent(this, PostViewActivity::class.java)
+            val intent = Intent(requireActivity(), PostViewActivity::class.java)
             intent.putExtra("file", url)
             startActivity(intent)
 
@@ -255,7 +253,7 @@ class FamilyWallActivity : AppBaseActivity(), AdapterListener {
     }
 
     private fun getFileURL(): Uri {
-        val applicationContext: Context = applicationContext
+        val applicationContext: Context = requireActivity().applicationContext
         val root: File =
             applicationContext.cacheDir // consider using getExternalFilesDir(Environment.DIRECTORY_PICTURES); you need to check the file_paths.xml
         val timeLng: Long = Date().time
@@ -272,14 +270,14 @@ class FamilyWallActivity : AppBaseActivity(), AdapterListener {
             if (intent != null) {
                 viewModel.photoFileUri = intent.data!!
             }
-            val wallIntent = Intent(this, WallPostActivity::class.java)
-            wallIntent.putExtra("file", getFile(this, viewModel.photoFileUri!!))
+            val wallIntent = Intent(requireActivity(), WallPostActivity::class.java)
+            wallIntent.putExtra("file", getFile(requireActivity(), viewModel.photoFileUri!!))
             startActivity(wallIntent)
         } else if (requestCode == SELECT_VIDEO && resultCode == RESULT_OK) {
             if (intent != null) {
                 viewModel.photoFileUri = intent.data!!
-                val wallIntent = Intent(this, WallPostActivity::class.java)
-                wallIntent.putExtra("file", getFile(this, viewModel.photoFileUri!!))
+                val wallIntent = Intent(requireActivity(), WallPostActivity::class.java)
+                wallIntent.putExtra("file", getFile(requireActivity(), viewModel.photoFileUri!!))
                 startActivity(wallIntent)
             }
         }
@@ -331,11 +329,11 @@ class FamilyWallActivity : AppBaseActivity(), AdapterListener {
     }
 
     private fun showProgressBar() {
-        findViewById<RelativeLayout>(R.id.progressBarLayout).visibility = View.VISIBLE
+        binding.progressBarLayout.visibility = View.VISIBLE
     }
 
     private fun hideProgressBar() {
-        findViewById<RelativeLayout>(R.id.progressBarLayout).visibility = View.GONE
+        binding.progressBarLayout.visibility = View.GONE
 
     }
 

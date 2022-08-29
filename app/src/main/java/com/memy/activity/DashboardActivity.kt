@@ -1,7 +1,6 @@
 package com.memy.activity
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,10 +8,8 @@ import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
-import android.view.MenuItem
 import android.view.View
 import android.webkit.URLUtil
-import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -29,16 +26,7 @@ import com.memy.fragment.TreeViewFragment
 import com.memy.pojo.*
 import com.memy.utils.Constents
 import com.memy.utils.PermissionUtil
-import com.memy.utils.Utils
 import com.memy.viewModel.DashboardViewModel
-import android.widget.Toast
-import android.content.pm.PackageManager
-
-
-
-
-
-
 
 
 class DashboardActivity : AppBaseActivity() {
@@ -53,6 +41,7 @@ class DashboardActivity : AppBaseActivity() {
         PermissionUtil().initRequestPermissionForCamera(this, true)
         updateFCMToken()
         checkDeepLink()
+        fetchProfileData(false)
     }
 
     override fun dialogPositiveCallBack(id: Int?) {
@@ -68,7 +57,7 @@ class DashboardActivity : AppBaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        fetchProfileData(false)
+
     }
 
     override fun onPause() {
@@ -249,10 +238,25 @@ class DashboardActivity : AppBaseActivity() {
         startActivityIntent(intent, false);
     }
     fun navigateNotificationScreen(v: View) {
-        val intent = Intent(this, NotificationActivity::class.java)
-        intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
-        intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel?.userData?.value?.mid)
-        startActivityIntent(intent, false);
+        val manager: FragmentManager = supportFragmentManager
+        val transaction: FragmentTransaction = manager.beginTransaction()
+        val notificationActivity=NotificationFragment()
+        val bundle=Bundle()
+        bundle.putBoolean(Constents.OWN_PROFILE_INTENT_TAG, true)
+        bundle.putInt(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel?.userData?.value?.mid!!)
+        notificationActivity.arguments=bundle
+        transaction.replace(R.id.fragmentContainer,notificationActivity, NotificationFragment::javaClass.name)
+        transaction.addToBackStack(null)
+        transaction.commit()
+        binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
+        binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
+        binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
+        binding.notificationImageView.setImageResource(R.drawable.ic_notification_select__1_)
+        binding.storyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+        binding.familyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+        binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+        binding.notificationTextView.setTextColor(ContextCompat.getColor(this,R.color.app_color))
+
     }
 
    /* fun navigateBottomProfileScreen(v: View) {
@@ -399,8 +403,20 @@ class DashboardActivity : AppBaseActivity() {
         startActivity(intent)
     }
     fun openFamilyWall(v:View){
-        binding.drwayerLay.closeDrawer(Gravity.LEFT)
-      startActivity(Intent(this,FamilyWallActivity::class.java))
+        val manager: FragmentManager = supportFragmentManager
+        val transaction: FragmentTransaction = manager.beginTransaction()
+        transaction.replace(R.id.fragmentContainer, FamilyWallFragment(), FamilyWallFragment::javaClass.name)
+        transaction.addToBackStack(null)
+        transaction.commit()
+        binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_select)
+        binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
+        binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
+        binding.notificationImageView.setImageResource(R.drawable.ic_notification_unselect)
+        binding.storyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+        binding.familyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+        binding.notificationTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+        binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.app_color))
+
     }
     fun openTermsIntent(v:View){
         binding.drwayerLay.closeDrawer(Gravity.LEFT)

@@ -29,7 +29,6 @@
                 android:textColor="@color/black"
                 android:textStyle="bold" />
         </LinearLayout>
-
         <LinearLayout
             android:id="@+id/addVideoLay"
             android:layout_width="match_parent"
@@ -48,6 +47,28 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/add_video"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/addTextLay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_text_fields_24" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Add Story"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
         </LinearLayout>

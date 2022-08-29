@@ -6,11 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
-import android.view.Gravity
-import android.view.MenuItem
 import android.view.View
 import android.webkit.URLUtil
-import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -181,7 +178,22 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         viewModel.aboutContent.value = viewModel.userData.value?.about_me
         updateSocialMediaIcons()
     }
+    fun openFamilyWall(v:View){
+        val manager: FragmentManager = supportFragmentManager
+        val transaction: FragmentTransaction = manager.beginTransaction()
+        transaction.replace(R.id.fragmentContainer, FamilyWallFragment(), FamilyWallFragment::javaClass.name)
+        transaction.addToBackStack(null)
+        transaction.commit()
+        binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_select)
+        binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
+        binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
+        binding.notificationImageView.setImageResource(R.drawable.ic_notification_unselect)
+        binding.storyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+        binding.familyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+        binding.notificationTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+        binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.app_color))
 
+    }
     fun navigateAddFamily(v: View) {
         val intent = Intent(this, AddFamilyActivity::class.java)
         intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, false)
@@ -355,19 +367,31 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         }
     }
 
-    fun openFamilyWall(v:View){
-        binding.drwayerLay.closeDrawer(Gravity.LEFT)
-        startActivity(Intent(this,FamilyWallActivity::class.java))
-    }
+
+
 
 
     fun navigateNotificationScreen(v: View) {
-        val intent = Intent(this, NotificationActivity::class.java)
-        intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
-        intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, prefhelper.fetchUserData()?.mid)
-        startActivityIntent(intent, false);
-    }
 
+        val manager: FragmentManager = supportFragmentManager
+        val transaction: FragmentTransaction = manager.beginTransaction()
+        val notificationActivity=NotificationFragment()
+        val bundle=Bundle()
+        bundle.putBoolean(Constents.OWN_PROFILE_INTENT_TAG, true)
+        bundle.putInt(Constents.FAMILY_MEMBER_ID_INTENT_TAG, prefhelper.fetchUserData()?.mid!!)
+        notificationActivity.arguments=bundle
+        transaction.replace(R.id.fragmentContainer, notificationActivity, NotificationFragment::javaClass.name)
+        transaction.addToBackStack(null)
+        transaction.commit()
+        binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
+        binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
+        binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
+        binding.notificationImageView.setImageResource(R.drawable.ic_notification_select__1_)
+        binding.storyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+        binding.familyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+        binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+        binding.notificationTextView.setTextColor(ContextCompat.getColor(this,R.color.app_color))
+    }
     fun navigateBottomProfileScreen() {
         val intent = Intent(this, AddFamilyActivity::class.java)
         intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)

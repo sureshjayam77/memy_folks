@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:id="@+id/displayLay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:id="@+id/bgLay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimaryDark">
+
+                <com.memy.autoresize.AutoResizeEditText
+                    android:id="@+id/storyEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorPrimaryDark"
+                    android:gravity="center"
+                    android:hint="Type a status"
+                    android:inputType="textMultiLine|textNoSuggestions"
+                    android:maxLines="10"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/hint_color"
+                    android:textSize="40sp" />
+
+                <LinearLayout
+                    android:id="@+id/clrLay"
+                    android:layout_margin="10dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                      <androidx.appcompat.widget.AppCompatImageView
+                          android:id="@+id/img_style"
+                          android:layout_width="wrap_content"
+                          android:padding="10dp"
+                          android:src="@drawable/ic_baseline_text_format_24"
+                          android:layout_height="wrap_content"/>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/img_color"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_baseline_color_lens_24"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addEventBtn"
+                style="@style/ButtonBoldWithBg1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:padding="@dimen/common_edit_txt_padding"
+                android:text="ADD STATUS"
+                android:textColor="@color/black"
+                android:textSize="@dimen/common_hint_text_size"
+                app:cornerRadius="30dp" />
+
+            <include
+                android:id="@+id/progressInclude"
+                layout="@layout/progressbar_layout" />
+        </RelativeLayout>
+
+    </LinearLayout>
+</layout>
