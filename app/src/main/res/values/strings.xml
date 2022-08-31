@@ -6,6 +6,7 @@
     <string name="something_went_wrong">Something went wrong</string>
     <string name="close_label">Close</string>
     <string name="no_internet">No/Poor internet connection</string>
+    <string name="modify_profile_error">Unable to modify/edit the profile</string>
 
     //Sign in
     <string name="login_search">Search</string>
@@ -33,6 +34,7 @@
     <string name="label_male">Male</string>
     <string name="label_female">Female</string>
     <string name="label_date_of_birth">Date of Birth</string>
+    <string name="label_date_of_birth_year">Birth Year</string>
     <string name="label_profession">Profession</string>
     <string name="label_living">Living</string>
     <string name="label_death">Death</string>
@@ -77,6 +79,8 @@
     <string name="label_story">Story</string>
     <string name="label_notification">Notification</string>
     <string name="label_edit">Edit</string>
+    <string name="label_choose_action">Choose action</string>
+    <string name="label_or">OR</string>
 
 
 

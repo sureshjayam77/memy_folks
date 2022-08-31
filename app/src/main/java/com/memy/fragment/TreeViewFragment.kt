@@ -76,7 +76,11 @@ class TreeViewFragment : BaseFragment() {
 
             }*/
             viewModel?.selectedMemberId = userId
-            (mContext as DashboardActivity).fetchMemberRelationShipData(userId)
+            if(mContext is DashboardActivity) {
+                (mContext as DashboardActivity).fetchMemberRelationShipData(userId)
+            }else if(mContext is FamilyMemberProfileActivity) {
+                (mContext as FamilyMemberProfileActivity).fetchMemberRelationShipData(userId)
+            }
 
             /*val intent = Intent(mContext, AddFamilyActivity::class.java)
             intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, false)

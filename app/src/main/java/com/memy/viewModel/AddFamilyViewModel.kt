@@ -35,6 +35,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
     var email: MutableLiveData<String> = MutableLiveData()
     var gender: MutableLiveData<String> = MutableLiveData()
     var dob: MutableLiveData<String> = MutableLiveData()
+    var birthYear: MutableLiveData<String> = MutableLiveData()
     var profession: MutableLiveData<String> = MutableLiveData()
     var living: MutableLiveData<Boolean> = MutableLiveData()
     var deathDateStr: MutableLiveData<String> = MutableLiveData()
@@ -49,7 +50,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
     var isFeMale: MutableLiveData<Boolean> = MutableLiveData()
     var isOtherGender: MutableLiveData<Boolean> = MutableLiveData()
     var profileBase64: MutableLiveData<String> = MutableLiveData()
-    var profileUpdateRes = MutableLiveData<CommonResponse>()
+    var profileUpdateRes = MutableLiveData<ProfileVerificationResObj>()
     var isCusExistRes = MutableLiveData<ProfileVerificationResObj>()
     var stateId = -1
     var countryId = -1

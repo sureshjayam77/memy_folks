@@ -39,7 +39,7 @@
                 style="@style/ButtonBoldWithStrockBg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:layout_weight="1"
                 app:cornerRadius="30dp"
                 android:layout_marginEnd="@dimen/add_family_parent_margin"

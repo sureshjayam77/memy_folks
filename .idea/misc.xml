@@ -8,6 +8,7 @@
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/bg_white_cornor_radius.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/blue_stroke_btn_bg.xml" value="0.1" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/bottom_line.xml" value="0.19054054054054054" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/close_cross_icon.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/dashboard_footer_family_tree.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/dashboard_footer_story.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/family_wall_circle_bg.xml" value="0.1" />
@@ -16,25 +17,32 @@
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_instagram.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_instagram_unselect.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_linkedin_unselect.xml" value="0.19054054054054054" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_logout.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_mmf_select.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_mmf_unselect.xml" value="0.19054054054054054" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_story_select.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_twitter_unselect.xml" value="0.19054054054054054" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/memy_logo.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/white_btn_bg.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/activity_add_event.xml" value="0.17657657657657658" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/activity_family_wall.xml" value="0.17422222222222222" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/activity_post_view.xml" value="0.1" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/activity_wall.xml" value="0.17657657657657658" />
-        <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/add_family_activity.xml" value="0.31470588235294117" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/add_family_activity.xml" value="0.25" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/add_story_activity.xml" value="0.1962962962962963" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/add_story_media_adapter.xml" value="0.1" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/communication_dialog.xml" value="0.17657657657657658" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/country_code_drop_down.xml" value="0.1962962962962963" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/dashboard_activity.xml" value="0.1" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/dashboard_activity_backup.xml" value="0.17657657657657658" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/feedback_activity.xml" value="0.15833333333333333" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/otp_activity.xml" value="0.1962962962962963" />
-        <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/relation_item_layout.xml" value="1.0777777777777777" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/progressbar_layout.xml" value="0.17657657657657658" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/relation_item_layout.xml" value="0.1742489270386266" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/relation_selection_layout.xml" value="0.17657657657657658" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/signin_activity.xml" value="0.20416666666666666" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/terms_condition_activity.xml" value="0.20416666666666666" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/tree_view_fragment.xml" value="0.17657657657657658" />
         <entry key="..\:/mine/Memy/Memy/app/src/main/res/layout/activity_notification.xml" value="0.14130434782608695" />
         <entry key="..\:/mine/Memy/Memy/app/src/main/res/layout/adapter_notification_item.xml" value="0.14130434782608695" />
         <entry key="..\:/mine/Memy/Memy/app/src/main/res/layout/add_family_activity.xml" value="0.10416666666666667" />

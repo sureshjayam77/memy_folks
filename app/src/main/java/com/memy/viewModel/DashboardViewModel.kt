@@ -10,6 +10,7 @@ class DashboardViewModel : AppBaseViewModel() {
     var userData : MutableLiveData<ProfileData> = MutableLiveData()
     var isTreeView : MutableLiveData<Boolean> = MutableLiveData()
     var storyListRes = MutableLiveData<StoryListRes>()
+    var profileResForEdit = MutableLiveData<ProfileVerificationResObj>()
     var profileVerificationResObj = MutableLiveData<ProfileVerificationResObj>()
     var profileSocialLinkUpdateRes = MutableLiveData<CommonResponse>()
     var dashboardRepository : DashboardRepository
@@ -35,7 +36,11 @@ class DashboardViewModel : AppBaseViewModel() {
     var aboutContent : MutableLiveData<String> = MutableLiveData()
     var showSocialLinkAddView : MutableLiveData<Boolean> = MutableLiveData()
     var showAddRelationView : MutableLiveData<Boolean> = MutableLiveData()
+    var memberRelationData = MutableLiveData<MemberRelationShipResData>()
+    var showProgressBar : MutableLiveData<Boolean> = MutableLiveData()
     var selectedMemberId : String? = ""
+    var selectedMemberAction : Int? = 0
+    var deleteAccountRes = MutableLiveData<CommonResponse>()
 
     init {
         dashboardRepository = DashboardRepository()
@@ -44,9 +49,12 @@ class DashboardViewModel : AppBaseViewModel() {
         profileVerificationResObj = dashboardRepository.profileVerificationResObj
         updateFcmRes = dashboardRepository.updateFcmRes
         storyListRes = storyRepository.storyListRes
+        profileResForEdit = dashboardRepository.profileResForEdit
+        memberRelationData = dashboardRepository.memberRelationData
+        deleteAccountRes = addFamilyRepository.deleteAccountRes
         profileSocialLinkUpdateRes = addFamilyRepository.profileSocialLinkUpdateRes
         isTreeView.value = true
-        showAddRelationView.value = false
+       // showAddRelationView.value = false
     }
 
     fun fetchProfile(userId : Int?){
@@ -80,5 +88,13 @@ class DashboardViewModel : AppBaseViewModel() {
 
     fun fetchMemberRelationShip(userId : String?){
         dashboardRepository.fetchMemberRelationData(userId)
+    }
+
+    fun fetchProfileForEdit(userId : Int?){
+        dashboardRepository.fetchUserProfileForEdit(userId)
+    }
+
+    fun deleteAccount(id:Int?){
+        addFamilyRepository.deleteAccount(id)
     }
 }

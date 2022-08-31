@@ -1,13 +1,14 @@
 package com.memy.activity
 
-import android.R.attr
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.provider.Settings
 import android.text.Editable
@@ -19,8 +20,11 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.Spinner
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -33,6 +37,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.chivorn.datetimeoptionspicker.DateTimePickerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.memy.R
 import com.memy.adapter.CountryCodeAdapter
@@ -52,24 +57,9 @@ import com.theartofdev.edmodo.cropper.CropImage
 import java.io.File
 import java.lang.reflect.Method
 import java.net.URI
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import android.provider.ContactsContract
-import androidx.activity.result.contract.ActivityResultContracts
-import android.R.attr.data
-import android.database.Cursor
-import android.annotation.SuppressLint
-import android.R.id
-import android.R.attr.phoneNumber
-import android.graphics.Color
-import android.widget.DatePicker
-import android.widget.Toast
-
-import com.memy.MainActivity
-
-import com.chivorn.datetimeoptionspicker.DateTimePickerView
-import com.chivorn.datetimeoptionspicker.DateTimePickerView.OnTimeSelectListener
-import java.text.SimpleDateFormat
 
 
 class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListener {
@@ -89,6 +79,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     lateinit var countryListDropDown: CustomDropDownAdapter
     lateinit var stateListDropDown: CustomDropDownAdapter
     var isMediaSelected : Boolean? = null
+    val yearList = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +89,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
        // PermissionUtil().initRequestPermissionForCameraContact(this, true)
         initProfileData()
         showProgressBar()
+        initYearAdapter()
     }
 
     override fun onBackPressed() {
@@ -134,6 +126,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             intent?.getBooleanExtra(Constents.OWN_NEW_PROFILE_INTENT_TAG, false)
         viewModel.addFamilyMemberId.value =
             intent?.getIntExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, -1)
+        viewModel.familyTagId.value = intent?.getIntExtra(Constents.FAMILY_MEMBER_RELATIONSHIP_ID_INTENT_TAG, -1).toString()
         viewModel.isForAddFamily.value =
             intent?.getBooleanExtra(Constents.FAMILY_MEMBER_INTENT_TAG, false)
         viewModel.isForEditFamily.value = intent?.getBooleanExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG, false)
@@ -193,7 +186,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                viewModel.fetchProfile(viewModel.addFamilyMemberId.value)
            }
         } else {
-            viewModel.fetchRelationShip()
+          //  viewModel.fetchRelationShip()
         }
     }
 
@@ -521,10 +514,10 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             }
             familyBottomSheet?.setContentView(familyTagDialogBinding.root)
             familyBottomSheet?.show()
-        } else {
+        }/* else {
             showProgressBar()
             viewModel.fetchRelationShip()
-        }
+        }*/
     }
 
     private fun dismissFamilyTagBottomSheet() {
@@ -665,6 +658,27 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
 
         }
 
+    fun initYearAdapter() {
+        val currentYear = (Calendar.getInstance()).get(Calendar.YEAR)
+        val minYear = currentYear - 500
+        for(value in minYear..currentYear){
+            yearList.add(value.toString())
+        }
+        yearList.add("")
+        yearList.reverse()
+
+        val adapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, yearList)
+        binding.yearSpinner.adapter = adapter
+        binding.yearSpinner.onItemSelectedListener  = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                viewModel.birthYear.value = yearList.get(position)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+
+            }
+        }
+    }
 
     /**
      * method used to change the view when click the search button
@@ -871,7 +885,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
     }
 
-    fun countrySpinnerClick(v: View) {
+    fun  countrySpinnerClick(v: View) {
         if ((viewModel.countryListRes.value != null) && (viewModel.countryListRes.value?.data != null) && (viewModel.countryListRes.value?.data?.size!! > 0)) {
             viewModel.countryList = viewModel.countryListRes.value?.data!!
             countryListDropDown =
@@ -954,7 +968,12 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             //viewModel.mainCountryCode.value = ""
         }
         val email: String? = viewModel.email.value?.trim()
-        val dateOfBirth: String? = viewModel.dob.value?.trim()
+        var dateOfBirth: String? = viewModel.dob.value?.trim()
+        if(TextUtils.isEmpty(dateOfBirth)){
+            if((!TextUtils.isEmpty(viewModel.birthYear.value)) && (!TextUtils.isEmpty(viewModel.birthYear.value?.trim()))){
+                dateOfBirth = "01-01-"+viewModel.birthYear.value
+            }
+        }
         val profession: String? = viewModel.profession.value?.trim()
         val popularKnownAs: String? = viewModel.popularlyKnowAs.value?.trim()
         val crazy: String? = viewModel.crazy.value?.trim()
@@ -1153,11 +1172,14 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         showAlertDialog(R.id.do_nothing, message, getString(R.string.close_label), "")
     }
 
-    private fun validateProfileUpdateRes(res: CommonResponse) {
+    private fun validateProfileUpdateRes(res: ProfileVerificationResObj) {
         hideProgressBar()
         if (res != null) {
             if (res.statusCode == 200) {
                 if (res?.data != null) {
+                    if(res?.data?.mid == prefhelper.fetchUserData()?.mid){
+                        prefhelper.saveUserData(res.data)
+                    }
                     showAlertDialog(
                         R.id.profile_update_success,
                         getString(R.string.profile_updated_success_fully),
@@ -1165,10 +1187,10 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                         ""
                     )
                 } else {
-                    errorHandler(res)
+                    errorHandler(CommonResponse(null,res.statusCode,res.errorDetails))
                 }
             } else {
-                errorHandler(res)
+                errorHandler(CommonResponse(null,res.statusCode,res.errorDetails))
             }
         }
     }
@@ -1299,6 +1321,9 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
     }
 
+    fun showYearPicker(v:View?){
+        binding.yearSpinner.performClick()
+    }
 }
 
 

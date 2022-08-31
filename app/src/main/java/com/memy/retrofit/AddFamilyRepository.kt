@@ -20,7 +20,7 @@ class AddFamilyRepository : BaseRepository() {
     var relationShipResObj = MutableLiveData<RelationShipResObj>()
     var countryListRes = MutableLiveData<CountryListRes>()
     var stateListResponse = MutableLiveData<StateListRes>()
-    var profileUpdateRes = MutableLiveData<CommonResponse>()
+    var profileUpdateRes = MutableLiveData<ProfileVerificationResObj>()
     var profileSocialLinkUpdateRes = MutableLiveData<CommonResponse>()
     var addFamilyMemberRes = MutableLiveData<AddFamilyResponse>()
     var addFamilyRes = MutableLiveData<CommonResponse>()
@@ -144,23 +144,23 @@ class AddFamilyRepository : BaseRepository() {
                 val reqFile: RequestBody = RequestBody.create("*/*".toMediaTypeOrNull(), file)
                 photoBody = MultipartBody.Part.createFormData("photo", file.name, reqFile)
             }
-            var updateProfileCall: Call<CommonResponse?>? = retrofit.create(APIInterface::class.java).saveProfileDetails(
+            var updateProfileCall: Call<ProfileVerificationResObj?>? = retrofit.create(APIInterface::class.java).saveProfileDetails(
                 req?.userid,
                 BaseRepository.APP_KEY_VALUE,
                 stringHashMap,
                 photoBody,
                 arrayHashMap
             )
-            updateProfileCall?.enqueue(object : Callback<CommonResponse?> {
+            updateProfileCall?.enqueue(object : Callback<ProfileVerificationResObj?> {
                 override fun onResponse(
-                    call: Call<CommonResponse?>?,
-                    response: Response<CommonResponse?>?
+                    call: Call<ProfileVerificationResObj?>?,
+                    response: Response<ProfileVerificationResObj?>?
                 ) {
                     profileUpdateRes.value = response?.body()
                 }
 
-                override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
-                    profileUpdateRes.value = CommonResponse(null, 0, null)
+                override fun onFailure(call: Call<ProfileVerificationResObj?>?, t: Throwable) {
+                    profileUpdateRes.value = ProfileVerificationResObj(null, 0, null)
                 }
             })
         }

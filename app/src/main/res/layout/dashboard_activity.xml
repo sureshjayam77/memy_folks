@@ -58,12 +58,13 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/menuIconImageView"
-                        android:layout_width="@dimen/back_icon_height"
-                        android:layout_height="@dimen/back_icon_height"
+                        android:layout_width="@dimen/logout_icon_height"
+                        android:layout_height="@dimen/logout_icon_height"
                         android:layout_gravity="end|center"
                         android:layout_marginEnd="@dimen/common_margin_size"
-                        android:src="@drawable/ic_baseline_notifications_24"
-                        android:visibility="invisible" />
+                        android:onClick="showMenuPopup"
+                        android:src="@drawable/ic_logout"
+                        android:visibility="visible" />
 
 
                 </androidx.appcompat.widget.Toolbar>
@@ -76,7 +77,7 @@
                 android:fillViewport="true"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <RelativeLayout
+                <!--<RelativeLayout
                     android:id="@+id/searchBarLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -113,13 +114,13 @@
 
 
                     </LinearLayout>
-                </RelativeLayout>
+                </RelativeLayout>-->
 
                 <LinearLayout
                     android:id="@+id/profileCardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/searchBarLayout">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
@@ -294,48 +295,13 @@
                     android:layout_height="@dimen/field_margin_top"
                     app:layout_constraintTop_toBottomOf="@+id/profileCardView" />
 
+
                 <FrameLayout
                     android:id="@+id/fragmentContainer"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/profileCardView" />
-
-                <!-- <WebView
-                     android:id="@+id/webview"
-                     android:layout_width="match_parent"
-                     android:layout_height="0dp"
-                     android:visibility="@{viewModel.isTreeView() ? View.VISIBLE : View.GONE}"
-                     app:layout_constraintBottom_toBottomOf="parent"
-                     app:layout_constraintTop_toBottomOf="@+id/profileCardView" />
-
-                 <LinearLayout
-                     android:id="@+id/profileLayout"
-                     android:layout_width="match_parent"
-                     android:layout_height="0dp"
-                     android:background="@color/bottom_line_color"
-                     app:layout_constraintBottom_toBottomOf="parent"
-                     android:visibility="@{viewModel.isTreeView() ? View.GONE : View.VISIBLE}"
-                     android:clickable="true"
-                     android:orientation="vertical"
-                     app:layout_constraintTop_toBottomOf="@+id/profileCardView">
-
-                     <androidx.recyclerview.widget.RecyclerView
-                         android:id="@+id/feedRecyclerView"
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content"
-                         android:nestedScrollingEnabled="true"
-                         android:visibility="gone"/>
-
-                     <WebView
-                         android:id="@+id/storyWebView"
-                         android:layout_width="match_parent"
-                         android:layout_height="match_parent"
-                         app:layout_constraintBottom_toBottomOf="parent"
-                         app:layout_constraintTop_toBottomOf="@+id/profileCardView" />
-
-
-                 </LinearLayout>-->
 
                 <View
                     android:id="@+id/bottomTempView"
@@ -502,211 +468,288 @@
 
                 </LinearLayout>
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/addStory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|bottom"
-                    android:layout_margin="16dp"
-                    android:contentDescription=""
-                    android:onClick="navigateAddStoryScreen"
-                    android:src="@drawable/ic_plus_white"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:tint="@color/white" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                android:background="@color/fifty_bg_color"
-                android:visibility="@{viewModel.showSocialLinkAddView ? View.VISIBLE : View.GONE,default=gone}">
-
-                <androidx.core.widget.NestedScrollView
+                <FrameLayout
+                    android:id="@+id/relationPopupLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/fifty_bg_color"
+                    android:fitsSystemWindows="true"
+                    android:clickable="true"
                     android:layout_gravity="center"
-                    android:paddingBottom="@dimen/add_family_parent_margin">
+                    android:visibility="@{viewModel.showAddRelationView ? View.VISIBLE : View.GONE,default=gone}">
+                    <!--
+                                    <androidx.core.widget.NestedScrollView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:paddingBottom="@dimen/add_family_parent_margin">-->
 
-                    <LinearLayout
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
                         android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/add_family_parent_margin"
-                        android:layout_marginEnd="@dimen/add_family_parent_margin"
-                        android:background="@drawable/white_btn_bg"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:layout_marginBottom="80dp"
-                        android:layout_marginTop="80dp"
-                        android:paddingBottom="@dimen/add_family_parent_margin">
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/instagramLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/label_instagram"
-                            android:padding="@dimen/field_margin_top"
-                            app:hintTextColor="@color/gray_text_color">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/instagramEditText"
-                                style="@style/RegularText"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/bottom_line"
-                                android:text="@={viewModel.instagramLink}"
-                                android:textColor="@color/black"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:textColorHint="@color/hint_color"
-                                android:textSize="@dimen/common_text_size" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/facebookLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/label_facebook"
-                            android:padding="@dimen/field_margin_top"
-                            app:hintTextColor="@color/gray_text_color">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/facebookEditText"
-                                style="@style/RegularText"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/bottom_line"
-                                android:text="@={viewModel.facebookLink}"
-                                android:textColor="@color/black"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:textColorHint="@color/hint_color"
-                                android:textSize="@dimen/common_text_size" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/twitterLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/label_twitter"
-                            android:padding="@dimen/field_margin_top"
-                            app:hintTextColor="@color/gray_text_color">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/twitterEditText"
-                                style="@style/RegularText"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/bottom_line"
-                                android:text="@={viewModel.twitterLink}"
-                                android:textColor="@color/black"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:textColorHint="@color/hint_color"
-                                android:textSize="@dimen/common_text_size" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/linkedInLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/label_linkedin"
-                            android:padding="@dimen/field_margin_top"
-                            app:hintTextColor="@color/gray_text_color">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/linkedInEditText"
-                                style="@style/RegularText"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/bottom_line"
-                                android:text="@={viewModel.linkedInLink}"
-                                android:textColor="@color/black"
-                                android:maxLines="1"
-                                android:singleLine="true"
-                                android:textColorHint="@color/hint_color"
-                                android:textSize="@dimen/common_text_size" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/aboutLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/label_about"
-                            android:padding="@dimen/field_margin_top"
-                            app:hintTextColor="@color/gray_text_color">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/aboutEditText"
-                                style="@style/RegularText"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/bottom_line"
-                                android:maxLines="3"
-                                android:text="@={viewModel.aboutContent}"
-                                android:textColor="@color/black"
-                                android:textColorHint="@color/hint_color"
-                                android:textSize="@dimen/common_text_size" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
+                        app:cardCornerRadius="10dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:paddingBottom="@dimen/add_family_parent_margin">
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/socialSubmitBtn"
-                                style="@style/ButtonBoldWithBg"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/card_corners"
-                                android:layout_marginTop="@dimen/common_margin_size"
-                                android:layout_marginEnd="@dimen/card_corners"
-                                android:layout_weight="1"
-                                android:onClick="validateSocialLinks"
-                                android:padding="@dimen/common_edit_txt_padding"
-                                android:text="@string/label_save"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/common_text_size"
-                                app:cornerRadius="30dp"
-                                app:layout_constraintTop_toBottomOf="@+id/familyTagPopupTextView" />
+                                android:orientation="horizontal"
+                                android:padding="6dp"
+                                android:gravity="center_vertical"
+                                android:background="@color/app_color">
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/socialCancelBtn"
-                                style="@style/ButtonBoldWithBg"
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:id="@+id/chooseActionTextView"
+                                    style="@style/RegularText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:layout_weight="1"
+                                    android:text="@string/label_choose_action"
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/common_text_size" />
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/closeImageView"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:onClick="closeMemberRelationPopup"
+                                    android:src="@drawable/close_cross_icon"/>
+
+                            </LinearLayout>
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/addMemberPopupRecyclerview"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/card_corners"
-                                android:layout_marginTop="@dimen/common_margin_size"
-                                android:layout_marginEnd="@dimen/card_corners"
-                                android:layout_weight="1"
-                                android:onClick="@{() -> viewModel.hideSocialMediaLinkAddView()}"
-                                android:padding="@dimen/common_edit_txt_padding"
-                                android:text="@string/label_cancel"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/common_text_size"
-                                app:cornerRadius="30dp"
-                                app:layout_constraintTop_toBottomOf="@+id/requestBtn" />
-
+                                android:layout_gravity="center"
+                                android:layout_marginStart="@dimen/add_family_parent_margin"
+                                android:layout_marginEnd="@dimen/add_family_parent_margin"
+                                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                                app:spanCount="4"
+                                tools:itemCount="10" />
                         </LinearLayout>
-                    </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                    <!-- </androidx.core.widget.NestedScrollView>-->
+                </FrameLayout>
 
-                </androidx.core.widget.NestedScrollView>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fitsSystemWindows="true"
+                    android:clickable="true"
+                    android:background="@color/fifty_bg_color"
+                    android:visibility="@{viewModel.showSocialLinkAddView ? View.VISIBLE : View.GONE,default=gone}">
 
-            </FrameLayout>
+                    <androidx.core.widget.NestedScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:paddingBottom="@dimen/add_family_parent_margin">
 
-            <include
-                android:id="@+id/progressInclude"
-                layout="@layout/progressbar_layout" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/add_family_parent_margin"
+                            android:layout_marginEnd="@dimen/add_family_parent_margin"
+                            android:background="@drawable/white_btn_bg"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:layout_marginBottom="80dp"
+                            android:layout_marginTop="80dp"
+                            android:paddingBottom="@dimen/add_family_parent_margin">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/instagramLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/label_instagram"
+                                android:padding="@dimen/field_margin_top"
+                                app:hintTextColor="@color/gray_text_color">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/instagramEditText"
+                                    style="@style/RegularText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/bottom_line"
+                                    android:text="@={viewModel.instagramLink}"
+                                    android:textColor="@color/black"
+                                    android:maxLines="1"
+                                    android:singleLine="true"
+                                    android:textColorHint="@color/hint_color"
+                                    android:textSize="@dimen/common_text_size" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/facebookLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/label_facebook"
+                                android:padding="@dimen/field_margin_top"
+                                app:hintTextColor="@color/gray_text_color">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/facebookEditText"
+                                    style="@style/RegularText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/bottom_line"
+                                    android:text="@={viewModel.facebookLink}"
+                                    android:textColor="@color/black"
+                                    android:maxLines="1"
+                                    android:singleLine="true"
+                                    android:textColorHint="@color/hint_color"
+                                    android:textSize="@dimen/common_text_size" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/twitterLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/label_twitter"
+                                android:padding="@dimen/field_margin_top"
+                                app:hintTextColor="@color/gray_text_color">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/twitterEditText"
+                                    style="@style/RegularText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/bottom_line"
+                                    android:text="@={viewModel.twitterLink}"
+                                    android:textColor="@color/black"
+                                    android:maxLines="1"
+                                    android:singleLine="true"
+                                    android:textColorHint="@color/hint_color"
+                                    android:textSize="@dimen/common_text_size" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/linkedInLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/label_linkedin"
+                                android:padding="@dimen/field_margin_top"
+                                app:hintTextColor="@color/gray_text_color">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/linkedInEditText"
+                                    style="@style/RegularText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/bottom_line"
+                                    android:text="@={viewModel.linkedInLink}"
+                                    android:textColor="@color/black"
+                                    android:maxLines="1"
+                                    android:singleLine="true"
+                                    android:textColorHint="@color/hint_color"
+                                    android:textSize="@dimen/common_text_size" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/aboutLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/label_about"
+                                android:padding="@dimen/field_margin_top"
+                                app:hintTextColor="@color/gray_text_color">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/aboutEditText"
+                                    style="@style/RegularText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/bottom_line"
+                                    android:maxLines="3"
+                                    android:text="@={viewModel.aboutContent}"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/hint_color"
+                                    android:textSize="@dimen/common_text_size" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/socialSubmitBtn"
+                                    style="@style/ButtonBoldWithBg"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/card_corners"
+                                    android:layout_marginTop="@dimen/common_margin_size"
+                                    android:layout_marginEnd="@dimen/card_corners"
+                                    android:layout_weight="1"
+                                    android:onClick="validateSocialLinks"
+                                    android:padding="@dimen/common_edit_txt_padding"
+                                    android:text="@string/label_save"
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/common_text_size"
+                                    app:cornerRadius="30dp"
+                                    app:layout_constraintTop_toBottomOf="@+id/familyTagPopupTextView" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/socialCancelBtn"
+                                    style="@style/ButtonBoldWithBg"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/card_corners"
+                                    android:layout_marginTop="@dimen/common_margin_size"
+                                    android:layout_marginEnd="@dimen/card_corners"
+                                    android:layout_weight="1"
+                                    android:onClick="@{() -> viewModel.hideSocialMediaLinkAddView()}"
+                                    android:padding="@dimen/common_edit_txt_padding"
+                                    android:text="@string/label_cancel"
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/common_text_size"
+                                    app:cornerRadius="30dp"
+                                    app:layout_constraintTop_toBottomOf="@+id/requestBtn" />
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </androidx.core.widget.NestedScrollView>
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/progressFrameLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fitsSystemWindows="true"
+                    android:clickable="true"
+                    android:visibility="@{viewModel.showProgressBar ? View.VISIBLE : View.GONE,default=gone}"
+                    android:background="@color/fifty_bg_color">
+
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"/>
+
+                </FrameLayout>
+
+               <!-- <include
+                    android:id="@+id/progressInclude"
+                    layout="@layout/progressbar_layout" />-->
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <com.google.android.material.navigation.NavigationView

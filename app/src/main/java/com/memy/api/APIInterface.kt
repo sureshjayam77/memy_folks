@@ -40,7 +40,7 @@ interface APIInterface {
 
     @Multipart
     @PUT("api/v1/member/{id}/")
-    fun saveProfileDetails(@Path("id") id: Int?,@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>,@Part file: MultipartBody.Part?,@PartMap() partArrayMap :  HashMap<String?, List<CommonMobileNumberObj>?>) : Call<CommonResponse?>?
+    fun saveProfileDetails(@Path("id") id: Int?,@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>,@Part file: MultipartBody.Part?,@PartMap() partArrayMap :  HashMap<String?, List<CommonMobileNumberObj>?>) : Call<ProfileVerificationResObj?>?
 
     @Multipart
     @PUT("api/v1/member/{id}/")
