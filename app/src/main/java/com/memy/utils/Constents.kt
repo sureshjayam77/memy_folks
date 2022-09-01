@@ -7,6 +7,8 @@ open class Constents {
         val OWN_PROFILE_INTENT_TAG : String = "own_profile_intent_tag"
         val FAMILY_MEMBER_ID_INTENT_TAG : String = "family_member_id_intent_tag"
         val FAMILY_MEMBER_INTENT_TAG : String = "family_member_intent_tag"
+        val FAMILY_MEMBER_GENDER_INTENT_TAG : String = "family_member_gender_intent_tag"
+        val FAMILY_MEMBER_NAME_INTENT_TAG : String = "family_member_name_intent_tag"
         val FAMILY_MEMBER_EDIT_INTENT_TAG : String = "family_member_edit_intent_tag"
         val OWN_NEW_PROFILE_INTENT_TAG : String = "own_new_profile_intent_tag"
         val SHOW_PROFILE_INTENT_TAG : String = "show_profile_intent_tag"

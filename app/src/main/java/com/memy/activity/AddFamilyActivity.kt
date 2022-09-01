@@ -129,6 +129,19 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         viewModel.familyTagId.value = intent?.getIntExtra(Constents.FAMILY_MEMBER_RELATIONSHIP_ID_INTENT_TAG, -1).toString()
         viewModel.isForAddFamily.value =
             intent?.getBooleanExtra(Constents.FAMILY_MEMBER_INTENT_TAG, false)
+        viewModel.gender.value = intent?.getStringExtra(Constents.FAMILY_MEMBER_GENDER_INTENT_TAG) ?: Constents.GENDER_MALE
+        if(!TextUtils.isEmpty(viewModel.gender.value)) {
+            viewModel.isMale.value = false
+            viewModel.isFeMale.value = false
+            viewModel.isOtherGender.value = false
+            if (viewModel.gender.value.equals(Constents.GENDER_MALE, true)) {
+                viewModel.isMale.value = true
+            } else if (viewModel.gender.value.equals(Constents.GENDER_FEMALE, true)) {
+                viewModel.isFeMale.value = true
+            } else if (viewModel.gender.value.equals(Constents.GENDER_OTHER, true)) {
+                viewModel.isOtherGender.value = true
+            }
+        }
         viewModel.isForEditFamily.value = intent?.getBooleanExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG, false)
 
         if(((viewModel.isForOwnProfileUpdate.value == true) && (viewModel.isForNewOwnProfileUpdate.value == false)) || (viewModel.isForEditFamily.value == true)){
@@ -136,7 +149,8 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
 
         if((viewModel.isForOwnProfileUpdate.value == true) || (viewModel.isForNewOwnProfileUpdate.value == true) || (viewModel.isForEditFamily.value == true)){
-            binding.titleTextView.text = getString(R.string.label_edit_profile)
+            val fName = intent?.getStringExtra(Constents.FAMILY_MEMBER_NAME_INTENT_TAG) ?: ""
+            binding.titleTextView.text = fName+" "+getString(R.string.label_edit_profile)
         }
         if((viewModel.isForAddFamily.value == true)){
             viewModel.allowEditMobileNumber.value = true

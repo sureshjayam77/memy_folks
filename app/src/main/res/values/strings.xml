@@ -6,7 +6,7 @@
     <string name="something_went_wrong">Something went wrong</string>
     <string name="close_label">Close</string>
     <string name="no_internet">No/Poor internet connection</string>
-    <string name="modify_profile_error">Unable to modify/edit the profile</string>
+    <string name="modify_profile_error">You don\'t have access to modify/edit the profile</string>
 
     //Sign in
     <string name="login_search">Search</string>

@@ -255,6 +255,7 @@ class DashboardActivity : AppBaseActivity() {
         val adapter =
             RelationSelectionAdapter(this@DashboardActivity, data!!, object : AdapterListener {
                 override fun updateAction(actionCode: Int, data: Any?) {
+                    val item = data as RelationSelectionObj
                     viewModel.selectedMemberAction = actionCode
                     if (actionCode == 1001) {
                         viewModel.fetchProfileForEdit(viewModel.selectedMemberId?.toInt())
@@ -272,6 +273,7 @@ class DashboardActivity : AppBaseActivity() {
                             viewModel.selectedMemberId?.toInt()
                         )
                         intent.putExtra(Constents.FAMILY_MEMBER_INTENT_TAG, true)
+                        intent.putExtra(Constents.FAMILY_MEMBER_GENDER_INTENT_TAG,item.gender )
                         startActivityIntent(intent, false)
                     }
                     viewModel.showAddRelationView.value = false
@@ -323,8 +325,9 @@ class DashboardActivity : AppBaseActivity() {
     fun navigateProfileScreen(v: View) {
         val intent = Intent(this, AddFamilyActivity::class.java)
         intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
+        intent.putExtra(Constents.FAMILY_MEMBER_NAME_INTENT_TAG, viewModel?.userData?.value?.firstname)
         intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel?.userData?.value?.mid)
-        startActivityIntent(intent, false);
+        startActivityIntent(intent, false)
     }
 
     fun navigateNotificationScreen(v: View) {
@@ -729,6 +732,7 @@ class DashboardActivity : AppBaseActivity() {
                         intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
                         intent.putExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG,true)
                         intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, res.data.mid)
+                        intent.putExtra(Constents.FAMILY_MEMBER_NAME_INTENT_TAG, res.data.firstname)
                         startActivityIntent(intent, false)
                     }else if(viewModel.selectedMemberAction == 1002){
                         binding.progressFrameLayout.visibility = View.VISIBLE

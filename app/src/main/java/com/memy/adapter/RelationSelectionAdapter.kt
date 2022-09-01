@@ -23,7 +23,7 @@ class RelationSelectionAdapter(ctx : Context,val list : List<RelationSelectionOb
         holder.binding.parentLayout.setOnClickListener(View.OnClickListener { v ->
             val obj1 : RelationSelectionObj = v.getTag() as RelationSelectionObj
             if((obj1.is_applicable == null) || (obj1.is_applicable == true)) {
-                listener.updateAction(obj1.id as Int, null)
+                listener.updateAction(obj1.id as Int, obj1)
             }
         })
     }
