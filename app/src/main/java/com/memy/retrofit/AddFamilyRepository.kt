@@ -30,6 +30,8 @@ class AddFamilyRepository : BaseRepository() {
     var deleteAccountRes = MutableLiveData<CommonResponse>()
     var isCusExistRes = MutableLiveData<ProfileVerificationResObj>()
     var relationUpdateSuccessRes = MutableLiveData<CommonResponse>()
+    var avatarImageRes = MutableLiveData<AvatarImageListRes>()
+    var relationShipExistsRes = MutableLiveData<RelationShipExistsRes>()
 
     fun fetchRelationShip() {
         val relationShipCall = retrofit.create(APIInterface::class.java)
@@ -582,5 +584,39 @@ class AddFamilyRepository : BaseRepository() {
             }
         })
 
+    }
+
+    fun fetchAvatarImages() {
+        val relationShipCall = retrofit.create(APIInterface::class.java)
+            .getAvatarImageList(BaseRepository.APP_KEY_VALUE)
+        relationShipCall?.enqueue(object : Callback<AvatarImageListRes?> {
+            override fun onResponse(
+                call: Call<AvatarImageListRes?>?,
+                response: Response<AvatarImageListRes?>?
+            ) {
+                avatarImageRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<AvatarImageListRes?>?, t: Throwable) {
+                avatarImageRes.value = AvatarImageListRes(null, 0, null)
+            }
+        })
+    }
+
+    fun checkFamilyMemberExists(fName : String?,relationShipId : String?,mid : Int?) {
+        val relationShipCall = retrofit.create(APIInterface::class.java)
+            .checkFamilyMemberExists(APP_KEY_VALUE,fName,relationShipId,mid)
+        relationShipCall?.enqueue(object : Callback<RelationShipExistsRes?> {
+            override fun onResponse(
+                call: Call<RelationShipExistsRes?>?,
+                response: Response<RelationShipExistsRes?>?
+            ) {
+                relationShipExistsRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<RelationShipExistsRes?>?, t: Throwable) {
+                relationShipExistsRes.value = RelationShipExistsRes(null, 0, null)
+            }
+        })
     }
 }

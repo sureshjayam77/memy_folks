@@ -9,5 +9,6 @@
     <item name="app_update_dialog_id" type="id"/>
     <item name="add_story_success_id" type="id"/>
     <item name="submit_feedback_success_id" type="id"/>
+    <item name="member_exists_popup_id" type="id"/>
     
 </resources>

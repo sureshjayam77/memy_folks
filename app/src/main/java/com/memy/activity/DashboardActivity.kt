@@ -240,52 +240,6 @@ class DashboardActivity : AppBaseActivity() {
         }
     }
 
-    private fun validateMemberRelationRes(res: MemberRelationShipResData) {
-        binding.progressFrameLayout.visibility = View.GONE
-        if (res != null) {
-            if ((res.statusCode == 200) && (res.data != null)) {
-                openAddRelationPopup(res.data as MutableList)
-            }
-        }
-    }
-
-    private fun openAddRelationPopup(data: MutableList<RelationSelectionObj>?) {
-        data?.add(RelationSelectionObj("M", "Edit Profile", 0, 1001, true))
-        data?.add(RelationSelectionObj("M", "Remove Profile", 0, 1002, true))
-        val adapter =
-            RelationSelectionAdapter(this@DashboardActivity, data!!, object : AdapterListener {
-                override fun updateAction(actionCode: Int, data: Any?) {
-                    val item = data as RelationSelectionObj
-                    viewModel.selectedMemberAction = actionCode
-                    if (actionCode == 1001) {
-                        viewModel.fetchProfileForEdit(viewModel.selectedMemberId?.toInt())
-                    } else if (actionCode == 1002) {
-                        viewModel.fetchProfileForEdit(viewModel.selectedMemberId?.toInt())
-                    } else {
-                        val intent = Intent(this@DashboardActivity, AddFamilyActivity::class.java)
-                        intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, false)
-                        intent.putExtra(
-                            Constents.FAMILY_MEMBER_RELATIONSHIP_ID_INTENT_TAG,
-                            actionCode
-                        )
-                        intent.putExtra(
-                            Constents.FAMILY_MEMBER_ID_INTENT_TAG,
-                            viewModel.selectedMemberId?.toInt()
-                        )
-                        intent.putExtra(Constents.FAMILY_MEMBER_INTENT_TAG, true)
-                        intent.putExtra(Constents.FAMILY_MEMBER_GENDER_INTENT_TAG,item.gender )
-                        startActivityIntent(intent, false)
-                    }
-                    viewModel.showAddRelationView.value = false
-                }
-            })
-        binding.addMemberPopupRecyclerview.adapter = adapter
-        binding.addMemberPopupRecyclerview.postDelayed(Runnable {
-            viewModel.showAddRelationView.value = true
-            binding.relationPopupLayout.visibility = View.VISIBLE
-        }, 1000)
-    }
-
     private fun loadProfileImage(url: String?) {
         if (!TextUtils.isEmpty(url)) {
             Glide.with(this)
@@ -325,7 +279,7 @@ class DashboardActivity : AppBaseActivity() {
     fun navigateProfileScreen(v: View) {
         val intent = Intent(this, AddFamilyActivity::class.java)
         intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
-        intent.putExtra(Constents.FAMILY_MEMBER_NAME_INTENT_TAG, viewModel?.userData?.value?.firstname)
+        intent.putExtra(Constents.FAMILY_MEMBER_FNAME_INTENT_TAG, viewModel?.userData?.value?.firstname)
         intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel?.userData?.value?.mid)
         startActivityIntent(intent, false)
     }
@@ -712,35 +666,114 @@ class DashboardActivity : AppBaseActivity() {
     }
 
     fun fetchMemberRelationShipData(userId: String?) {
-        viewModel.fetchMemberRelationShip(userId)
         GlobalScope.launch(Dispatchers.Main) {
             binding.progressFrameLayout.visibility = View.VISIBLE
         }
+        viewModel.fetchMemberRelationShip(userId)
+    }
+
+    fun fetchTempProfileData(userId: String?){
+        GlobalScope.launch(Dispatchers.Main) {
+            binding.progressFrameLayout.visibility = View.VISIBLE
+        }
+        viewModel.fetchProfileForEdit(viewModel.selectedMemberId?.toInt())
     }
 
     fun closeMemberRelationPopup(v: View) {
         viewModel.showAddRelationView.value = false
     }
 
+
+
+    private fun validateMemberRelationRes(res: MemberRelationShipResData) {
+        binding.progressFrameLayout.visibility = View.GONE
+        if (res != null) {
+            if ((res.statusCode == 200) && (res.data != null)) {
+                openAddRelationPopup(res.data as MutableList)
+            }
+        }
+    }
+
+    private fun openAddRelationPopup(data: MutableList<RelationSelectionObj>?) {
+        data?.add(RelationSelectionObj("M", "Edit Profile", 0, 1001, true))
+        data?.add(RelationSelectionObj("M", "Remove Profile", 0, 1002, true))
+        val adapter =
+            RelationSelectionAdapter(this@DashboardActivity, data!!, object : AdapterListener {
+                override fun updateAction(actionCode: Int, data: Any?) {
+                    val item = data as RelationSelectionObj
+                    viewModel.selectedMemberAction = actionCode
+                    val editProfileData = if(viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
+                    if(editProfileData != null) {
+                        if ((viewModel.selectedMemberAction == 1001) || (viewModel.selectedMemberAction == 1002)) {
+                            if ((editProfileData.mid == prefhelper.fetchUserData()?.mid) || (editProfileData.owner_id == prefhelper.fetchUserData()?.mid)) {
+                                if (actionCode == 1001) {
+                                    val intent = Intent(this@DashboardActivity, AddFamilyActivity::class.java)
+                                    intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
+                                    intent.putExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG, true)
+                                    intent.putExtra(
+                                        Constents.FAMILY_MEMBER_ID_INTENT_TAG,
+                                        editProfileData.mid
+                                    )
+                                    intent.putExtra(
+                                        Constents.FAMILY_MEMBER_FNAME_INTENT_TAG,
+                                        editProfileData.firstname
+                                    )
+                                    startActivityIntent(intent, false)
+                                } else if (actionCode == 1002) {
+                                    binding.progressFrameLayout.visibility = View.VISIBLE
+                                    viewModel.deleteAccount(editProfileData.mid)
+                                }
+                            } else {
+                                showAlertDialog(
+                                    R.id.do_nothing,
+                                    getString(R.string.modify_profile_error),
+                                    getString(R.string.close_label),
+                                    ""
+                                )
+                            }
+                        } else {
+                            val intent =
+                                Intent(this@DashboardActivity, AddFamilyActivity::class.java)
+                            intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, false)
+                            intent.putExtra(
+                                Constents.FAMILY_MEMBER_RELATIONSHIP_ID_INTENT_TAG,
+                                actionCode
+                            )
+                            intent.putExtra(
+                                Constents.FAMILY_MEMBER_FNAME_INTENT_TAG,
+                                editProfileData.firstname
+                            )
+                            intent.putExtra(
+                                Constents.FAMILY_MEMBER_LNAME_INTENT_TAG,
+                                editProfileData.lastname
+                            )
+                            intent.putExtra(
+                                Constents.FAMILY_MEMBER_ID_INTENT_TAG,
+                                viewModel.selectedMemberId?.toInt()
+                            )
+                            intent.putExtra(Constents.FAMILY_MEMBER_INTENT_TAG, true)
+                            intent.putExtra(Constents.FAMILY_MEMBER_GENDER_INTENT_TAG, item.gender)
+                            intent.putExtra(Constents.FAMILY_MEMBER_GENDER_NAME_INTENT_TAG, item.name)
+                            startActivityIntent(intent, false)
+                        }
+                    }
+                    viewModel.showAddRelationView.value = false
+                }
+
+            })
+        binding.addMemberPopupRecyclerview.adapter = adapter
+        binding.addMemberPopupRecyclerview.postDelayed(Runnable {
+            viewModel.showAddRelationView.value = true
+            binding.chooseActionTextView.text = viewModel.profileResForEdit.value?.data?.firstname+" - "+getString(R.string.label_choose_action)
+            binding.relationPopupLayout.visibility = View.VISIBLE
+        }, 1000)
+    }
+
     private fun validateProfileForEditRes(res: ProfileVerificationResObj) {
         binding.progressFrameLayout.visibility = View.GONE
         if (res != null) {
             if ((res.statusCode == 200) && (res.data != null)) {
-                if ((res.data.mid == prefhelper.fetchUserData()?.mid) || (res.data.owner_id == prefhelper.fetchUserData()?.mid)) {
-                    if(viewModel.selectedMemberAction == 1001){
-                        val intent = Intent(this, AddFamilyActivity::class.java)
-                        intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
-                        intent.putExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG,true)
-                        intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, res.data.mid)
-                        intent.putExtra(Constents.FAMILY_MEMBER_NAME_INTENT_TAG, res.data.firstname)
-                        startActivityIntent(intent, false)
-                    }else if(viewModel.selectedMemberAction == 1002){
-                        binding.progressFrameLayout.visibility = View.VISIBLE
-                        viewModel.deleteAccount(res.data.mid)
-                    }
-                }else{
-                    showAlertDialog(R.id.do_nothing, getString(R.string.modify_profile_error), getString(R.string.close_label), "")
-                }
+                fetchMemberRelationShipData(viewModel.selectedMemberId)
             } else {
                 var message = ""
                 if (res.errorDetails != null) {

@@ -12,6 +12,7 @@
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/dashboard_footer_family_tree.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/dashboard_footer_story.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/family_wall_circle_bg.xml" value="0.1" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_close.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_contacts.xml" value="0.2203125" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_facebook_unselect.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_instagram.xml" value="0.19054054054054054" />
@@ -28,9 +29,10 @@
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/activity_family_wall.xml" value="0.17422222222222222" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/activity_post_view.xml" value="0.1" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/activity_wall.xml" value="0.17657657657657658" />
-        <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/add_family_activity.xml" value="0.25" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/add_family_activity.xml" value="0.1" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/add_story_activity.xml" value="0.1962962962962963" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/add_story_media_adapter.xml" value="0.1" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/avatar_image_layout.xml" value="0.17657657657657658" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/communication_dialog.xml" value="0.17657657657657658" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/country_code_drop_down.xml" value="0.1962962962962963" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/dashboard_activity.xml" value="0.1" />

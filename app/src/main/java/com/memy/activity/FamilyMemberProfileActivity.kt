@@ -271,7 +271,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
             intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
             intent.putExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG,true)
             intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel?.userData?.value?.mid)
-            intent.putExtra(Constents.FAMILY_MEMBER_NAME_INTENT_TAG, viewModel?.userData?.value?.firstname)
+            intent.putExtra(Constents.FAMILY_MEMBER_FNAME_INTENT_TAG, viewModel?.userData?.value?.firstname)
             startActivityIntent(intent, false)
         }else{
             navigateBottomProfileScreen()
@@ -497,7 +497,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
             override fun updateAction(actionCode: Int, data: Any?) {
                 val item = data as RelationSelectionObj
                 viewModel.selectedMemberAction = actionCode
-                if (actionCode == 1001) {
+                /*if (actionCode == 1001) {
                     viewModel.fetchProfileForEdit(viewModel.selectedMemberId?.toInt())
                 } else if (actionCode == 1002) {
                     viewModel.fetchProfileForEdit(viewModel.selectedMemberId?.toInt())
@@ -512,6 +512,62 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                     intent.putExtra(Constents.FAMILY_MEMBER_INTENT_TAG, true)
                     intent.putExtra(Constents.FAMILY_MEMBER_GENDER_INTENT_TAG,item.gender )
                     startActivityIntent(intent, false)
+                }*/
+
+                val editProfileData = if(viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
+                if(editProfileData != null) {
+                    if ((viewModel.selectedMemberAction == 1001) || (viewModel.selectedMemberAction == 1002)) {
+                        if ((editProfileData.mid == prefhelper.fetchUserData()?.mid) || (editProfileData.owner_id == prefhelper.fetchUserData()?.mid)) {
+                            if (actionCode == 1001) {
+                                val intent = Intent(this@FamilyMemberProfileActivity, AddFamilyActivity::class.java)
+                                intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
+                                intent.putExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG, true)
+                                intent.putExtra(
+                                    Constents.FAMILY_MEMBER_ID_INTENT_TAG,
+                                    editProfileData.mid
+                                )
+                                intent.putExtra(
+                                    Constents.FAMILY_MEMBER_FNAME_INTENT_TAG,
+                                    editProfileData.firstname
+                                )
+                                startActivityIntent(intent, false)
+                            } else if (actionCode == 1002) {
+                                binding.progressFrameLayout.visibility = View.VISIBLE
+                                viewModel.deleteAccount(editProfileData.mid)
+                            }
+                        } else {
+                            showAlertDialog(
+                                R.id.do_nothing,
+                                getString(R.string.modify_profile_error),
+                                getString(R.string.close_label),
+                                ""
+                            )
+                        }
+                    } else {
+                        val intent =
+                            Intent(this@FamilyMemberProfileActivity, AddFamilyActivity::class.java)
+                        intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, false)
+                        intent.putExtra(
+                            Constents.FAMILY_MEMBER_RELATIONSHIP_ID_INTENT_TAG,
+                            actionCode
+                        )
+                        intent.putExtra(
+                            Constents.FAMILY_MEMBER_FNAME_INTENT_TAG,
+                            editProfileData.firstname
+                        )
+                        intent.putExtra(
+                            Constents.FAMILY_MEMBER_LNAME_INTENT_TAG,
+                            editProfileData.lastname
+                        )
+                        intent.putExtra(
+                            Constents.FAMILY_MEMBER_ID_INTENT_TAG,
+                            viewModel.selectedMemberId?.toInt()
+                        )
+                        intent.putExtra(Constents.FAMILY_MEMBER_INTENT_TAG, true)
+                        intent.putExtra(Constents.FAMILY_MEMBER_GENDER_INTENT_TAG, item.gender)
+                        intent.putExtra(Constents.FAMILY_MEMBER_GENDER_NAME_INTENT_TAG, item.name)
+                        startActivityIntent(intent, false)
+                    }
                 }
                 viewModel.showAddRelationView.value = false
             }
@@ -519,6 +575,8 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         binding.addMemberPopupRecyclerview.adapter = adapter
         binding.addMemberPopupRecyclerview.postDelayed(Runnable {
             viewModel.showAddRelationView.value = true
+
+            binding.chooseActionTextView.text = viewModel.profileResForEdit.value?.data?.firstname+" - "+getString(R.string.label_choose_action)
             binding.relationPopupLayout.visibility = View.VISIBLE
         },1000)
     }
@@ -527,7 +585,8 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         binding.progressFrameLayout.visibility = View.GONE
         if (res != null) {
             if ((res.statusCode == 200) && (res.data != null)) {
-                if ((res.data.mid == prefhelper.fetchUserData()?.mid) || (res.data.owner_id == prefhelper.fetchUserData()?.mid)) {
+                fetchMemberRelationShipData(viewModel.selectedMemberId)
+                /*if ((res.data.mid == prefhelper.fetchUserData()?.mid) || (res.data.owner_id == prefhelper.fetchUserData()?.mid)) {
                     if(viewModel.selectedMemberAction == 1001){
                         val intent = Intent(this, AddFamilyActivity::class.java)
                         intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
@@ -541,7 +600,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                     }
                 }else{
                     showAlertDialog(R.id.do_nothing, getString(R.string.modify_profile_error), getString(R.string.close_label), "")
-                }
+                }*/
             } else {
                 var message = ""
                 if (res.errorDetails != null) {
@@ -573,6 +632,13 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                 errorHandler(res)
             }
         }
+    }
+
+    fun fetchTempProfileData(userId: String?){
+        GlobalScope.launch(Dispatchers.Main) {
+            binding.progressFrameLayout.visibility = View.VISIBLE
+        }
+        viewModel.fetchProfileForEdit(viewModel.selectedMemberId?.toInt())
     }
 
     private fun errorHandler(res: CommonResponse) {

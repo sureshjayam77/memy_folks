@@ -47,7 +47,6 @@
                     android:layout_marginStart="10dp"
                     android:text="@string/label_add_family"
                     android:textColor="@color/white"
-                    android:singleLine="true"
                     android:maxLines="2"
                     android:textSize="@dimen/common_header_text_size" />
 
@@ -91,23 +90,33 @@
                         android:backgroundTint="@color/add_family_header_color"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <!-- <androidx.appcompat.widget.AppCompatImageView
-                             android:id="@+id/profilePhotoImageView"
-                             android:layout_width="@dimen/add_family_photo_height"
-                             android:layout_height="@dimen/add_family_photo_height"
-                             android:layout_gravity="center"
-                             android:layout_margin="@dimen/common_margin_size" />-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="@dimen/add_family_profile_left_space"
+                            android:orientation="horizontal">
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/profilePhotoImageView"
                             android:layout_width="@dimen/add_family_photo_height"
                             android:layout_height="@dimen/add_family_photo_height"
                             android:layout_gravity="center"
-                            android:layout_margin="@dimen/common_margin_size"
+                            android:layout_margin="@dimen/add_family_profile_left_space"
                             android:onClick="photoChooseOption"
                             android:src="@drawable/ic_profile_holder"
                             app:civ_border_color="#FFFFFF"
                             app:civ_border_width="2dp" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/avatarRecyclerview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                            android:layout_marginStart="10dp"
+                            app:spanCount="4"
+                            tools:itemCount="8"/>
+                        </LinearLayout>
 
                     </androidx.cardview.widget.CardView>
 
@@ -444,6 +453,14 @@
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:spinnerMode="dialog"/>
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:onClick="@{()->viewModel.clearBirthYear()}"
+                            android:visibility="@{(TextUtils.isEmpty(viewModel.birthYear)) ? View.GONE : View.VISIBLE, default=gone}"
+                            android:src="@drawable/ic_close"/>
 
                         <!--<androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/professionEditText"

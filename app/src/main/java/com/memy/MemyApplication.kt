@@ -20,14 +20,14 @@ class MemyApplication : Application() {
         //if(localeHelper == null) {
             localeHelper = LocaleHelper()
        // }
-        localeHelper?.setLocale(this,"ta")
+        localeHelper?.setLocale(this,"en")
     }
 
     override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(LocaleHelper().setLocale(base!!,"ta"))
+        super.attachBaseContext(LocaleHelper().setLocale(base!!,"en"))
        // if(localeHelper!! == null) {
             localeHelper = LocaleHelper()
        // }
-        localeHelper?.setLocale(base,"ta")
+        localeHelper?.setLocale(base,"en")
     }
 }

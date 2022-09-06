@@ -130,5 +130,11 @@ interface APIInterface {
     @GET("api/memberrelationships/")
     fun getMemberRelationShip(@Query("apikey") apikey: String,@Query("mid") mid: String?) : Call<MemberRelationShipResData?>?
 
+    @GET("api/v1/avatar/")
+    fun getAvatarImageList(@Query("apikey") apikey: String) : Call<AvatarImageListRes>?
+
+    @GET("api/memberexist/")
+    fun checkFamilyMemberExists(@Query("apikey") apikey: String,@Query("firstname") firstname: String?,@Query("relationship") relationship: String?,@Query("mid") mid: Int?) : Call<RelationShipExistsRes>?
+
 
 }

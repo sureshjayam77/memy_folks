@@ -40,6 +40,7 @@ import com.bumptech.glide.Glide
 import com.chivorn.datetimeoptionspicker.DateTimePickerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.memy.R
+import com.memy.adapter.AvatarImageAdapter
 import com.memy.adapter.CountryCodeAdapter
 import com.memy.adapter.CustomDropDownAdapter
 import com.memy.databinding.AddFamilyActivityBinding
@@ -81,6 +82,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     var isMediaSelected : Boolean? = null
     val yearList = ArrayList<String>()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupViewBinding()
@@ -90,6 +92,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         initProfileData()
         showProgressBar()
         initYearAdapter()
+        viewModel.fetchAvatarImageList()
     }
 
     override fun onBackPressed() {
@@ -147,10 +150,17 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         if(((viewModel.isForOwnProfileUpdate.value == true) && (viewModel.isForNewOwnProfileUpdate.value == false)) || (viewModel.isForEditFamily.value == true)){
             viewModel.showMoreOnfoOption.value = true
         }
+        val fName = intent?.getStringExtra(Constents.FAMILY_MEMBER_FNAME_INTENT_TAG) ?: ""
+        val lName = intent?.getStringExtra(Constents.FAMILY_MEMBER_LNAME_INTENT_TAG) ?: ""
+        if(!TextUtils.isEmpty(lName)){
+            viewModel.lastName.value = lName
+        }
 
         if((viewModel.isForOwnProfileUpdate.value == true) || (viewModel.isForNewOwnProfileUpdate.value == true) || (viewModel.isForEditFamily.value == true)){
-            val fName = intent?.getStringExtra(Constents.FAMILY_MEMBER_NAME_INTENT_TAG) ?: ""
             binding.titleTextView.text = fName+" "+getString(R.string.label_edit_profile)
+        }else{
+            val genderLable = intent?.getStringExtra(Constents.FAMILY_MEMBER_GENDER_NAME_INTENT_TAG)
+            binding.titleTextView.text = String.format(getString(R.string.label_adding_relationship),genderLable,fName)
         }
         if((viewModel.isForAddFamily.value == true)){
             viewModel.allowEditMobileNumber.value = true
@@ -172,6 +182,9 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         viewModel.profileVerificationResObj.observe(this, this::validateProfileRes)
         viewModel.deleteAccountRes.observe(this,this::validateDeleteAccountRes)
         viewModel.isCusExistRes.observe(this,this::validateExisCusRes)
+        viewModel.relationShipResObj.observe(this, this::validateRelationShipRes)
+        viewModel.avatarImageRes.observe(this, this::loadAvatarImages)
+        viewModel.relationShipExistsRes.observe(this, this::validateRelationShipExist)
         viewModel.living.observe(this, Observer { v ->
             if(v) {
                 binding.deathDateTextView.text = ""
@@ -586,7 +599,9 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK )
                 startActivityIntent(intent, true)
             }
-
+        } else if(id == R.id.member_exists_popup_id){
+            showProgressBar()
+            viewModel.addFamilyMember()
         }
     }
 
@@ -1092,7 +1107,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 req.userid = viewModel.addFamilyMemberId?.value
                 req.id = viewModel.addFamilyMemberId?.value
                 req.owner = prefhelper.fetchUserData()?.mid
-                viewModel.addFamilyMember(req,file)
+                viewModel.checkFamilyMemberExists(req,file)
             }else if(((viewModel.userData?.owner_id == prefhelper.fetchUserData()?.mid!!) && (viewModel.userData?.mid!! != prefhelper.fetchUserData()?.mid!!))){
                 req.userid = viewModel.userData?.mid
                 req.id = viewModel.userData?.id
@@ -1337,6 +1352,37 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
 
     fun showYearPicker(v:View?){
         binding.yearSpinner.performClick()
+    }
+
+    fun loadAvatarImages(res: AvatarImageListRes){
+        hideProgressBar()
+        if (res != null) {
+            if (res.statusCode == 200) {
+                val adapter = AvatarImageAdapter(this, res?.data, object : AdapterListener {
+                    override fun updateAction(actionCode: Int, data: Any?) {
+
+                    }
+                })
+                binding.avatarRecyclerview.adapter = adapter
+            }
+        }
+    }
+
+    fun validateRelationShipExist(res : RelationShipExistsRes){
+        hideProgressBar()
+        if (res != null) {
+            if ((res.statusCode == 200) && (res.data != null) && (res.data)) {
+                showAlertDialog(
+                    R.id.member_exists_popup_id,
+                    getString(R.string.member_already_exists_msg),
+                    getString(R.string.continue_label),
+                    getString(R.string.label_cancel)
+                )
+                return
+            }
+        }
+        showProgressBar();
+        viewModel.addFamilyMember()
     }
 }
 

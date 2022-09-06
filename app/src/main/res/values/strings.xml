@@ -81,6 +81,7 @@
     <string name="label_edit">Edit</string>
     <string name="label_choose_action">Choose action</string>
     <string name="label_or">OR</string>
+    <string name="label_adding_relationship">Adding %s for %s</string>
 
 
 
@@ -98,6 +99,7 @@
     <string name="family_member_add_success_fully">Family member added successfully</string>
     <string name="relation_updated_success_fully">Relationship updated successfully</string>
     <string name="account_delete_success">Delete account successfully</string>
+    <string name="member_already_exists_msg">You already have same member name with same relationship. Do you want to continue?</string>
 
 
     //Add Story
