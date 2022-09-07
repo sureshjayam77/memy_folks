@@ -13,8 +13,8 @@ android {
         applicationId "com.memyfolks"
         minSdk 21
         targetSdk 31
-        versionCode 26
-        versionName "0.40"
+        versionCode 27
+        versionName "0.38"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

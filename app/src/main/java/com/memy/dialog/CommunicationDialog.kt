@@ -52,7 +52,13 @@ open class CommunicationDialog : DialogFragment {
     }
 
     fun show() {
-        show(activity?.supportFragmentManager!!, "")
+        try {
+            if (activity != null) {
+                show(activity?.supportFragmentManager!!, "")
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
 }

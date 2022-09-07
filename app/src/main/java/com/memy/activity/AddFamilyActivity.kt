@@ -1099,6 +1099,9 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 atlMobileNumberList.add(CommonMobileNumberObj(altCC, altMobile))
                 req.altmobiles = atlMobileNumberList
             }
+            if(!TextUtils.isEmpty(viewModel.selectedProfileURL)){
+                req.photo =  viewModel.selectedProfileURL
+            }
             showProgressBar()
             if(((viewModel.isForAddFamily.value != null) && (viewModel.isForAddFamily.value == true))){
                 req.relationship = familyTag
@@ -1148,6 +1151,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
 
     private fun loadProfileImage(url: String?) {
         if (!TextUtils.isEmpty(url)) {
+            viewModel.selectedProfileURL = url
             Glide
                 .with(this)
                 .load(url)
@@ -1160,6 +1164,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
 
     private fun loadProfileImageFromURI(url: Uri?) {
         if (url != null) {
+            viewModel.selectedProfileURL = ""
             Glide
                 .with(this)
                 .load(url)
@@ -1360,7 +1365,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             if (res.statusCode == 200) {
                 val adapter = AvatarImageAdapter(this, res?.data, object : AdapterListener {
                     override fun updateAction(actionCode: Int, data: Any?) {
-
+                    loadProfileImage((data as DataItem).avatar)
                     }
                 })
                 binding.avatarRecyclerview.adapter = adapter

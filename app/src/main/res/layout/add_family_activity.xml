@@ -440,6 +440,7 @@
                             android:background="@drawable/bottom_line"
                             android:hint="@string/label_date_of_birth_year"
                             android:maxLines="1"
+                            android:singleLine="true"
                             android:onClick="showYearPicker"
                             android:padding="@dimen/field_margin_top"
                             android:text="@{viewModel.birthYear}"

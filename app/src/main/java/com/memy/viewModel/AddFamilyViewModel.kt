@@ -73,6 +73,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
     var relationShipExistsRes = MutableLiveData<RelationShipExistsRes>()
     var addFamilyReq = AddFamilyRequest()
     var addFamilyFileReq:File? = null
+    var selectedProfileURL: String? = ""
 
 
     var showRelationPopup: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
