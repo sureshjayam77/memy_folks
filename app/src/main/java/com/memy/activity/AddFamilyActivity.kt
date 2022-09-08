@@ -1100,7 +1100,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 req.altmobiles = atlMobileNumberList
             }
             if(!TextUtils.isEmpty(viewModel.selectedProfileURL)){
-                req.photo =  viewModel.selectedProfileURL
+                req.photo_url  =  viewModel.selectedProfileURL
             }
             showProgressBar()
             if(((viewModel.isForAddFamily.value != null) && (viewModel.isForAddFamily.value == true))){

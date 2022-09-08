@@ -128,8 +128,10 @@ class AddFamilyRepository : BaseRepository() {
             if (!TextUtils.isEmpty(address))
                 stringHashMap["address"] = createPartFromString(address)
 
-            if (!TextUtils.isEmpty(req.photo))
-                stringHashMap["photo"] = createPartFromString(req.photo)
+            if (TextUtils.isEmpty(req.photo_url )){
+                req.photo_url = ""
+            }
+                stringHashMap["photo_url "] = createPartFromString(req.photo_url )
             stringHashMap["state_id"] = createPartFromString("" + state_id)
             stringHashMap["country_id"] = createPartFromString("" + country_id)
 
@@ -217,8 +219,10 @@ class AddFamilyRepository : BaseRepository() {
                 stringHashMap["address"] = createPartFromString(address)
             stringHashMap["state_id"] = createPartFromString("" + state_id)
             stringHashMap["country_id"] = createPartFromString("" + country_id)
-            if (!TextUtils.isEmpty(req.photo))
-                stringHashMap["photo"] = createPartFromString(req.photo)
+            if (TextUtils.isEmpty(req.photo_url )){
+                req.photo_url = ""
+            }
+                stringHashMap["photo_url "] = createPartFromString(req.photo_url )
             if (!TextUtils.isEmpty(relationship))
                 stringHashMap["relationship"] = createPartFromString(relationship)
             if (!TextUtils.isEmpty(gender))
