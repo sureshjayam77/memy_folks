@@ -82,6 +82,8 @@
     <string name="label_choose_action">Choose action</string>
     <string name="label_or">OR</string>
     <string name="label_adding_relationship">Adding %s for %s</string>
+    <string name="label_native">Native</string>
+    <string name="label_lineage">Lineage</string>
 
 
 

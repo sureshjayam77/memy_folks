@@ -105,7 +105,15 @@ class AddFamilyRepository : BaseRepository() {
             val gender = req.gender
             val relationship = req.relationship
             val owner = req.owner
+            var native = req.native
+            var lineage = req.lineage
 
+            if(TextUtils.isEmpty(native)){
+                native = ""
+            }
+            if(TextUtils.isEmpty(lineage)){
+                lineage = ""
+            }
             if (!TextUtils.isEmpty(firstname))
                 stringHashMap["firstname"] = createPartFromString(firstname)
             if (!TextUtils.isEmpty(lastname))
@@ -131,7 +139,16 @@ class AddFamilyRepository : BaseRepository() {
             if (TextUtils.isEmpty(req.photo_url )){
                 req.photo_url = ""
             }
-                stringHashMap["photo_url "] = createPartFromString(req.photo_url )
+
+
+            if(req.lineage != null){
+                stringHashMap["lineage"] = createPartFromString(lineage)
+            }
+            if(req.native != null){
+                stringHashMap["native"] = createPartFromString(native)
+            }
+
+                stringHashMap["photo_url"] = createPartFromString(req.photo_url )
             stringHashMap["state_id"] = createPartFromString("" + state_id)
             stringHashMap["country_id"] = createPartFromString("" + country_id)
 
@@ -195,6 +212,15 @@ class AddFamilyRepository : BaseRepository() {
             val relationship = req.relationship
             val owner = req.owner
             val userId = req.userid
+            var native = req.native
+            var lineage = req.lineage
+
+            if(TextUtils.isEmpty(native)){
+                native = ""
+            }
+            if(TextUtils.isEmpty(lineage)){
+                lineage = ""
+            }
 
             if (!TextUtils.isEmpty(firstname))
                 stringHashMap["firstname"] = createPartFromString(firstname)
@@ -222,7 +248,7 @@ class AddFamilyRepository : BaseRepository() {
             if (TextUtils.isEmpty(req.photo_url )){
                 req.photo_url = ""
             }
-                stringHashMap["photo_url "] = createPartFromString(req.photo_url )
+                stringHashMap["photo_url"] = createPartFromString(req.photo_url )
             if (!TextUtils.isEmpty(relationship))
                 stringHashMap["relationship"] = createPartFromString(relationship)
             if (!TextUtils.isEmpty(gender))
@@ -233,6 +259,17 @@ class AddFamilyRepository : BaseRepository() {
             } else {
                 arrayHashMap["altmobiles"] = ArrayList<CommonMobileNumberObj>()
             }
+
+            if(req.is_send_sms != null){
+                stringHashMap["is_send_sms"] = createPartFromString("" + req.is_send_sms)
+            }
+            if(req.lineage != null){
+                stringHashMap["lineage"] = createPartFromString(lineage)
+            }
+            if(req.native != null){
+                stringHashMap["native"] = createPartFromString(native)
+            }
+
             var photoBody: MultipartBody.Part? = null
 
             if (file != null) {

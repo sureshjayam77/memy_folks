@@ -21,6 +21,11 @@ import com.memy.utils.Constents
 import com.memy.utils.PreferenceHelper
 import com.squareup.moshi.Moshi
 
+import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
+
+import android.webkit.WebChromeClient
+import androidx.databinding.adapters.SeekBarBindingAdapter
+
 
 class TreeViewFragment : BaseFragment() {
 
@@ -48,6 +53,16 @@ class TreeViewFragment : BaseFragment() {
                 viewModel,
                 binding.webview
             ), "Android")
+
+        binding.webview.setWebChromeClient(object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView, progress: Int) {
+                //Make the bar disappear after URL is loaded, and changes string to Loading...
+
+                // Return the app name after finish loading
+                binding.webViewProgress.setProgress(progress)
+                binding.webViewProgress.visibility = if (progress == 100) (View.GONE) else(View.VISIBLE)
+            }
+        })
         loadProfileTree()
     }
 

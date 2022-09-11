@@ -72,6 +72,10 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
 
     override fun onStart() {
         super.onStart()
+        if(viewModel.tabPos == 0){
+            isInitialCall = true
+        }
+
         fetchProfileData(false)
     }
 
@@ -155,7 +159,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                                )
                                transaction.addToBackStack(null)
                                transaction.commit()
-
+                               viewModel.tabPos = 0
                                binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
                                binding.notificationImageView.setImageResource(R.drawable.ic_notification_unselect)
                                binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
@@ -185,7 +189,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                                )
                                transaction.addToBackStack(null)
                                transaction.commit()
-
+                               viewModel.tabPos = 1
                                binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
                                binding.notificationImageView.setImageResource(R.drawable.ic_notification_unselect)
                                binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
@@ -247,6 +251,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         transaction.replace(R.id.fragmentContainer, FamilyWallFragment(), FamilyWallFragment::javaClass.name)
         transaction.addToBackStack(null)
         transaction.commit()
+        viewModel.tabPos = 2
         binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_select)
         binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
         binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
@@ -348,6 +353,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
             validateOpenStoryView()
             return
         }*/
+        viewModel.tabPos = 0
         viewModel.isTreeView.value = true
     }
 
@@ -359,6 +365,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
             validateOpenStoryView()
             return
         }*/
+        viewModel.tabPos = 1
         viewModel.isTreeView.value = false
     }
 

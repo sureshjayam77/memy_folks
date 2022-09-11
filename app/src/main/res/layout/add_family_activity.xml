@@ -177,26 +177,28 @@
                             android:visibility="@{viewModel.isForAddFamily() ? View.VISIBLE : View.GONE}"
                             android:padding="5dp"/>
 
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/lastNameEditText"
+                            style="@style/RegularText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/field_margin_top"
+                            android:background="@drawable/bottom_line"
+                            android:hint="@string/last_name"
+                            android:maxLines="1"
+                            android:layout_weight="1"
+                            android:padding="@dimen/field_margin_top"
+                            android:singleLine="true"
+                            android:text="@={viewModel.lastName}"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/hint_color"
+                            android:textSize="@dimen/common_text_size"
+                            app:layout_constraintTop_toBottomOf="@id/fNameLayout" />
                     </LinearLayout>
 
 
 
-                    <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/lastNameEditText"
-                        style="@style/RegularText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/field_margin_top"
-                        android:background="@drawable/bottom_line"
-                        android:hint="@string/last_name"
-                        android:maxLines="1"
-                        android:padding="@dimen/field_margin_top"
-                        android:singleLine="true"
-                        android:text="@={viewModel.lastName}"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/hint_color"
-                        android:textSize="@dimen/common_text_size"
-                        app:layout_constraintTop_toBottomOf="@id/fNameLayout" />
+
 
                     <LinearLayout
                         android:id="@+id/mobileNumberLayout"
@@ -207,7 +209,7 @@
                         android:background="@drawable/bottom_line"
                         android:gravity="start"
                         android:visibility="@{viewModel.isForNewOwnProfileUpdate ? View.GONE : View.VISIBLE}"
-                        app:layout_constraintTop_toBottomOf="@+id/lastNameEditText">
+                        app:layout_constraintTop_toBottomOf="@+id/fNameLayout">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/countryCodeTextView"
@@ -257,6 +259,16 @@
                             android:layout_gravity="bottom"
                             android:visibility="@{viewModel.isForAddFamily() ? View.VISIBLE : View.GONE}"
                             android:padding="5dp"/>
+
+                        <CheckBox
+                            android:id="@+id/inviteCheckBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Invite"
+                            android:onClick="@{() -> viewModel.inviteClick()}"
+                            android:checked="@{viewModel.inviteSendSMS}"
+                            android:visibility="@{viewModel.isForAddFamily() ? View.VISIBLE : View.GONE}"
+                            android:paddingEnd="10dp"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -340,6 +352,7 @@
                         android:singleLine="true"
                         android:visibility="@{viewModel.showMoreOnfoOption ? View.VISIBLE : View.GONE}"
                         app:layout_constraintTop_toBottomOf="@id/alternateMobileNumberLayout" />
+
 
                     <RadioGroup
                         android:id="@+id/genderLayout"
@@ -441,7 +454,7 @@
                             android:hint="@string/label_date_of_birth_year"
                             android:maxLines="1"
                             android:singleLine="true"
-                            android:onClick="showYearPicker"
+                            android:onClick="openChooseBirthYear"
                             android:padding="@dimen/field_margin_top"
                             android:text="@{viewModel.birthYear}"
                             android:textColor="@color/black"
@@ -449,16 +462,17 @@
                             android:textSize="@dimen/common_text_size"
                             app:layout_constraintTop_toBottomOf="@id/alternateMobileNumberLayout" />
 
-                        <androidx.appcompat.widget.AppCompatSpinner
+                        <!--<androidx.appcompat.widget.AppCompatSpinner
                             android:id="@+id/yearSpinner"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
-                            android:spinnerMode="dialog"/>
+                            android:spinnerMode="dialog"/>-->
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="18dp"
                             android:layout_height="18dp"
-                            android:layout_gravity="center"
+                            android:layout_gravity="bottom"
+                            android:layout_marginBottom="10dp"
                             android:onClick="@{()->viewModel.clearBirthYear()}"
                             android:visibility="@{(TextUtils.isEmpty(viewModel.birthYear)) ? View.GONE : View.VISIBLE, default=gone}"
                             android:src="@drawable/ic_close"/>
@@ -529,13 +543,62 @@
 
                     </LinearLayout>
 
+
+                    <LinearLayout
+                        android:id="@+id/nativeLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@drawable/bottom_line"
+                        android:paddingBottom="2dp"
+                        android:gravity="center_vertical"
+                        app:layout_constraintTop_toBottomOf="@id/livingLayout" >
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/nativeEditText"
+                        style="@style/RegularText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/field_margin_top"
+                        android:hint="@string/label_native"
+                        android:maxLines="1"
+                        android:padding="@dimen/field_margin_top"
+                        android:singleLine="true"
+                        android:gravity="center_vertical"
+                        android:background="@null"
+                        android:text="@={viewModel.villageName}"
+                        android:textColor="@color/black"
+                        android:layout_weight="1"
+                        android:textColorHint="@color/hint_color"
+                        android:textSize="@dimen/common_text_size"/>
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/lineageEditText"
+                            style="@style/RegularText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/field_margin_top"
+                            android:hint="@string/label_lineage"
+                            android:maxLines="1"
+                            android:padding="@dimen/field_margin_top"
+                            android:singleLine="true"
+                            android:gravity="center_vertical"
+                            android:background="@null"
+                            android:text="@={viewModel.lineageName}"
+                            android:textColor="@color/black"
+                            android:layout_weight="1"
+                            android:textColorHint="@color/hint_color"
+                            android:textSize="@dimen/common_text_size"/>
+
+                    </LinearLayout>
+
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/moreInfoLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="@{viewModel.moreInfoClicked ? View.VISIBLE : View.GONE}"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/livingLayout">
+                        app:layout_constraintTop_toBottomOf="@+id/nativeLayout">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/moreInfoTextView"

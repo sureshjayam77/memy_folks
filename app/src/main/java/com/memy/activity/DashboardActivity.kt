@@ -74,6 +74,9 @@ class DashboardActivity : AppBaseActivity() {
         super.onResume()
         viewModel.userData.value = prefhelper.fetchUserData()
         loadProfileImage(viewModel.userData.value?.photo)
+        if(viewModel.tabPos == 0){
+            viewModel.isTreeView.value = true
+        }
     }
 
     override fun dialogNegativeCallBack() {
@@ -113,7 +116,7 @@ class DashboardActivity : AppBaseActivity() {
                 )
                 transaction.addToBackStack(null)
                 transaction.commit()
-
+                viewModel.tabPos = 0
                 binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
                 binding.notificationImageView.setImageResource(R.drawable.ic_notification_unselect)
 
@@ -133,6 +136,7 @@ class DashboardActivity : AppBaseActivity() {
                 )
                 transaction.addToBackStack(null)
                 transaction.commit()
+                viewModel.tabPos = 1
 
                 binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
                 binding.notificationImageView.setImageResource(R.drawable.ic_notification_unselect)
@@ -422,6 +426,7 @@ class DashboardActivity : AppBaseActivity() {
             validateOpenStoryView()
             return
         }*/
+        viewModel.tabPos = 0
         viewModel.isTreeView.value = true
     }
 
@@ -432,6 +437,7 @@ class DashboardActivity : AppBaseActivity() {
             validateOpenStoryView()
             return
         }*/
+        viewModel.tabPos = 1
         viewModel.isTreeView.value = false
     }
 
@@ -480,6 +486,8 @@ class DashboardActivity : AppBaseActivity() {
         )
         transaction.addToBackStack(null)
         transaction.commit()
+
+        viewModel.tabPos = 2
         binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_select)
         binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
         binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)

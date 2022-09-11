@@ -41,6 +41,7 @@ class DashboardViewModel : AppBaseViewModel() {
     var selectedMemberId : String? = ""
     var selectedMemberAction : Int? = 0
     var deleteAccountRes = MutableLiveData<CommonResponse>()
+    var tabPos = 0 //Tree 0, story = 1,bubble = 2
 
     init {
         dashboardRepository = DashboardRepository()

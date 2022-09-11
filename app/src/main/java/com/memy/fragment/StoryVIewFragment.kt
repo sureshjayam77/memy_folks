@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.lifecycle.ViewModelProvider
 import com.memy.activity.AddFamilyActivity
@@ -59,6 +60,15 @@ class StoryVIewFragment : BaseFragment(){
                 activity,
                 binding.webview,
                         startForResult), "Android")
+        binding.webview.setWebChromeClient(object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView, progress: Int) {
+                //Make the bar disappear after URL is loaded, and changes string to Loading...
+
+                // Return the app name after finish loading
+                binding.webViewProgress.setProgress(progress)
+                binding.webViewProgress.visibility = if (progress == 100) (View.GONE) else(View.VISIBLE)
+            }
+        })
         loadStoryView()
     }
 

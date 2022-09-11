@@ -29,6 +29,9 @@ class AddFamilyViewModel : AppBaseViewModel() {
     var familyTagId: MutableLiveData<String> = MutableLiveData()
     var firstName: MutableLiveData<String> = MutableLiveData()
     var lastName: MutableLiveData<String> = MutableLiveData()
+    var lineageName: MutableLiveData<String> = MutableLiveData()
+    var villageName: MutableLiveData<String> = MutableLiveData()
+    var inviteSendSMS: MutableLiveData<Boolean> = MutableLiveData()
     var mainCountryCode: MutableLiveData<String> = MutableLiveData()
     var mainMobileNumber: MutableLiveData<String> = MutableLiveData()
     var altCountryCode: MutableLiveData<String> = MutableLiveData()
@@ -176,6 +179,8 @@ class AddFamilyViewModel : AppBaseViewModel() {
         profession.value = data?.profession ?: ""
         popularlyKnowAs.value = data?.popularlyknownas ?: ""
         address.value = data?.address ?: ""
+        villageName.value = data?.native ?: ""
+        lineageName.value = data?.lineage ?: ""
         if(data?.state_id != null) {
             stateId = data?.state_id
         }
@@ -202,6 +207,10 @@ class AddFamilyViewModel : AppBaseViewModel() {
 
 
         fetchCountryList()
+    }
+
+    fun inviteClick(){
+        inviteSendSMS.value = if(inviteSendSMS.value == true) (false) else true
     }
 
     fun livingClick(){

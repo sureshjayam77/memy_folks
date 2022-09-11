@@ -18,6 +18,10 @@ import com.memy.utils.AppSignatureHelper
 import com.memy.utils.PreferenceHelper
 import com.memy.utils.Utils
 import com.squareup.moshi.Moshi
+import android.app.Activity
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+
 
 open abstract class AppBaseActivity : AppCompatActivity(), DialogClickCallBack {
 
@@ -108,6 +112,22 @@ open abstract class AppBaseActivity : AppCompatActivity(), DialogClickCallBack {
             true
         } catch (e: PackageManager.NameNotFoundException) {
             false
+        }
+    }
+
+    open fun hideKeyboard(activity: Activity) {
+        try {
+            val imm: InputMethodManager =
+                activity.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            //Find the currently focused view, so we can grab the correct window token from it.
+            var view: View? = activity.currentFocus
+            //If no view currently has focus, create a new one, just so we can grab a window token from it
+            if (view == null) {
+                view = View(activity)
+            }
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0)
+        }catch (e : Exception){
+            e.printStackTrace()
         }
     }
 

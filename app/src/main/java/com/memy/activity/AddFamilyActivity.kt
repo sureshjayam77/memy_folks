@@ -43,10 +43,8 @@ import com.memy.R
 import com.memy.adapter.AvatarImageAdapter
 import com.memy.adapter.CountryCodeAdapter
 import com.memy.adapter.CustomDropDownAdapter
-import com.memy.databinding.AddFamilyActivityBinding
-import com.memy.databinding.ChoosePhotoDialogBinding
-import com.memy.databinding.FamilyTagDialogBinding
-import com.memy.databinding.FamilyTagItemLayoutBinding
+import com.memy.adapter.ItemListAdapter
+import com.memy.databinding.*
 import com.memy.listener.AdapterListener
 import com.memy.listener.CustomDropDownCallBack
 import com.memy.pojo.*
@@ -67,6 +65,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
 
     lateinit var binding: AddFamilyActivityBinding
     lateinit var viewModel: AddFamilyViewModel
+    lateinit var yearBottomSheet: BottomSheetDialog
     lateinit var photoBottomSheet: BottomSheetDialog
     private var countryAdapter: CountryCodeAdapter? = null
     private var countryListDialog: Dialog? = null
@@ -164,6 +163,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
         if((viewModel.isForAddFamily.value == true)){
             viewModel.allowEditMobileNumber.value = true
+            viewModel.inviteSendSMS.value = true
         }
         if((viewModel.isForEditFamily.value == true)){
            // viewModel.fetchProfile(viewModel.addFamilyMemberId.value,prefhelper?.fetchUserData()?.mid)
@@ -648,6 +648,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     }*/
 
     fun openDatePicker(v1: View) {
+        hideKeyboard(this@AddFamilyActivity)
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
@@ -693,10 +694,9 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         for(value in minYear..currentYear){
             yearList.add(value.toString())
         }
-        yearList.add("")
         yearList.reverse()
 
-        val adapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, yearList)
+        /*val adapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, yearList)
         binding.yearSpinner.adapter = adapter
         binding.yearSpinner.onItemSelectedListener  = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
@@ -706,7 +706,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             override fun onNothingSelected(parent: AdapterView<*>) {
 
             }
-        }
+        }*/
     }
 
     /**
@@ -1076,6 +1076,9 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             req.popularlyknownas = popularKnownAs
             req.dream = crazy
             req.address = address
+            req.native = viewModel.villageName.value
+            req.lineage = viewModel.lineageName.value
+            req.lineage = viewModel.lineageName.value
 
             if ((stateId != null) && (stateId!! > -1)) {
                 req.state_id = stateId
@@ -1110,6 +1113,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 req.userid = viewModel.addFamilyMemberId?.value
                 req.id = viewModel.addFamilyMemberId?.value
                 req.owner = prefhelper.fetchUserData()?.mid
+                req.is_send_sms = viewModel.inviteSendSMS?.value
                 viewModel.checkFamilyMemberExists(req,file)
             }else if(((viewModel.userData?.owner_id == prefhelper.fetchUserData()?.mid!!) && (viewModel.userData?.mid!! != prefhelper.fetchUserData()?.mid!!))){
                 req.userid = viewModel.userData?.mid
@@ -1355,9 +1359,9 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
     }
 
-    fun showYearPicker(v:View?){
+    /*fun showYearPicker(v:View?){
         binding.yearSpinner.performClick()
-    }
+    }*/
 
     fun loadAvatarImages(res: AvatarImageListRes){
         hideProgressBar()
@@ -1388,6 +1392,25 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
         showProgressBar();
         viewModel.addFamilyMember()
+    }
+
+    fun openChooseBirthYear(v:View) {
+        yearBottomSheet = BottomSheetDialog(this, R.style.bottomSheetDialogTheme)
+        val birthYearBottomSheetBinding: BirthYearBottomSheetBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(this), R.layout.birth_year_bottom_sheet, null, false
+        )
+        birthYearBottomSheetBinding.cancelTextView.setOnClickListener(View.OnClickListener {
+            yearBottomSheet.dismiss()
+        })
+        val adapter = ItemListAdapter(this,yearList,object:AdapterListener{
+            override fun updateAction(actionCode: Int, data: Any?) {
+                viewModel.birthYear.value = data as String
+                yearBottomSheet.dismiss()
+            }
+        })
+        birthYearBottomSheetBinding.itemRecyclerView.adapter = adapter
+        yearBottomSheet.setContentView(birthYearBottomSheetBinding.root)
+        yearBottomSheet.show()
     }
 }
 
