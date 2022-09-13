@@ -575,6 +575,7 @@
                                 android:layout_height="wrap_content"
                                 android:hint="@string/label_instagram"
                                 android:padding="@dimen/field_margin_top"
+                                android:textColorHint="@color/gray_text_color"
                                 app:hintTextColor="@color/gray_text_color">
 
                                 <com.google.android.material.textfield.TextInputEditText
@@ -587,7 +588,8 @@
                                     android:textColor="@color/black"
                                     android:maxLines="1"
                                     android:singleLine="true"
-                                    android:textColorHint="@color/hint_color"
+                                    android:focusableInTouchMode="true"
+                                    android:textColorHint="@color/gray_text_color"
                                     android:textSize="@dimen/common_text_size" />
 
                             </com.google.android.material.textfield.TextInputLayout>
@@ -598,7 +600,8 @@
                                 android:layout_height="wrap_content"
                                 android:hint="@string/label_facebook"
                                 android:padding="@dimen/field_margin_top"
-                                app:hintTextColor="@color/gray_text_color">
+                                app:hintTextColor="@color/gray_text_color"
+                                android:textColorHint="@color/gray_text_color">
 
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id="@+id/facebookEditText"
@@ -621,7 +624,8 @@
                                 android:layout_height="wrap_content"
                                 android:hint="@string/label_twitter"
                                 android:padding="@dimen/field_margin_top"
-                                app:hintTextColor="@color/gray_text_color">
+                                app:hintTextColor="@color/gray_text_color"
+                                android:textColorHint="@color/gray_text_color">
 
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id="@+id/twitterEditText"
@@ -644,7 +648,8 @@
                                 android:layout_height="wrap_content"
                                 android:hint="@string/label_linkedin"
                                 android:padding="@dimen/field_margin_top"
-                                app:hintTextColor="@color/gray_text_color">
+                                app:hintTextColor="@color/gray_text_color"
+                                android:textColorHint="@color/gray_text_color">
 
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id="@+id/linkedInEditText"
@@ -665,9 +670,10 @@
                                 android:id="@+id/aboutLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/label_about"
+                                android:hint="@string/label_about_me"
                                 android:padding="@dimen/field_margin_top"
-                                app:hintTextColor="@color/gray_text_color">
+                                app:hintTextColor="@color/gray_text_color"
+                                android:textColorHint="@color/gray_text_color">
 
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id="@+id/aboutEditText"

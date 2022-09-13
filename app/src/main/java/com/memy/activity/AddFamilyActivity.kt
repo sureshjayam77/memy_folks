@@ -163,7 +163,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
         if((viewModel.isForAddFamily.value == true)){
             viewModel.allowEditMobileNumber.value = true
-            viewModel.inviteSendSMS.value = true
+            viewModel.inviteSendSMS.value = false
         }
         if((viewModel.isForEditFamily.value == true)){
            // viewModel.fetchProfile(viewModel.addFamilyMemberId.value,prefhelper?.fetchUserData()?.mid)
@@ -451,6 +451,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             if (intent != null) {
                 viewModel.photoFileUri = intent.data!!
                 viewModel.updatedImageURI = intent.data!!
+                viewModel.selectedProfileURL = ""
             }
             loadProfileImageFromURI(viewModel.photoFileUri)
            // binding.profilePhotoImageView.setImageURI(viewModel.photoFileUri)
@@ -462,6 +463,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             if (resultCode == RESULT_OK) {
                 viewModel.photoFileUri = result?.getUri()!!
                 viewModel.updatedImageURI = result?.getUri()!!
+                viewModel.selectedProfileURL = ""
                 loadProfileImageFromURI(viewModel.updatedImageURI)
                 //binding.profilePhotoImageView.setImageURI(viewModel.updatedImageURI)
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -1191,7 +1193,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     private fun errorHandler(res: CommonResponse) {
         var message = ""
         if ((res != null) && (res.errorDetails != null)) {
-            message = res.errorDetails.message!!
+            message = res.errorDetails?.message ?: ""
         }
         if (TextUtils.isEmpty(message)) {
             message = getString(R.string.something_went_wrong)
