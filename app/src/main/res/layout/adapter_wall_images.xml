@@ -30,6 +30,13 @@
           android:textSize="@dimen/common_small_text_size">
 
       </androidx.appcompat.widget.AppCompatTextView>
+      <androidx.appcompat.widget.AppCompatImageView
+          android:id="@+id/img_delete"
+          android:layout_width="30dp"
+          android:layout_alignParentEnd="true"
+          android:padding="5dp"
+          android:src="@drawable/ic_baseline_delete_24"
+          android:layout_height="30dp"/>
   </RelativeLayout>
    <RelativeLayout
        android:id="@+id/playLay"
