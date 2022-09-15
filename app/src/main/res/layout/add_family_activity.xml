@@ -47,8 +47,7 @@
                     android:layout_marginStart="10dp"
                     android:text="@string/label_add_family"
                     android:textColor="@color/white"
-                    android:singleLine="true"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:textSize="@dimen/common_header_text_size" />
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -91,23 +90,33 @@
                         android:backgroundTint="@color/add_family_header_color"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <!-- <androidx.appcompat.widget.AppCompatImageView
-                             android:id="@+id/profilePhotoImageView"
-                             android:layout_width="@dimen/add_family_photo_height"
-                             android:layout_height="@dimen/add_family_photo_height"
-                             android:layout_gravity="center"
-                             android:layout_margin="@dimen/common_margin_size" />-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="@dimen/add_family_profile_left_space"
+                            android:orientation="horizontal">
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/profilePhotoImageView"
                             android:layout_width="@dimen/add_family_photo_height"
                             android:layout_height="@dimen/add_family_photo_height"
                             android:layout_gravity="center"
-                            android:layout_margin="@dimen/common_margin_size"
+                            android:layout_margin="@dimen/add_family_profile_left_space"
                             android:onClick="photoChooseOption"
                             android:src="@drawable/ic_profile_holder"
                             app:civ_border_color="#FFFFFF"
                             app:civ_border_width="2dp" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/avatarRecyclerview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                            android:layout_marginStart="10dp"
+                            app:spanCount="4"
+                            tools:itemCount="8"/>
+                        </LinearLayout>
 
                     </androidx.cardview.widget.CardView>
 
@@ -126,8 +135,9 @@
                         android:textColor="@color/black"
                         android:textColorHint="@color/hint_color"
                         android:textSize="@dimen/common_text_size"
-                        android:visibility="@{viewModel.isForAddFamily() ? View.VISIBLE : View.GONE}"
+                        android:visibility="gone"
                         app:layout_constraintTop_toBottomOf="@id/photoCardView" />
+                    <!--android:visibility="@{viewModel.isForAddFamily() ? View.VISIBLE : View.GONE}"-->
 
                     <LinearLayout
                         android:id="@+id/fNameLayout"
@@ -157,6 +167,25 @@
                             android:textColorHint="@color/hint_color"
                             android:textSize="@dimen/common_text_size"/>
 
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/lastNameEditText"
+                            style="@style/RegularText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/field_margin_top"
+                            android:background="@drawable/bottom_line"
+                            android:hint="@string/last_name"
+                            android:maxLines="1"
+                            android:layout_weight="1"
+                            android:padding="@dimen/field_margin_top"
+                            android:singleLine="true"
+                            android:text="@={viewModel.lastName}"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/hint_color"
+                            android:textSize="@dimen/common_text_size"
+                            app:layout_constraintTop_toBottomOf="@id/fNameLayout" />
+
+
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/nameContactIcon"
                             android:layout_width="35dp"
@@ -171,22 +200,7 @@
 
 
 
-                    <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/lastNameEditText"
-                        style="@style/RegularText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/field_margin_top"
-                        android:background="@drawable/bottom_line"
-                        android:hint="@string/last_name"
-                        android:maxLines="1"
-                        android:padding="@dimen/field_margin_top"
-                        android:singleLine="true"
-                        android:text="@={viewModel.lastName}"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/hint_color"
-                        android:textSize="@dimen/common_text_size"
-                        app:layout_constraintTop_toBottomOf="@id/fNameLayout" />
+
 
                     <LinearLayout
                         android:id="@+id/mobileNumberLayout"
@@ -197,7 +211,7 @@
                         android:background="@drawable/bottom_line"
                         android:gravity="start"
                         android:visibility="@{viewModel.isForNewOwnProfileUpdate ? View.GONE : View.VISIBLE}"
-                        app:layout_constraintTop_toBottomOf="@+id/lastNameEditText">
+                        app:layout_constraintTop_toBottomOf="@+id/fNameLayout">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/countryCodeTextView"
@@ -238,6 +252,19 @@
                             android:textColorHint="@color/hint_color"
                             android:textSize="@dimen/common_text_size" />
 
+
+                        <CheckBox
+                            android:id="@+id/inviteCheckBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Invite"
+                            android:textColor="@color/black"
+                            android:onClick="@{() -> viewModel.inviteClick()}"
+                            android:checked="@{viewModel.inviteSendSMS}"
+                            android:visibility="@{viewModel.isForAddFamily() ? View.VISIBLE : View.GONE}"
+                            android:paddingEnd="10dp"/>
+
+
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/phoneContactIcon"
                             android:layout_width="35dp"
@@ -246,7 +273,8 @@
                             android:onClick="contactChooseOption"
                             android:layout_gravity="bottom"
                             android:visibility="@{viewModel.isForAddFamily() ? View.VISIBLE : View.GONE}"
-                            android:padding="5dp"/>
+                            android:padding="5dp"
+                            android:layout_marginBottom="5dp"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -328,7 +356,9 @@
                         android:textColorHint="@color/hint_color"
                         android:textSize="@dimen/common_text_size"
                         android:singleLine="true"
+                        android:visibility="@{viewModel.showMoreOnfoOption ? View.VISIBLE : View.GONE}"
                         app:layout_constraintTop_toBottomOf="@id/alternateMobileNumberLayout" />
+
 
                     <RadioGroup
                         android:id="@+id/genderLayout"
@@ -336,6 +366,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/field_margin_top"
                         android:orientation="horizontal"
+                        android:visibility="@{viewModel.showMoreOnfoOption ? View.VISIBLE : View.GONE}"
                         app:layout_constraintTop_toBottomOf="@+id/emailEditText">
 
                         <RadioButton
@@ -386,7 +417,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:visibility="@{viewModel.showMoreOnfoOption ? View.VISIBLE : View.GONE}"
                         app:layout_constraintTop_toBottomOf="@+id/genderLayout">
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -408,7 +438,52 @@
                             android:textSize="@dimen/common_text_size"
                             app:layout_constraintTop_toBottomOf="@id/alternateMobileNumberLayout" />
 
-                        <androidx.appcompat.widget.AppCompatEditText
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/orTextView"
+                            style="@style/RegularText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/common_header_text_size"
+                            android:gravity="bottom"
+                            android:layout_gravity="bottom"
+                            android:text="@string/label_or"/>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/birthYearTextView"
+                            style="@style/RegularText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/field_margin_top"
+                            android:layout_marginStart="@dimen/field_margin_top"
+                            android:layout_weight="1"
+                            android:background="@drawable/bottom_line"
+                            android:hint="@string/label_date_of_birth_year"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:onClick="openChooseBirthYear"
+                            android:padding="@dimen/field_margin_top"
+                            android:text="@{viewModel.birthYear}"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/hint_color"
+                            android:textSize="@dimen/common_text_size"
+                            app:layout_constraintTop_toBottomOf="@id/alternateMobileNumberLayout" />
+
+                        <!--<androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/yearSpinner"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:spinnerMode="dialog"/>-->
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="bottom"
+                            android:layout_marginBottom="10dp"
+                            android:onClick="@{()->viewModel.clearBirthYear()}"
+                            android:visibility="@{(TextUtils.isEmpty(viewModel.birthYear)) ? View.GONE : View.VISIBLE, default=gone}"
+                            android:src="@drawable/ic_close"/>
+
+                        <!--<androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/professionEditText"
                             style="@style/RegularText"
                             android:layout_width="match_parent"
@@ -425,7 +500,7 @@
                             android:textColor="@color/black"
                             android:textColorHint="@color/hint_color"
                             android:textSize="@dimen/common_text_size"
-                            app:layout_constraintTop_toBottomOf="@id/alternateMobileNumberLayout" />
+                            app:layout_constraintTop_toBottomOf="@id/alternateMobileNumberLayout" />-->
                     </LinearLayout>
 
                     <LinearLayout
@@ -474,13 +549,62 @@
 
                     </LinearLayout>
 
+
+                    <LinearLayout
+                        android:id="@+id/nativeLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@drawable/bottom_line"
+                        android:paddingBottom="2dp"
+                        android:gravity="center_vertical"
+                        app:layout_constraintTop_toBottomOf="@id/livingLayout" >
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/nativeEditText"
+                        style="@style/RegularText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/field_margin_top"
+                        android:hint="@string/label_native"
+                        android:maxLines="1"
+                        android:padding="@dimen/field_margin_top"
+                        android:singleLine="true"
+                        android:gravity="center_vertical"
+                        android:background="@null"
+                        android:text="@={viewModel.villageName}"
+                        android:textColor="@color/black"
+                        android:layout_weight="1"
+                        android:textColorHint="@color/hint_color"
+                        android:textSize="@dimen/common_text_size"/>
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/lineageEditText"
+                            style="@style/RegularText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/field_margin_top"
+                            android:hint="@string/label_lineage"
+                            android:maxLines="1"
+                            android:padding="@dimen/field_margin_top"
+                            android:singleLine="true"
+                            android:gravity="center_vertical"
+                            android:background="@null"
+                            android:text="@={viewModel.lineageName}"
+                            android:textColor="@color/black"
+                            android:layout_weight="1"
+                            android:textColorHint="@color/hint_color"
+                            android:textSize="@dimen/common_text_size"/>
+
+                    </LinearLayout>
+
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/moreInfoLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="@{viewModel.moreInfoClicked ? View.VISIBLE : View.GONE}"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/livingLayout">
+                        app:layout_constraintTop_toBottomOf="@+id/nativeLayout">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/moreInfoTextView"
@@ -494,6 +618,24 @@
                             android:textSize="@dimen/common_text_size"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/professionEditText"
+                            style="@style/RegularText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/field_margin_top"
+                            android:layout_weight="1"
+                            android:background="@drawable/bottom_line"
+                            android:hint="@string/label_profession"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:padding="@dimen/field_margin_top"
+                            android:text="@={viewModel.profession}"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/hint_color"
+                            android:textSize="@dimen/common_text_size"
+                            app:layout_constraintTop_toBottomOf="@id/moreInfoTextView" />
 
                         <androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/popularlyEditText"
@@ -511,7 +653,7 @@
                             android:textColor="@color/black"
                             android:textColorHint="@color/hint_color"
                             android:textSize="@dimen/common_text_size"
-                            app:layout_constraintTop_toBottomOf="@id/moreInfoTextView" />
+                            app:layout_constraintTop_toBottomOf="@id/professionEditText" />
 
                         <androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/crazyEditText"

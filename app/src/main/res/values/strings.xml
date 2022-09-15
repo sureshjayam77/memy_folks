@@ -6,6 +6,7 @@
     <string name="something_went_wrong">Something went wrong</string>
     <string name="close_label">Close</string>
     <string name="no_internet">No/Poor internet connection</string>
+    <string name="modify_profile_error">You don\'t have access to modify/edit the profile</string>
 
     //Sign in
     <string name="login_search">Search</string>
@@ -33,6 +34,7 @@
     <string name="label_male">Male</string>
     <string name="label_female">Female</string>
     <string name="label_date_of_birth">Date of Birth</string>
+    <string name="label_date_of_birth_year">Birth Year</string>
     <string name="label_profession">Profession</string>
     <string name="label_living">Living</string>
     <string name="label_death">Death</string>
@@ -77,6 +79,11 @@
     <string name="label_story">Story</string>
     <string name="label_notification">Notification</string>
     <string name="label_edit">Edit</string>
+    <string name="label_choose_action">Choose action</string>
+    <string name="label_or">OR</string>
+    <string name="label_adding_relationship">Adding %s for %s</string>
+    <string name="label_native">Native</string>
+    <string name="label_lineage">Lineage</string>
 
 
 
@@ -94,6 +101,7 @@
     <string name="family_member_add_success_fully">Family member added successfully</string>
     <string name="relation_updated_success_fully">Relationship updated successfully</string>
     <string name="account_delete_success">Delete account successfully</string>
+    <string name="member_already_exists_msg">You already have same member name with same relationship. Do you want to continue?</string>
 
 
     //Add Story
@@ -134,10 +142,10 @@
     <string name="label_about">About</string>
     <string name="label_blog">Blog</string>
     <string name="label_help">Help</string>
-    <string name="label_facebook">Facebook</string>
-    <string name="label_instagram">Instagram</string>
-    <string name="label_twitter">Twitter</string>
-    <string name="label_linkedin">LinkedIn</string>
+    <string name="label_facebook">Facebook link</string>
+    <string name="label_instagram">Instagram link</string>
+    <string name="label_twitter">Twitter link</string>
+    <string name="label_linkedin">LinkedIn link</string>
     <string name="error_invalid_url">Enter valid URL</string>
     <string name="error_invalid_about">Enter about</string>
     <string name="label_about_me">About Me</string>

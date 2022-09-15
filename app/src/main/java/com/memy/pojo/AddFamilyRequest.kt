@@ -31,6 +31,10 @@ class AddFamilyRequest{
     var owner : Int? = null
     var altmobiles : List<CommonMobileNumberObj>? = null
     var id : Int? = null
+    var photo_url : String? = null
+    var lineage : String? = null
+    var native : String? = null
+    var is_send_sms : Boolean? = null
 }
 class AddEvent(var mid:String,var slug:String,var event_type:String,var event_start_date:String,var event_end_date:String,var content:String,var location:String,var location_pin:String,var alignment:String,var file: File,var host:String,var host2:String,var driveLink:String)
 class  WallResult(var statusCode:Int?, var data: WallEventResult?)

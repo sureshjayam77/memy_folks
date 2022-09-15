@@ -20,7 +20,7 @@ class AddFamilyRepository : BaseRepository() {
     var relationShipResObj = MutableLiveData<RelationShipResObj>()
     var countryListRes = MutableLiveData<CountryListRes>()
     var stateListResponse = MutableLiveData<StateListRes>()
-    var profileUpdateRes = MutableLiveData<CommonResponse>()
+    var profileUpdateRes = MutableLiveData<ProfileVerificationResObj>()
     var profileSocialLinkUpdateRes = MutableLiveData<CommonResponse>()
     var addFamilyMemberRes = MutableLiveData<AddFamilyResponse>()
     var addFamilyRes = MutableLiveData<CommonResponse>()
@@ -31,6 +31,8 @@ class AddFamilyRepository : BaseRepository() {
     var deleteAccountRes = MutableLiveData<CommonResponse>()
     var isCusExistRes = MutableLiveData<ProfileVerificationResObj>()
     var relationUpdateSuccessRes = MutableLiveData<CommonResponse>()
+    var avatarImageRes = MutableLiveData<AvatarImageListRes>()
+    var relationShipExistsRes = MutableLiveData<RelationShipExistsRes>()
 
     fun fetchRelationShip() {
         val relationShipCall = retrofit.create(APIInterface::class.java)
@@ -104,7 +106,15 @@ class AddFamilyRepository : BaseRepository() {
             val gender = req.gender
             val relationship = req.relationship
             val owner = req.owner
+            var native = req.native
+            var lineage = req.lineage
 
+            if(TextUtils.isEmpty(native)){
+                native = ""
+            }
+            if(TextUtils.isEmpty(lineage)){
+                lineage = ""
+            }
             if (!TextUtils.isEmpty(firstname))
                 stringHashMap["firstname"] = createPartFromString(firstname)
             if (!TextUtils.isEmpty(lastname))
@@ -126,6 +136,20 @@ class AddFamilyRepository : BaseRepository() {
                 stringHashMap["popularlyknownas"] = createPartFromString(popularlyknownas)
             if (!TextUtils.isEmpty(address))
                 stringHashMap["address"] = createPartFromString(address)
+
+            if (TextUtils.isEmpty(req.photo_url )){
+                req.photo_url = ""
+            }
+
+
+            if(req.lineage != null){
+                stringHashMap["lineage"] = createPartFromString(lineage)
+            }
+            if(req.native != null){
+                stringHashMap["native"] = createPartFromString(native)
+            }
+
+                stringHashMap["photo_url"] = createPartFromString(req.photo_url )
             stringHashMap["state_id"] = createPartFromString("" + state_id)
             stringHashMap["country_id"] = createPartFromString("" + country_id)
 
@@ -145,23 +169,23 @@ class AddFamilyRepository : BaseRepository() {
                 val reqFile: RequestBody = RequestBody.create("*/*".toMediaTypeOrNull(), file)
                 photoBody = MultipartBody.Part.createFormData("photo", file.name, reqFile)
             }
-            var updateProfileCall: Call<CommonResponse?>? = retrofit.create(APIInterface::class.java).saveProfileDetails(
+            var updateProfileCall: Call<ProfileVerificationResObj?>? = retrofit.create(APIInterface::class.java).saveProfileDetails(
                 req?.userid,
                 APP_KEY_VALUE,
                 stringHashMap,
                 photoBody,
                 arrayHashMap
             )
-            updateProfileCall?.enqueue(object : Callback<CommonResponse?> {
+            updateProfileCall?.enqueue(object : Callback<ProfileVerificationResObj?> {
                 override fun onResponse(
-                    call: Call<CommonResponse?>?,
-                    response: Response<CommonResponse?>?
+                    call: Call<ProfileVerificationResObj?>?,
+                    response: Response<ProfileVerificationResObj?>?
                 ) {
                     profileUpdateRes.value = response?.body()
                 }
 
-                override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
-                    profileUpdateRes.value = CommonResponse(null, 0, null)
+                override fun onFailure(call: Call<ProfileVerificationResObj?>?, t: Throwable) {
+                    profileUpdateRes.value = ProfileVerificationResObj(null, 0, null)
                 }
             })
         }
@@ -189,6 +213,15 @@ class AddFamilyRepository : BaseRepository() {
             val relationship = req.relationship
             val owner = req.owner
             val userId = req.userid
+            var native = req.native
+            var lineage = req.lineage
+
+            if(TextUtils.isEmpty(native)){
+                native = ""
+            }
+            if(TextUtils.isEmpty(lineage)){
+                lineage = ""
+            }
 
             if (!TextUtils.isEmpty(firstname))
                 stringHashMap["firstname"] = createPartFromString(firstname)
@@ -213,7 +246,10 @@ class AddFamilyRepository : BaseRepository() {
                 stringHashMap["address"] = createPartFromString(address)
             stringHashMap["state_id"] = createPartFromString("" + state_id)
             stringHashMap["country_id"] = createPartFromString("" + country_id)
-
+            if (TextUtils.isEmpty(req.photo_url )){
+                req.photo_url = ""
+            }
+                stringHashMap["photo_url"] = createPartFromString(req.photo_url )
             if (!TextUtils.isEmpty(relationship))
                 stringHashMap["relationship"] = createPartFromString(relationship)
             if (!TextUtils.isEmpty(gender))
@@ -224,6 +260,17 @@ class AddFamilyRepository : BaseRepository() {
             } else {
                 arrayHashMap["altmobiles"] = ArrayList<CommonMobileNumberObj>()
             }
+
+            if(req.is_send_sms != null){
+                stringHashMap["is_send_sms"] = createPartFromString("" + req.is_send_sms)
+            }
+            if(req.lineage != null){
+                stringHashMap["lineage"] = createPartFromString(lineage)
+            }
+            if(req.native != null){
+                stringHashMap["native"] = createPartFromString(native)
+            }
+
             var photoBody: MultipartBody.Part? = null
 
             if (file != null) {
@@ -620,6 +667,40 @@ class AddFamilyRepository : BaseRepository() {
 
             override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
                 deleteWallRes.value = CommonResponse(null, 0, null)
+            }
+        })
+    }
+
+    fun fetchAvatarImages() {
+        val relationShipCall = retrofit.create(APIInterface::class.java)
+            .getAvatarImageList(BaseRepository.APP_KEY_VALUE)
+        relationShipCall?.enqueue(object : Callback<AvatarImageListRes?> {
+            override fun onResponse(
+                call: Call<AvatarImageListRes?>?,
+                response: Response<AvatarImageListRes?>?
+            ) {
+                avatarImageRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<AvatarImageListRes?>?, t: Throwable) {
+                avatarImageRes.value = AvatarImageListRes(null, 0, null)
+            }
+        })
+    }
+
+    fun checkFamilyMemberExists(fName : String?,relationShipId : String?,mid : Int?) {
+        val relationShipCall = retrofit.create(APIInterface::class.java)
+            .checkFamilyMemberExists(APP_KEY_VALUE,fName,relationShipId,mid)
+        relationShipCall?.enqueue(object : Callback<RelationShipExistsRes?> {
+            override fun onResponse(
+                call: Call<RelationShipExistsRes?>?,
+                response: Response<RelationShipExistsRes?>?
+            ) {
+                relationShipExistsRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<RelationShipExistsRes?>?, t: Throwable) {
+                relationShipExistsRes.value = RelationShipExistsRes(null, 0, null)
             }
         })
     }

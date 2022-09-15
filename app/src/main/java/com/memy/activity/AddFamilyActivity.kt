@@ -1,13 +1,14 @@
 package com.memy.activity
 
-import android.R.attr
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.provider.Settings
 import android.text.Editable
@@ -19,8 +20,11 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.Spinner
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -33,14 +37,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.chivorn.datetimeoptionspicker.DateTimePickerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.memy.R
+import com.memy.adapter.AvatarImageAdapter
 import com.memy.adapter.CountryCodeAdapter
 import com.memy.adapter.CustomDropDownAdapter
-import com.memy.databinding.AddFamilyActivityBinding
-import com.memy.databinding.ChoosePhotoDialogBinding
-import com.memy.databinding.FamilyTagDialogBinding
-import com.memy.databinding.FamilyTagItemLayoutBinding
+import com.memy.adapter.ItemListAdapter
+import com.memy.databinding.*
 import com.memy.listener.AdapterListener
 import com.memy.listener.CustomDropDownCallBack
 import com.memy.pojo.*
@@ -52,30 +56,16 @@ import com.theartofdev.edmodo.cropper.CropImage
 import java.io.File
 import java.lang.reflect.Method
 import java.net.URI
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import android.provider.ContactsContract
-import androidx.activity.result.contract.ActivityResultContracts
-import android.R.attr.data
-import android.database.Cursor
-import android.annotation.SuppressLint
-import android.R.id
-import android.R.attr.phoneNumber
-import android.graphics.Color
-import android.widget.DatePicker
-import android.widget.Toast
-
-import com.memy.MainActivity
-
-import com.chivorn.datetimeoptionspicker.DateTimePickerView
-import com.chivorn.datetimeoptionspicker.DateTimePickerView.OnTimeSelectListener
-import java.text.SimpleDateFormat
 
 
 class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListener {
 
     lateinit var binding: AddFamilyActivityBinding
     lateinit var viewModel: AddFamilyViewModel
+    lateinit var yearBottomSheet: BottomSheetDialog
     lateinit var photoBottomSheet: BottomSheetDialog
     private var countryAdapter: CountryCodeAdapter? = null
     private var countryListDialog: Dialog? = null
@@ -89,6 +79,8 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     lateinit var countryListDropDown: CustomDropDownAdapter
     lateinit var stateListDropDown: CustomDropDownAdapter
     var isMediaSelected : Boolean? = null
+    val yearList = ArrayList<String>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +90,8 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
        // PermissionUtil().initRequestPermissionForCameraContact(this, true)
         initProfileData()
         showProgressBar()
+        initYearAdapter()
+        viewModel.fetchAvatarImageList()
     }
 
     override fun onBackPressed() {
@@ -134,19 +128,42 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             intent?.getBooleanExtra(Constents.OWN_NEW_PROFILE_INTENT_TAG, false)
         viewModel.addFamilyMemberId.value =
             intent?.getIntExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, -1)
+        viewModel.familyTagId.value = intent?.getIntExtra(Constents.FAMILY_MEMBER_RELATIONSHIP_ID_INTENT_TAG, -1).toString()
         viewModel.isForAddFamily.value =
             intent?.getBooleanExtra(Constents.FAMILY_MEMBER_INTENT_TAG, false)
+        viewModel.gender.value = intent?.getStringExtra(Constents.FAMILY_MEMBER_GENDER_INTENT_TAG) ?: Constents.GENDER_MALE
+        if(!TextUtils.isEmpty(viewModel.gender.value)) {
+            viewModel.isMale.value = false
+            viewModel.isFeMale.value = false
+            viewModel.isOtherGender.value = false
+            if (viewModel.gender.value.equals(Constents.GENDER_MALE, true)) {
+                viewModel.isMale.value = true
+            } else if (viewModel.gender.value.equals(Constents.GENDER_FEMALE, true)) {
+                viewModel.isFeMale.value = true
+            } else if (viewModel.gender.value.equals(Constents.GENDER_OTHER, true)) {
+                viewModel.isOtherGender.value = true
+            }
+        }
         viewModel.isForEditFamily.value = intent?.getBooleanExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG, false)
 
         if(((viewModel.isForOwnProfileUpdate.value == true) && (viewModel.isForNewOwnProfileUpdate.value == false)) || (viewModel.isForEditFamily.value == true)){
             viewModel.showMoreOnfoOption.value = true
         }
+        val fName = intent?.getStringExtra(Constents.FAMILY_MEMBER_FNAME_INTENT_TAG) ?: ""
+        val lName = intent?.getStringExtra(Constents.FAMILY_MEMBER_LNAME_INTENT_TAG) ?: ""
+        if(!TextUtils.isEmpty(lName)){
+            viewModel.lastName.value = lName
+        }
 
         if((viewModel.isForOwnProfileUpdate.value == true) || (viewModel.isForNewOwnProfileUpdate.value == true) || (viewModel.isForEditFamily.value == true)){
-            binding.titleTextView.text = getString(R.string.label_edit_profile)
+            binding.titleTextView.text = fName+" "+getString(R.string.label_edit_profile)
+        }else{
+            val genderLable = intent?.getStringExtra(Constents.FAMILY_MEMBER_GENDER_NAME_INTENT_TAG)
+            binding.titleTextView.text = String.format(getString(R.string.label_adding_relationship),genderLable,fName)
         }
         if((viewModel.isForAddFamily.value == true)){
             viewModel.allowEditMobileNumber.value = true
+            viewModel.inviteSendSMS.value = false
         }
         if((viewModel.isForEditFamily.value == true)){
            // viewModel.fetchProfile(viewModel.addFamilyMemberId.value,prefhelper?.fetchUserData()?.mid)
@@ -165,6 +182,9 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         viewModel.profileVerificationResObj.observe(this, this::validateProfileRes)
         viewModel.deleteAccountRes.observe(this,this::validateDeleteAccountRes)
         viewModel.isCusExistRes.observe(this,this::validateExisCusRes)
+        viewModel.relationShipResObj.observe(this, this::validateRelationShipRes)
+        viewModel.avatarImageRes.observe(this, this::loadAvatarImages)
+        viewModel.relationShipExistsRes.observe(this, this::validateRelationShipExist)
         viewModel.living.observe(this, Observer { v ->
             if(v) {
                 binding.deathDateTextView.text = ""
@@ -193,7 +213,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                viewModel.fetchProfile(viewModel.addFamilyMemberId.value)
            }
         } else {
-            viewModel.fetchRelationShip()
+          //  viewModel.fetchRelationShip()
         }
     }
 
@@ -431,6 +451,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             if (intent != null) {
                 viewModel.photoFileUri = intent.data!!
                 viewModel.updatedImageURI = intent.data!!
+                viewModel.selectedProfileURL = ""
             }
             loadProfileImageFromURI(viewModel.photoFileUri)
            // binding.profilePhotoImageView.setImageURI(viewModel.photoFileUri)
@@ -442,6 +463,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             if (resultCode == RESULT_OK) {
                 viewModel.photoFileUri = result?.getUri()!!
                 viewModel.updatedImageURI = result?.getUri()!!
+                viewModel.selectedProfileURL = ""
                 loadProfileImageFromURI(viewModel.updatedImageURI)
                 //binding.profilePhotoImageView.setImageURI(viewModel.updatedImageURI)
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -521,10 +543,10 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             }
             familyBottomSheet?.setContentView(familyTagDialogBinding.root)
             familyBottomSheet?.show()
-        } else {
+        }/* else {
             showProgressBar()
             viewModel.fetchRelationShip()
-        }
+        }*/
     }
 
     private fun dismissFamilyTagBottomSheet() {
@@ -579,7 +601,9 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK )
                 startActivityIntent(intent, true)
             }
-
+        } else if(id == R.id.member_exists_popup_id){
+            showProgressBar()
+            viewModel.addFamilyMember()
         }
     }
 
@@ -626,6 +650,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     }*/
 
     fun openDatePicker(v1: View) {
+        hideKeyboard(this@AddFamilyActivity)
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
@@ -665,6 +690,26 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
 
         }
 
+    fun initYearAdapter() {
+        val currentYear = (Calendar.getInstance()).get(Calendar.YEAR)
+        val minYear = currentYear - 500
+        for(value in minYear..currentYear){
+            yearList.add(value.toString())
+        }
+        yearList.reverse()
+
+        /*val adapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, yearList)
+        binding.yearSpinner.adapter = adapter
+        binding.yearSpinner.onItemSelectedListener  = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                viewModel.birthYear.value = yearList.get(position)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+
+            }
+        }*/
+    }
 
     /**
      * method used to change the view when click the search button
@@ -871,7 +916,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
     }
 
-    fun countrySpinnerClick(v: View) {
+    fun  countrySpinnerClick(v: View) {
         if ((viewModel.countryListRes.value != null) && (viewModel.countryListRes.value?.data != null) && (viewModel.countryListRes.value?.data?.size!! > 0)) {
             viewModel.countryList = viewModel.countryListRes.value?.data!!
             countryListDropDown =
@@ -954,7 +999,12 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             //viewModel.mainCountryCode.value = ""
         }
         val email: String? = viewModel.email.value?.trim()
-        val dateOfBirth: String? = viewModel.dob.value?.trim()
+        var dateOfBirth: String? = viewModel.dob.value?.trim()
+        if(TextUtils.isEmpty(dateOfBirth)){
+            if((!TextUtils.isEmpty(viewModel.birthYear.value)) && (!TextUtils.isEmpty(viewModel.birthYear.value?.trim()))){
+                dateOfBirth = "01-01-"+viewModel.birthYear.value
+            }
+        }
         val profession: String? = viewModel.profession.value?.trim()
         val popularKnownAs: String? = viewModel.popularlyKnowAs.value?.trim()
         val crazy: String? = viewModel.crazy.value?.trim()
@@ -1028,6 +1078,9 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             req.popularlyknownas = popularKnownAs
             req.dream = crazy
             req.address = address
+            req.native = viewModel.villageName.value
+            req.lineage = viewModel.lineageName.value
+            req.lineage = viewModel.lineageName.value
 
             if ((stateId != null) && (stateId!! > -1)) {
                 req.state_id = stateId
@@ -1051,6 +1104,9 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 atlMobileNumberList.add(CommonMobileNumberObj(altCC, altMobile))
                 req.altmobiles = atlMobileNumberList
             }
+            if(!TextUtils.isEmpty(viewModel.selectedProfileURL)){
+                req.photo_url  =  viewModel.selectedProfileURL
+            }
             showProgressBar()
             if(((viewModel.isForAddFamily.value != null) && (viewModel.isForAddFamily.value == true))){
                 req.relationship = familyTag
@@ -1059,7 +1115,8 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 req.userid = viewModel.addFamilyMemberId?.value
                 req.id = viewModel.addFamilyMemberId?.value
                 req.owner = prefhelper.fetchUserData()?.mid
-                viewModel.addFamilyMember(req,file)
+                req.is_send_sms = viewModel.inviteSendSMS?.value
+                viewModel.checkFamilyMemberExists(req,file)
             }else if(((viewModel.userData?.owner_id == prefhelper.fetchUserData()?.mid!!) && (viewModel.userData?.mid!! != prefhelper.fetchUserData()?.mid!!))){
                 req.userid = viewModel.userData?.mid
                 req.id = viewModel.userData?.id
@@ -1100,6 +1157,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
 
     private fun loadProfileImage(url: String?) {
         if (!TextUtils.isEmpty(url)) {
+            viewModel.selectedProfileURL = url
             Glide
                 .with(this)
                 .load(url)
@@ -1112,6 +1170,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
 
     private fun loadProfileImageFromURI(url: Uri?) {
         if (url != null) {
+            viewModel.selectedProfileURL = ""
             Glide
                 .with(this)
                 .load(url)
@@ -1134,7 +1193,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     private fun errorHandler(res: CommonResponse) {
         var message = ""
         if ((res != null) && (res.errorDetails != null)) {
-            message = res.errorDetails.message!!
+            message = res.errorDetails?.message ?: ""
         }
         if (TextUtils.isEmpty(message)) {
             message = getString(R.string.something_went_wrong)
@@ -1153,11 +1212,14 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         showAlertDialog(R.id.do_nothing, message, getString(R.string.close_label), "")
     }
 
-    private fun validateProfileUpdateRes(res: CommonResponse) {
+    private fun validateProfileUpdateRes(res: ProfileVerificationResObj) {
         hideProgressBar()
         if (res != null) {
             if (res.statusCode == 200) {
                 if (res?.data != null) {
+                    if(res?.data?.mid == prefhelper.fetchUserData()?.mid){
+                        prefhelper.saveUserData(res.data)
+                    }
                     showAlertDialog(
                         R.id.profile_update_success,
                         getString(R.string.profile_updated_success_fully),
@@ -1165,10 +1227,10 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                         ""
                     )
                 } else {
-                    errorHandler(res)
+                    errorHandler(CommonResponse(null,res.statusCode,res.errorDetails))
                 }
             } else {
-                errorHandler(res)
+                errorHandler(CommonResponse(null,res.statusCode,res.errorDetails))
             }
         }
     }
@@ -1299,6 +1361,59 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
     }
 
+    /*fun showYearPicker(v:View?){
+        binding.yearSpinner.performClick()
+    }*/
+
+    fun loadAvatarImages(res: AvatarImageListRes){
+        hideProgressBar()
+        if (res != null) {
+            if (res.statusCode == 200) {
+                val adapter = AvatarImageAdapter(this, res?.data, object : AdapterListener {
+                    override fun updateAction(actionCode: Int, data: Any?) {
+                    loadProfileImage((data as DataItem).avatar)
+                    }
+                })
+                binding.avatarRecyclerview.adapter = adapter
+            }
+        }
+    }
+
+    fun validateRelationShipExist(res : RelationShipExistsRes){
+        hideProgressBar()
+        if (res != null) {
+            if ((res.statusCode == 200) && (res.data != null) && (res.data)) {
+                showAlertDialog(
+                    R.id.member_exists_popup_id,
+                    getString(R.string.member_already_exists_msg),
+                    getString(R.string.continue_label),
+                    getString(R.string.label_cancel)
+                )
+                return
+            }
+        }
+        showProgressBar();
+        viewModel.addFamilyMember()
+    }
+
+    fun openChooseBirthYear(v:View) {
+        yearBottomSheet = BottomSheetDialog(this, R.style.bottomSheetDialogTheme)
+        val birthYearBottomSheetBinding: BirthYearBottomSheetBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(this), R.layout.birth_year_bottom_sheet, null, false
+        )
+        birthYearBottomSheetBinding.cancelTextView.setOnClickListener(View.OnClickListener {
+            yearBottomSheet.dismiss()
+        })
+        val adapter = ItemListAdapter(this,yearList,object:AdapterListener{
+            override fun updateAction(actionCode: Int, data: Any?) {
+                viewModel.birthYear.value = data as String
+                yearBottomSheet.dismiss()
+            }
+        })
+        birthYearBottomSheetBinding.itemRecyclerView.adapter = adapter
+        yearBottomSheet.setContentView(birthYearBottomSheetBinding.root)
+        yearBottomSheet.show()
+    }
 }
 
 

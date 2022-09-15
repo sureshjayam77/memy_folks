@@ -1,6 +1,7 @@
 package com.memy.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -17,7 +18,13 @@ import com.memy.viewModel.DashboardViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.memy.activity.*
 import com.memy.utils.Constents
+import com.memy.utils.PreferenceHelper
 import com.squareup.moshi.Moshi
+
+import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
+
+import android.webkit.WebChromeClient
+import androidx.databinding.adapters.SeekBarBindingAdapter
 
 
 class TreeViewFragment : BaseFragment() {
@@ -43,8 +50,19 @@ class TreeViewFragment : BaseFragment() {
         binding.webview.addJavascriptInterface(
             WebAppInterface(
                 activity,
+                viewModel,
                 binding.webview
             ), "Android")
+
+        binding.webview.setWebChromeClient(object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView, progress: Int) {
+                //Make the bar disappear after URL is loaded, and changes string to Loading...
+
+                // Return the app name after finish loading
+                binding.webViewProgress.setProgress(progress)
+                binding.webViewProgress.visibility = if (progress == 100) (View.GONE) else(View.VISIBLE)
+            }
+        })
         loadProfileTree()
     }
 
@@ -53,15 +71,19 @@ class TreeViewFragment : BaseFragment() {
     }
 
     class WebAppInterface {
-        var mContext: Context? = null
+        var mContext: Activity? = null
         var mView: WebView? = null
         lateinit var moshi: Moshi
+        var viewModel : DashboardViewModel? = null
+        var prefHelper: PreferenceHelper? = null
 
         /** Instantiate the interface and set the context  */
-        constructor(c: Context?, w: WebView?) {
+        constructor(c: Activity?,vm : DashboardViewModel, w: WebView?) {
             mContext = c
+            prefHelper = c?.let { PreferenceHelper().getInstance(it!! as Context) }
             mView = w
             moshi = Moshi.Builder().build()
+            viewModel = vm
         }
 
         /** Show a toast from the web page  */
@@ -71,12 +93,18 @@ class TreeViewFragment : BaseFragment() {
             if(userDataObj != null){
 
             }*/
+            viewModel?.selectedMemberId = userId
+            if(mContext is DashboardActivity) {
+                (mContext as DashboardActivity).fetchTempProfileData(userId)
+            }else if(mContext is FamilyMemberProfileActivity) {
+                (mContext as FamilyMemberProfileActivity).fetchTempProfileData(userId)
+            }
 
-            val intent = Intent(mContext, AddFamilyActivity::class.java)
+            /*val intent = Intent(mContext, AddFamilyActivity::class.java)
             intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, false)
             intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, userId?.toInt())
             intent.putExtra(Constents.FAMILY_MEMBER_INTENT_TAG, true)
-            (mContext as AppBaseActivity).startActivityIntent(intent, false)
+            (mContext as AppBaseActivity).startActivityIntent(intent, false)*/
         }
 
         @JavascriptInterface
@@ -85,7 +113,6 @@ class TreeViewFragment : BaseFragment() {
             if(userDataObj != null){
 
             }*/
-
             val intent = Intent(mContext, AddFamilyActivity::class.java)
             intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, false)
             intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, userId?.toInt())
@@ -104,17 +131,21 @@ class TreeViewFragment : BaseFragment() {
 
         @JavascriptInterface
         fun viewFamilyMemberProfile(user: String?) {
-            val intent = Intent(mContext, FamilyMemberProfileActivity::class.java)
-            intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, user?.toInt())
-            intent.putExtra(Constents.SHOW_PROFILE_INTENT_TAG, true)
-            (mContext as AppBaseActivity).startActivityIntent(intent, false)
+            if (user?.toInt() != viewModel?.userData?.value?.mid) {
+                val intent = Intent(mContext, FamilyMemberProfileActivity::class.java)
+                intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, user?.toInt())
+                intent.putExtra(Constents.SHOW_PROFILE_INTENT_TAG, true)
+                (mContext as AppBaseActivity).startActivityIntent(intent, false)
+            }
         }
 
         @JavascriptInterface
         fun viewFamilyTree(user: String?) {
-            val intent = Intent(mContext, FamilyMemberProfileActivity::class.java)
-            intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, user?.toInt())
-            (mContext as AppBaseActivity).startActivityIntent(intent, false)
+            if (user?.toInt() != viewModel?.userData?.value?.mid) {
+                val intent = Intent(mContext, FamilyMemberProfileActivity::class.java)
+                intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, user?.toInt())
+                (mContext as AppBaseActivity).startActivityIntent(intent, false)
+            }
         }
 
 

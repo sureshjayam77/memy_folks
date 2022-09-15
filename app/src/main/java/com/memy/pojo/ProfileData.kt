@@ -97,6 +97,11 @@ data class ProfileData(
 	@Json(name="twitter_link")
 	var twitter_link: String? = null,
 	@Json(name="linkedin_link")
-	var linkedin_link: String? = null
+	var linkedin_link: String? = null,
+
+	@Json(name="native")
+	var native: String? = null,
+	@Json(name="lineage")
+	var lineage: String? = null,
 )
 

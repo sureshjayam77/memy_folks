@@ -36,7 +36,7 @@ public class Utils {
      * @return country code
      */
     public static String getCountryName(String cID) {
-        Locale loc = new Locale("", cID);
+        Locale loc = new Locale("en", cID);
         return loc.getDisplayCountry().trim();
     }
 

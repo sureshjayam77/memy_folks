@@ -40,7 +40,7 @@ interface APIInterface {
 
     @Multipart
     @PUT("api/v1/member/{id}/")
-    fun saveProfileDetails(@Path("id") id: Int?,@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>,@Part file: MultipartBody.Part?,@PartMap() partArrayMap :  HashMap<String?, List<CommonMobileNumberObj>?>) : Call<CommonResponse?>?
+    fun saveProfileDetails(@Path("id") id: Int?,@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>,@Part file: MultipartBody.Part?,@PartMap() partArrayMap :  HashMap<String?, List<CommonMobileNumberObj>?>) : Call<ProfileVerificationResObj?>?
 
     @Multipart
     @PUT("api/v1/member/{id}/")
@@ -132,5 +132,15 @@ interface APIInterface {
     @Multipart
     @POST("api/v1/event/")
     fun deleteEvent(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>) : Call<CommonResponse?>?
+
+    @GET("api/memberrelationships/")
+    fun getMemberRelationShip(@Query("apikey") apikey: String,@Query("mid") mid: String?) : Call<MemberRelationShipResData?>?
+
+    @GET("api/v1/avatar/")
+    fun getAvatarImageList(@Query("apikey") apikey: String) : Call<AvatarImageListRes>?
+
+    @GET("api/memberexist/")
+    fun checkFamilyMemberExists(@Query("apikey") apikey: String,@Query("firstname") firstname: String?,@Query("relationship") relationship: String?,@Query("mid") mid: Int?) : Call<RelationShipExistsRes>?
+
 
 }

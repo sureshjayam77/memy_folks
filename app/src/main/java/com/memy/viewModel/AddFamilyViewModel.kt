@@ -23,11 +23,15 @@ class AddFamilyViewModel : AppBaseViewModel() {
     var isForPrimaryCountryCode: Boolean? = false
     var addFamilyRepository: AddFamilyRepository
     var relationShipResObj = MutableLiveData<RelationShipResObj>()
+    var avatarImageRes = MutableLiveData<AvatarImageListRes>()
 
     var familyTagName: MutableLiveData<String> = MutableLiveData()
     var familyTagId: MutableLiveData<String> = MutableLiveData()
     var firstName: MutableLiveData<String> = MutableLiveData()
     var lastName: MutableLiveData<String> = MutableLiveData()
+    var lineageName: MutableLiveData<String> = MutableLiveData()
+    var villageName: MutableLiveData<String> = MutableLiveData()
+    var inviteSendSMS: MutableLiveData<Boolean> = MutableLiveData()
     var mainCountryCode: MutableLiveData<String> = MutableLiveData()
     var mainMobileNumber: MutableLiveData<String> = MutableLiveData()
     var altCountryCode: MutableLiveData<String> = MutableLiveData()
@@ -35,6 +39,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
     var email: MutableLiveData<String> = MutableLiveData()
     var gender: MutableLiveData<String> = MutableLiveData()
     var dob: MutableLiveData<String> = MutableLiveData()
+    var birthYear: MutableLiveData<String> = MutableLiveData()
     var profession: MutableLiveData<String> = MutableLiveData()
     var living: MutableLiveData<Boolean> = MutableLiveData()
     var deathDateStr: MutableLiveData<String> = MutableLiveData()
@@ -49,7 +54,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
     var isFeMale: MutableLiveData<Boolean> = MutableLiveData()
     var isOtherGender: MutableLiveData<Boolean> = MutableLiveData()
     var profileBase64: MutableLiveData<String> = MutableLiveData()
-    var profileUpdateRes = MutableLiveData<CommonResponse>()
+    var profileUpdateRes = MutableLiveData<ProfileVerificationResObj>()
     var isCusExistRes = MutableLiveData<ProfileVerificationResObj>()
     var stateId = -1
     var countryId = -1
@@ -68,6 +73,10 @@ class AddFamilyViewModel : AppBaseViewModel() {
     var deathDate : String? = null
     var deleteAccountRes = MutableLiveData<CommonResponse>()
     var relationUpdateSuccessRes = MutableLiveData<CommonResponse>()
+    var relationShipExistsRes = MutableLiveData<RelationShipExistsRes>()
+    var addFamilyReq = AddFamilyRequest()
+    var addFamilyFileReq:File? = null
+    var selectedProfileURL: String? = ""
 
 
     var showRelationPopup: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
@@ -78,6 +87,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
         relationShipResObj = addFamilyRepository.relationShipResObj
         countryListRes = addFamilyRepository.countryListRes
         stateListResponse = addFamilyRepository.stateListResponse
+        avatarImageRes = addFamilyRepository.avatarImageRes
         profileVerificationResObj = dashboardRepository.profileVerificationResObj
         profileUpdateRes = addFamilyRepository.profileUpdateRes
         addFamilyRes = addFamilyRepository.addFamilyRes
@@ -85,6 +95,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
         deleteAccountRes = addFamilyRepository.deleteAccountRes
         isCusExistRes = addFamilyRepository.isCusExistRes
         relationUpdateSuccessRes = addFamilyRepository.relationUpdateSuccessRes
+        relationShipExistsRes = addFamilyRepository.relationShipExistsRes
         moreInfoClicked.value = false
         isForPrimaryCountryCode = false
         isForAddFamily.value = false
@@ -119,8 +130,14 @@ class AddFamilyViewModel : AppBaseViewModel() {
         addFamilyRepository.saveProfileDetails(req,file)
     }
 
-    fun addFamilyMember(req: AddFamilyRequest,file:File?) {
-        addFamilyRepository.addFamilyCall(req,file)
+    fun checkFamilyMemberExists(req: AddFamilyRequest,file:File?) {
+        addFamilyReq = req
+        addFamilyFileReq = file
+        addFamilyRepository.checkFamilyMemberExists(req.firstname,req.relationship,req.userid)
+    }
+
+    fun addFamilyMember() {
+        addFamilyRepository.addFamilyCall(addFamilyReq,addFamilyFileReq)
     }
 
     fun fetchProfile(userId : Int?){
@@ -130,6 +147,10 @@ class AddFamilyViewModel : AppBaseViewModel() {
 
     fun fetchProfile(userId : Int?,ownerId : Int?){
         dashboardRepository.fetchUserProfile(userId,ownerId)
+    }
+
+    fun fetchAvatarImageList() {
+        addFamilyRepository.fetchAvatarImages()
     }
 
     fun updateFieldDataFromUserData(data: ProfileData?,loginUserData: ProfileData?) {
@@ -158,6 +179,8 @@ class AddFamilyViewModel : AppBaseViewModel() {
         profession.value = data?.profession ?: ""
         popularlyKnowAs.value = data?.popularlyknownas ?: ""
         address.value = data?.address ?: ""
+        villageName.value = data?.native ?: ""
+        lineageName.value = data?.lineage ?: ""
         if(data?.state_id != null) {
             stateId = data?.state_id
         }
@@ -186,6 +209,10 @@ class AddFamilyViewModel : AppBaseViewModel() {
         fetchCountryList()
     }
 
+    fun inviteClick(){
+        inviteSendSMS.value = if(inviteSendSMS.value == true) (false) else true
+    }
+
     fun livingClick(){
         living.value = if(living.value == true) (false) else true
     }
@@ -206,5 +233,9 @@ class AddFamilyViewModel : AppBaseViewModel() {
     fun callChangeRelationShip(loginUserId : Int?,pluseBtnClickUserId : Int?,relationId : String?,relationChangerId : Int?){
         val cusReq = RelationShipUpdateReq(loginUserId,pluseBtnClickUserId,relationId,relationChangerId)
         addFamilyRepository.updateRelationShip(cusReq)
+    }
+
+    fun clearBirthYear(){
+        birthYear.value = ""
     }
 }
