@@ -126,6 +126,12 @@ interface APIInterface {
 
     @GET("api/v1/family_members/")
     fun getFamilyMembersList(@Query("apikey") apikey: String,@Query("mid") mid: String) : Call<FamilyMembersResult?>?
+    @Multipart
+    @POST("api/v1/wall/")
+    fun deleteWall(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>) : Call<CommonResponse?>?
+    @Multipart
+    @POST("api/v1/event/")
+    fun deleteEvent(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>) : Call<CommonResponse?>?
 
     @GET("api/memberrelationships/")
     fun getMemberRelationShip(@Query("apikey") apikey: String,@Query("mid") mid: String?) : Call<MemberRelationShipResData?>?

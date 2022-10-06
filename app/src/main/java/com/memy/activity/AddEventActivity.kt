@@ -266,7 +266,7 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
             }
             timePicker(v)
         }, year, month, day)
-        dpd.datePicker.maxDate = Date().time
+        dpd.datePicker.minDate = Date().time
         dpd.show()
         dpd.getButton(DatePickerDialog.BUTTON_POSITIVE)
             .setTextColor(ContextCompat.getColor(this, R.color.app_color));

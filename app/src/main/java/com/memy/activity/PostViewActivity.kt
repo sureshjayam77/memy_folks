@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +23,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.memy.R
 import com.memy.databinding.ActivityPostViewBinding
+import com.memy.pojo.CommonResponse
 import com.memy.pojo.WallData
 import com.memy.viewModel.AddEventViewModel
 import com.teresaholfeld.stories.StoriesProgressView
@@ -46,6 +48,8 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_post_view)
         viewModel = ViewModelProvider(this).get(AddEventViewModel::class.java)
+        viewModel.deleteWallRes.observe(this, this::deleteWallRes)
+
         wallData = intent.getSerializableExtra("file") as WallData?
         file = wallData?.media?.get(0)?.file
         storiesProgressView = binding.stories
@@ -189,7 +193,40 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
                 }
             }
         })
+        if(prefhelper.fetchUserData()?.mid.toString().equals(wallData!!.mid_id)){
+            binding.btnDelete.visibility=View.VISIBLE
+        }else{
+            binding.btnDelete.visibility=View.GONE
+        }
+        binding.btnDelete.setOnClickListener {
+            var isWall=true
+            if(!TextUtils.isEmpty(wallData!!.location_pin)){
+                isWall=false
+            }
+            deleteDialog(isWall,wallData!!.id)
+        }
         binding.txtContent.text = wallData?.content
+    }
+    private fun deleteWallRes(res: CommonResponse) {
+        if (res.statusCode == 200) {
+            showToast("Deleted successfully")
+            finish()
+        } else {
+            res.errorDetails?.message?.let { showToast(it) }
+        }
+    }
+    fun deleteDialog(isWall:Boolean,id:String){
+        AlertDialog.Builder(this)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setTitle("Delete "+if(isWall){"Wall"}else "Event")
+            .setMessage("Are you sure you want to delete this wall?")
+            .setPositiveButton("Yes",
+                { dialog, which ->  dialog.dismiss()
+                    if(isWall){viewModel.deleteWall(id,prefhelper.fetchUserData()?.mid.toString())}else{
+                        viewModel.deleteEvent(id,prefhelper.fetchUserData()?.mid.toString())
+                    } })
+            .setNegativeButton("No", null)
+            .show()
     }
 
     fun dpToPx(context: Context, valueInDp: Float): Float {

@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MyRecyclerAdapter(var context:Context, var itemClickListener: AdapterListener, var data:ArrayList<WallGroupData>) :
+class MyRecyclerAdapter(var context:Context, var itemClickListener: AdapterListener, var data:ArrayList<WallGroupData>,var mid:String) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val v: View =
@@ -28,7 +28,7 @@ class MyRecyclerAdapter(var context:Context, var itemClickListener: AdapterListe
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemHolder=holder as VHItem
         itemHolder.recyWall.layoutManager=GridLayoutManager(context,3)
-        itemHolder.recyWall.adapter=WallImageAdapter(context,position==1,itemClickListener,data[position].data)
+        itemHolder.recyWall.adapter=WallImageAdapter(context,position==1,itemClickListener,data[position].data,mid)
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
         val simpleDateFormat1 = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
         if(!TextUtils.isEmpty(data[position].startedDate)) {

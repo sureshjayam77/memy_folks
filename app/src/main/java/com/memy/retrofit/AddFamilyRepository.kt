@@ -24,6 +24,7 @@ class AddFamilyRepository : BaseRepository() {
     var profileSocialLinkUpdateRes = MutableLiveData<CommonResponse>()
     var addFamilyMemberRes = MutableLiveData<AddFamilyResponse>()
     var addFamilyRes = MutableLiveData<CommonResponse>()
+    var deleteWallRes = MutableLiveData<CommonResponse>()
     var wallRes = MutableLiveData<WallResult>()
     var commentRes = MutableLiveData<CommentResult>()
     var familyMemRes = MutableLiveData<FamilyMembersResult>()
@@ -35,7 +36,7 @@ class AddFamilyRepository : BaseRepository() {
 
     fun fetchRelationShip() {
         val relationShipCall = retrofit.create(APIInterface::class.java)
-            .fetchRelationShip(BaseRepository.APP_KEY_VALUE)
+            .fetchRelationShip(APP_KEY_VALUE)
         relationShipCall?.enqueue(object : Callback<RelationShipResObj?> {
             override fun onResponse(
                 call: Call<RelationShipResObj?>?,
@@ -52,7 +53,7 @@ class AddFamilyRepository : BaseRepository() {
 
     fun fetchCountry() {
         val countryCall =
-            retrofit.create(APIInterface::class.java).fetchCountry(BaseRepository.APP_KEY_VALUE)
+            retrofit.create(APIInterface::class.java).fetchCountry(APP_KEY_VALUE)
         countryCall?.enqueue(object : Callback<CountryListRes?> {
             override fun onResponse(
                 call: Call<CountryListRes?>?,
@@ -69,7 +70,7 @@ class AddFamilyRepository : BaseRepository() {
 
     fun fetchStateList(countryId: Int?) {
         val countryCall = retrofit.create(APIInterface::class.java)
-            .fetchState(BaseRepository.APP_KEY_VALUE, countryId)
+            .fetchState(APP_KEY_VALUE, countryId)
         countryCall?.enqueue(object : Callback<StateListRes?> {
             override fun onResponse(
                 call: Call<StateListRes?>?,
@@ -170,7 +171,7 @@ class AddFamilyRepository : BaseRepository() {
             }
             var updateProfileCall: Call<ProfileVerificationResObj?>? = retrofit.create(APIInterface::class.java).saveProfileDetails(
                 req?.userid,
-                BaseRepository.APP_KEY_VALUE,
+                APP_KEY_VALUE,
                 stringHashMap,
                 photoBody,
                 arrayHashMap
@@ -279,7 +280,7 @@ class AddFamilyRepository : BaseRepository() {
 
             var addFamilyCall: Call<AddFamilyResponse?>? =
                 retrofit.create(APIInterface::class.java).addFamilyData(
-                    BaseRepository.APP_KEY_VALUE, owner,userId,
+                    APP_KEY_VALUE, owner,userId,
                     stringHashMap,
                     arrayHashMap,
                     photoBody
@@ -302,7 +303,7 @@ class AddFamilyRepository : BaseRepository() {
 
     fun deleteAccount(req: Int?) {
         val addFamilyCall = retrofit.create(APIInterface::class.java)
-            .deleteAccount(req, BaseRepository.APP_KEY_VALUE)
+            .deleteAccount(req, APP_KEY_VALUE)
         addFamilyCall?.enqueue(object : Callback<CommonResponse?> {
             override fun onResponse(
                 call: Call<CommonResponse?>?,
@@ -319,7 +320,7 @@ class AddFamilyRepository : BaseRepository() {
 
     fun checkCusExist(req: CommonMobileNumberObj?) {
         val addFamilyCall = retrofit.create(APIInterface::class.java)
-            .checkIsExistingMember(req?.mobile,req?.country_code, BaseRepository.APP_KEY_VALUE)
+            .checkIsExistingMember(req?.mobile,req?.country_code, APP_KEY_VALUE)
         addFamilyCall?.enqueue(object : Callback<ProfileVerificationResObj?> {
             override fun onResponse(
                 call: Call<ProfileVerificationResObj?>?,
@@ -336,7 +337,7 @@ class AddFamilyRepository : BaseRepository() {
 
     fun updateRelationShip(req: RelationShipUpdateReq?) {
         val addFamilyCall = retrofit.create(APIInterface::class.java)
-            .updateRelation(req,BaseRepository.APP_KEY_VALUE)
+            .updateRelation(req, APP_KEY_VALUE)
         addFamilyCall?.enqueue(object : Callback<CommonResponse?> {
             override fun onResponse(
                 call: Call<CommonResponse?>?,
@@ -376,7 +377,7 @@ class AddFamilyRepository : BaseRepository() {
 
             var addFamilyCall: Call<CommonResponse?>? =
                 retrofit.create(APIInterface::class.java).addEventData(
-                    BaseRepository.APP_KEY_VALUE,
+                    APP_KEY_VALUE,
                     stringHashMap,
                     photoBody
                 )
@@ -410,7 +411,7 @@ class AddFamilyRepository : BaseRepository() {
 
         var addFamilyCall: Call<CommonResponse?>? =
             retrofit.create(APIInterface::class.java).addStatusEventData(
-                BaseRepository.APP_KEY_VALUE,
+                APP_KEY_VALUE,
                 stringHashMap,
                 photoBody
             )
@@ -439,7 +440,7 @@ class AddFamilyRepository : BaseRepository() {
         var photoBody: MultipartBody.Part? = null
         var addFamilyCall: Call<CommonResponse?>? =
             retrofit.create(APIInterface::class.java).addWallComment(
-                BaseRepository.APP_KEY_VALUE,
+                APP_KEY_VALUE,
                 stringHashMap
             )
 
@@ -450,7 +451,7 @@ class AddFamilyRepository : BaseRepository() {
             fileList!!.add(photoBody)
             addFamilyCall=
                 retrofit.create(APIInterface::class.java).addWallComment(
-                    BaseRepository.APP_KEY_VALUE,
+                    APP_KEY_VALUE,
                     stringHashMap,
                     fileList
                 )
@@ -481,7 +482,7 @@ class AddFamilyRepository : BaseRepository() {
         var photoBody: MultipartBody.Part? = null
         var addFamilyCall: Call<CommonResponse?>? =
             retrofit.create(APIInterface::class.java).addEventComment(
-                BaseRepository.APP_KEY_VALUE,
+                APP_KEY_VALUE,
                 stringHashMap
             )
 
@@ -492,7 +493,7 @@ class AddFamilyRepository : BaseRepository() {
             fileList!!.add(photoBody)
             addFamilyCall=
                 retrofit.create(APIInterface::class.java).addEventComment(
-                    BaseRepository.APP_KEY_VALUE,
+                    APP_KEY_VALUE,
                     stringHashMap,
                     fileList
                 )
@@ -517,7 +518,7 @@ class AddFamilyRepository : BaseRepository() {
 
         var addFamilyCall: Call<WallResult?>? =
             retrofit.create(APIInterface::class.java).getWallData(
-                BaseRepository.APP_KEY_VALUE,
+                APP_KEY_VALUE,
                 mid
             )
 
@@ -538,7 +539,7 @@ class AddFamilyRepository : BaseRepository() {
 
         var addFamilyCall: Call<CommentResult?>? =
             retrofit.create(APIInterface::class.java).getEventCommentList(
-                BaseRepository.APP_KEY_VALUE,
+                APP_KEY_VALUE,
                 mid
             )
 
@@ -559,7 +560,7 @@ class AddFamilyRepository : BaseRepository() {
 
         var addFamilyCall: Call<CommentResult?>? =
             retrofit.create(APIInterface::class.java).getCommentList(
-                BaseRepository.APP_KEY_VALUE,
+                APP_KEY_VALUE,
                 mid
             )
 
@@ -580,7 +581,7 @@ class AddFamilyRepository : BaseRepository() {
 
         var addFamilyCall: Call<FamilyMembersResult?>? =
             retrofit.create(APIInterface::class.java).getFamilyMembersList(
-                BaseRepository.APP_KEY_VALUE,
+                APP_KEY_VALUE,
                 mid
             )
 
@@ -629,6 +630,45 @@ class AddFamilyRepository : BaseRepository() {
             }
         })
 
+    }
+    fun deleteEvent(id:String,mid:String) {
+        var stringHashMap: HashMap<String?, RequestBody?> = HashMap()
+        stringHashMap["id"] = createPartFromString(id)
+        stringHashMap["mid"] = createPartFromString(mid)
+        val relationShipCall = retrofit.create(APIInterface::class.java)
+            .deleteEvent(APP_KEY_VALUE,stringHashMap)
+        relationShipCall?.enqueue(object : Callback<CommonResponse?> {
+            override fun onResponse(
+                call: Call<CommonResponse?>?,
+                response: Response<CommonResponse?>?
+            ) {
+                deleteWallRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
+                deleteWallRes.value = CommonResponse(null, 0, null)
+            }
+        })
+    }
+    fun deleteWall(id:String,mid:String) {
+        var stringHashMap: HashMap<String?, RequestBody?> = HashMap()
+        stringHashMap["id"] = createPartFromString(id)
+        stringHashMap["mid"] = createPartFromString(mid)
+
+        val relationShipCall = retrofit.create(APIInterface::class.java)
+            .deleteWall(APP_KEY_VALUE,stringHashMap)
+        relationShipCall?.enqueue(object : Callback<CommonResponse?> {
+            override fun onResponse(
+                call: Call<CommonResponse?>?,
+                response: Response<CommonResponse?>?
+            ) {
+                deleteWallRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
+                deleteWallRes.value = CommonResponse(null, 0, null)
+            }
+        })
     }
 
     fun fetchAvatarImages() {

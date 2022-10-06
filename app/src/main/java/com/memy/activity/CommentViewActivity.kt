@@ -110,6 +110,8 @@ class CommentViewActivity : AppBaseActivity(){
                commentList?.reverse()
                binding.rvComments?.adapter = CommentListAdapter(this, commentList!!)
                Log.d("", "")
+           }else{
+
            }
         }
     }

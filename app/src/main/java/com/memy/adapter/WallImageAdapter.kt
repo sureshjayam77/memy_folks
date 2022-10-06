@@ -23,7 +23,7 @@ class WallImageAdapter(
     var context: Context,
     var isAddStory: Boolean = false,
     var itemClickListener: AdapterListener,
-    var data: List<WallData>
+    var data: List<WallData>,var mid:String
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -58,6 +58,7 @@ class WallImageAdapter(
                 val pos=viewHolder.img_play.getTag() as Int?
                 itemClickListener.updateAction(1000,data[pos!!]);
             }
+
         }else {
             viewHolder.imgLay.visibility = View.VISIBLE
             viewHolder.playerView.visibility = View.GONE
@@ -82,7 +83,16 @@ class WallImageAdapter(
                 itemClickListener.updateAction(1000,data[pos!!]);
             }
         }
-
+        if(mid.equals(data[position!!].mid_id)){
+            holder.dlt_img.visibility=View.VISIBLE
+        }else{
+            holder.dlt_img.visibility=View.GONE
+        }
+        holder.dlt_img.setTag(position)
+        holder.dlt_img.setOnClickListener {
+            val pos=viewHolder.wall_image.getTag() as Int?
+            itemClickListener.updateAction(1001,data[pos!!]);
+        }
 
     }
 
@@ -92,6 +102,7 @@ class WallImageAdapter(
 
     internal inner class VHItem(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var wall_image: AppCompatImageView
+        var dlt_img: AppCompatImageView
         var txtContent: AppCompatTextView
         var img_play: AppCompatImageView
         var playerView: StyledPlayerView
@@ -102,6 +113,7 @@ class WallImageAdapter(
 
         init {
             wall_image = itemView.findViewById<View>(R.id.wall_image) as AppCompatImageView
+            dlt_img = itemView.findViewById<View>(R.id.img_delete) as AppCompatImageView
             img_play = itemView.findViewById<View>(R.id.img_play) as AppCompatImageView
             txtContent = itemView.findViewById<View>(R.id.txt_content) as AppCompatTextView
             playerView = itemView.findViewById<View>(R.id.videoPlayerView) as StyledPlayerView

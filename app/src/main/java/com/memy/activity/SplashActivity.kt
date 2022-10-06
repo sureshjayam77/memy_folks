@@ -146,7 +146,7 @@ class SplashActivity : AppBaseActivity(), FirebaseCallBack {
 
     private fun validateAppUpdate(){
         val forceUpdateData = prefhelper.fetchFCMAppUpdateData()
-        if((forceUpdateData != null) && (forceUpdateData.enableUpdateCheck == true)){
+       /* if((forceUpdateData != null) && (forceUpdateData.enableUpdateCheck == true)){
             val latestVersion = forceUpdateData.latestVersion
             val minSdkVersion = forceUpdateData.minRequiredVersion
 
@@ -189,7 +189,7 @@ class SplashActivity : AppBaseActivity(), FirebaseCallBack {
                     }
                 }
             }
-        }
+        }*/
         handler.postDelayed(runnable, MAX_RUNNABLE_TIME_DELAY)
     }
 

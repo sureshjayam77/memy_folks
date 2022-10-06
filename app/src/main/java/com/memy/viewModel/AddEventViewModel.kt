@@ -10,12 +10,14 @@ class AddEventViewModel:AppBaseViewModel() {
     var photoFileUri: Uri? = null
     var addFamilyRepository: AddFamilyRepository
     var addFamilyRes = MutableLiveData<CommonResponse>()
+    var deleteWallRes = MutableLiveData<CommonResponse>()
     var wallRes = MutableLiveData<WallResult>()
     var commentRes = MutableLiveData<CommentResult>()
     var familyMemRes = MutableLiveData<FamilyMembersResult>()
     init {
         addFamilyRepository = AddFamilyRepository()
         addFamilyRes = addFamilyRepository.addFamilyRes
+        deleteWallRes = addFamilyRepository.deleteWallRes
         wallRes = addFamilyRepository.wallRes
         commentRes = addFamilyRepository.commentRes
         familyMemRes = addFamilyRepository.familyMemRes
@@ -43,5 +45,11 @@ class AddEventViewModel:AppBaseViewModel() {
     }
     fun getEventCommentList(mid:String) {
         addFamilyRepository.getEventCommentList(mid)
+    }
+    fun deleteWall(mid:String, id:String) {
+        addFamilyRepository.deleteWall(mid,id)
+    }
+    fun deleteEvent(mid:String, id:String) {
+        addFamilyRepository.deleteEvent(mid,id)
     }
 }

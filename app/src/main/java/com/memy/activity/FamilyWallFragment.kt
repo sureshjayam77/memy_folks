@@ -2,17 +2,20 @@ package com.memy.activity
 
 import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.OpenableColumns
+import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleObserver
@@ -36,8 +39,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
+
 
 class FamilyWallFragment : BaseFragment(), AdapterListener , LifecycleObserver {
     lateinit var photoBottomSheet: BottomSheetDialog
@@ -62,6 +64,7 @@ class FamilyWallFragment : BaseFragment(), AdapterListener , LifecycleObserver {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(AddEventViewModel::class.java)
         viewModel.addFamilyRes.observe(requireActivity(), this::validateAddFamilyRes)
+        viewModel.deleteWallRes.observe(requireActivity(), this::deleteWallRes)
         viewModel.wallRes.observe(requireActivity(), this::getWallDataResponse)
         recylerView = binding.recFamilyWall
         val linearLayoutManager = LinearLayoutManager(requireActivity())
@@ -93,7 +96,14 @@ class FamilyWallFragment : BaseFragment(), AdapterListener , LifecycleObserver {
         }
 */
     }
-
+    private fun deleteWallRes(res: CommonResponse) {
+        if (res.statusCode == 200) {
+            viewModel.getWallMedia(prefhelper.fetchUserData()?.mid.toString())
+            showToast("Deleted successfully")
+        } else {
+            res.errorDetails?.message?.let { showToast(it) }
+        }
+    }
     private fun validateAddFamilyRes(res: CommonResponse) {
         hideProgressBar()
         if (res.statusCode == 200) {
@@ -152,7 +162,7 @@ class FamilyWallFragment : BaseFragment(), AdapterListener , LifecycleObserver {
                     it.startedDate
                 }
                 wallList?.reverse()
-                recylerView?.adapter = MyRecyclerAdapter(requireActivity(), this, wallList!!)
+                recylerView?.adapter = MyRecyclerAdapter(requireActivity(), this, wallList!!,prefhelper.fetchUserData()?.mid.toString())
                 Log.d("", "")
             }else{
                 wallList = ArrayList()
@@ -172,7 +182,7 @@ class FamilyWallFragment : BaseFragment(), AdapterListener , LifecycleObserver {
                         }
                     }
                     wallList?.reverse()
-                    recylerView?.adapter = MyRecyclerAdapter(requireActivity(), this, wallList!!)
+                    recylerView?.adapter = MyRecyclerAdapter(requireActivity(), this, wallList!!,prefhelper.fetchUserData()?.mid.toString())
                 }
             }
         } else {
@@ -232,8 +242,27 @@ class FamilyWallFragment : BaseFragment(), AdapterListener , LifecycleObserver {
             val intent = Intent(requireActivity(), PostViewActivity::class.java)
             intent.putExtra("file", url)
             startActivity(intent)
-
+        }else if(actionCode==1001){
+            val url = data as WallData
+            var isWall=true
+            if(!TextUtils.isEmpty(url.location_pin)){
+                isWall=false
+            }
+            deleteDialog(isWall,url.id)
         }
+    }
+    fun deleteDialog(isWall:Boolean,id:String){
+        AlertDialog.Builder(requireContext())
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setTitle("Delete "+if(isWall){"Wall"}else "Event")
+            .setMessage("Are you sure you want to delete this wall?")
+            .setPositiveButton("Yes",
+                { dialog, which ->  dialog.dismiss()
+                    if(isWall){viewModel.deleteWall(id,prefhelper.fetchUserData()?.mid.toString())}else{
+                    viewModel.deleteEvent(id,prefhelper.fetchUserData()?.mid.toString())
+                } })
+            .setNegativeButton("No", null)
+            .show()
     }
 
     private fun dispatchImagePickerIntent() {
