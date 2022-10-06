@@ -46,6 +46,7 @@ import android.text.style.UnderlineSpan
 
 import android.text.style.ForegroundColorSpan
 import androidx.core.content.ContextCompat
+import com.memy.MemyApplication
 
 
 class SignInActivity : AppBaseActivity(), AdapterListener {

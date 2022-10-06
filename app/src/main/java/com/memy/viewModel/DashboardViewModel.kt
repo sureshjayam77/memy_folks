@@ -34,6 +34,7 @@ class DashboardViewModel : AppBaseViewModel() {
     var twitterLink : MutableLiveData<String> = MutableLiveData()
     var linkedInLink : MutableLiveData<String> = MutableLiveData()
     var aboutContent : MutableLiveData<String> = MutableLiveData()
+    var showGuideListView : MutableLiveData<Boolean> = MutableLiveData()
     var showSocialLinkAddView : MutableLiveData<Boolean> = MutableLiveData()
     var showAddRelationView : MutableLiveData<Boolean> = MutableLiveData()
     var memberRelationData = MutableLiveData<MemberRelationShipResData>()
@@ -41,6 +42,7 @@ class DashboardViewModel : AppBaseViewModel() {
     var selectedMemberId : String? = ""
     var selectedMemberAction : Int? = 0
     var deleteAccountRes = MutableLiveData<CommonResponse>()
+    var inviteCommonResData = MutableLiveData<CommonResponse>()
     var tabPos = 0 //Tree 0, story = 1,bubble = 2
 
     init {
@@ -54,8 +56,9 @@ class DashboardViewModel : AppBaseViewModel() {
         memberRelationData = dashboardRepository.memberRelationData
         deleteAccountRes = addFamilyRepository.deleteAccountRes
         profileSocialLinkUpdateRes = addFamilyRepository.profileSocialLinkUpdateRes
+        inviteCommonResData = dashboardRepository.inviteCommonResData
         isTreeView.value = true
-       // showAddRelationView.value = false
+        showGuideListView.value = true
     }
 
     fun fetchProfile(userId : Int?){
@@ -97,5 +100,12 @@ class DashboardViewModel : AppBaseViewModel() {
 
     fun deleteAccount(id:Int?){
         addFamilyRepository.deleteAccount(id)
+    }
+    fun hideGuideView(){
+        showGuideListView.value = false
+    }
+
+    fun inviteFamilyMember(userId : String?){
+        dashboardRepository.inviteFamilyMember(userId)
     }
 }

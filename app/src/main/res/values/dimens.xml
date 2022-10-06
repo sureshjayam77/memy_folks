@@ -27,6 +27,7 @@
     <dimen name="field_margin_top">10dp</dimen>
     <dimen name="back_icon_height">25dp</dimen>
     <dimen name="logout_icon_height">18dp</dimen>
+    <dimen name="help_icon_height">24dp</dimen>
     <dimen name="add_family_profile_left_space">10dp</dimen>
 
 
@@ -62,4 +63,9 @@
     //Feed list
     <dimen name="common_icon_size">24dp</dimen>
     <dimen name="comment_icon_size">20dp</dimen>
+
+    //Guide view
+    <dimen name="skip_label_padding">10dp</dimen>
+    <dimen name="prev_icon_bottom_space">20dp</dimen>
+    <dimen name="contact_assist_padding">10dp</dimen>
 </resources>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray_color">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/actionBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/backIconImageView"
+                    android:layout_width="@dimen/back_icon_height"
+                    android:layout_height="@dimen/back_icon_height"
+                    android:layout_marginStart="@dimen/common_action_left_space"
+                    android:src="@drawable/ic_back_arrow" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/titleTextView"
+                    style="@style/RegularText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/label_guide"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/common_header_text_size" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/menuIconImageView"
+                    android:layout_width="@dimen/back_icon_height"
+                    android:layout_height="@dimen/back_icon_height"
+                    android:layout_gravity="end|center"
+                    android:layout_marginEnd="@dimen/common_margin_size"
+                    android:visibility="gone" />
+
+
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/contactAssiTextView"
+                style="@style/RegularText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/common_margin_size"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textSize="@dimen/common_text_size"
+                android:text="@string/label_contact_assi"
+                android:textColor="@color/black"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constrainedHeight="true"
+                android:layout_marginStart="@dimen/contact_assist_padding"
+                android:layout_marginEnd="@dimen/contact_assist_padding"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintTop_toBottomOf="@+id/contactAssiTextView"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:spanCount="2" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

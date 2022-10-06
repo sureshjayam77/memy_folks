@@ -95,6 +95,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         binding.menuIconImageView.visibility = View.GONE
         binding.bottomTempView.visibility = View.VISIBLE
         binding.editTextView.visibility = View.GONE
+        binding.guideImageView.visibility = View.GONE
     }
 
     private fun setupViewModel() {
@@ -132,6 +133,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         viewModel.memberRelationData.observe(this,this::validateMemberRelationRes)
         viewModel.profileResForEdit.observe(this, this::validateProfileForEditRes)
         viewModel.deleteAccountRes.observe(this,this::validateDeleteAccountRes)
+        viewModel.inviteCommonResData.observe(this,this::validateInviteApiRes)
         viewModel.isTreeView.observe(this, { v ->
             fetchProfileData(true)
         })
@@ -580,9 +582,24 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
             }
         })
         binding.addMemberPopupRecyclerview.adapter = adapter
-        binding.addMemberPopupRecyclerview.postDelayed(Runnable {
-            viewModel.showAddRelationView.value = true
 
+
+        binding.inviteBtn.setOnClickListener {
+            if(!TextUtils.isEmpty(viewModel.selectedMemberId)) {
+                binding.progressFrameLayout.visibility = View.VISIBLE
+                viewModel.inviteFamilyMember(viewModel.selectedMemberId)
+            }
+            viewModel.showAddRelationView.value = false
+        }
+
+        binding.addMemberPopupRecyclerview.postDelayed(Runnable {
+            if((prefhelper.fetchUserData()?.mid != viewModel.selectedMemberId?.toInt()) && (viewModel.profileResForEdit.value != null) && (viewModel.profileResForEdit.value?.data != null) && (!TextUtils.isEmpty(viewModel.profileResForEdit.value?.data?.mobile))){
+                binding.inviteBtn.visibility = View.VISIBLE
+            }else{
+                binding.inviteBtn.visibility = View.GONE
+            }
+
+            viewModel.showAddRelationView.value = true
             binding.chooseActionTextView.text = viewModel.profileResForEdit.value?.data?.firstname+" - "+getString(R.string.label_choose_action)
             binding.relationPopupLayout.visibility = View.VISIBLE
         },1000)
@@ -657,6 +674,17 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
             message = getString(R.string.something_went_wrong)
         }
         showAlertDialog(R.id.do_nothing, message, getString(R.string.close_label), "")
+    }
+
+    private fun validateInviteApiRes(res : CommonResponse){
+        binding.progressFrameLayout.visibility = View.GONE
+        if (res != null) {
+            if (res.statusCode == 200) {
+                if (res?.data != null) {
+                    showAlertDialog(R.id.do_nothing, "Invitation sent successfully", getString(R.string.close_label), "")
+                }
+            }
+        }
     }
 
 }

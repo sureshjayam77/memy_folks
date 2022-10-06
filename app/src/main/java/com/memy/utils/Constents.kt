@@ -42,5 +42,8 @@ open class Constents {
         val WEB_VIEW_ABOUT = "web_view_about"
         val WEB_VIEW_BLOG = "web_view_blog"
         val WEB_VIEW_HELP = "web_view_help"
+
+        val INTENT_BUNDLE_GUIDE_ARGUMENT_TAG = "guide_argument_tag"
+        val INTENT_BUNDLE_GUIDE_ARGUMENT_POS_TAG = "guide_argument_pos_tag"
     }
 }

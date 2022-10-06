@@ -13,6 +13,7 @@ class DashboardRepository : BaseRepository() {
     var memberRelationData = MutableLiveData<MemberRelationShipResData>()
     var profileVerificationResObj = MutableLiveData<ProfileVerificationResObj>()
     var profileResForEdit = MutableLiveData<ProfileVerificationResObj>()
+    var inviteCommonResData = MutableLiveData<CommonResponse>()
     var updateFcmRes = MutableLiveData<CommonResponse>()
 
     fun fetchUserProfile(userId : Int?){
@@ -92,6 +93,22 @@ class DashboardRepository : BaseRepository() {
 
             override fun onFailure(call: Call<MemberRelationShipResData?>?, t: Throwable) {
                 memberRelationData.value = MemberRelationShipResData(0,null,null)
+            }
+        })
+    }
+
+    fun inviteFamilyMember(userId : String?){
+        val profileCall = retrofit.create(APIInterface::class.java).inviteFamilyMember(BaseRepository.APP_KEY_VALUE,userId)
+        profileCall?.enqueue(object : Callback<CommonResponse?> {
+            override fun onResponse(
+                call: Call<CommonResponse?>?,
+                response: Response<CommonResponse?>?
+            ) {
+                inviteCommonResData.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
+                inviteCommonResData.value = CommonResponse(null,null,null)
             }
         })
     }

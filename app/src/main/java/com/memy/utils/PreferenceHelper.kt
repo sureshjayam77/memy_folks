@@ -17,6 +17,7 @@ class PreferenceHelper {
     private val APP_UPDATE_FCM_DATA = "APP_UPDATE_FCM_DATA"
     private val APP_UPDATE_SKIP_TIME = "APP_UPDATE_SKIP_TIME"
     private val FCM_PUSH_NOTIFICATION_DATA_KEY = "FCM_PUSH_NOTIFICATION_DATA_KEY"
+    private val GUIDE_SKIP_LABEL_CLICKED = "GUIDE_SKIP_LABEL_CLICKED"
 
     companion object {
         var commonPreference: SharedPreferences? = null
@@ -85,12 +86,22 @@ class PreferenceHelper {
         editor.commit()
     }
 
+    private fun saveBoolean(key : String?, value : Boolean){
+        val editor: SharedPreferences.Editor = commonPreference?.edit()!!
+        editor.putBoolean(key,value);
+        editor.commit()
+    }
+
     private fun fetchLong(key : String?):Long?{
         return commonPreference?.getLong(key,0)
     }
 
     private fun fetchString(key : String?):String?{
         return commonPreference?.getString(key,"")
+    }
+
+    private fun fetchBoolean(key : String?):Boolean?{
+        return commonPreference?.getBoolean(key,false)
     }
 
     public fun appUpdateSkip(time : Long){
@@ -105,6 +116,14 @@ class PreferenceHelper {
 
     fun saveFCMTokenData(fcmToken : String?){
         saveString(FCM_PUSH_NOTIFICATION_DATA_KEY,fcmToken)
+    }
+
+    fun saveGuideSkipClick(isSkipped : Boolean?){
+        saveBoolean(GUIDE_SKIP_LABEL_CLICKED,isSkipped ?: false)
+    }
+
+    fun getGuideSkipClick():Boolean{
+        return fetchBoolean(GUIDE_SKIP_LABEL_CLICKED) ?: false
     }
 
     fun fetchFCMTokenData():String?{

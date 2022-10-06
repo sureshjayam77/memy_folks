@@ -136,5 +136,7 @@ interface APIInterface {
     @GET("api/memberexist/")
     fun checkFamilyMemberExists(@Query("apikey") apikey: String,@Query("firstname") firstname: String?,@Query("relationship") relationship: String?,@Query("mid") mid: Int?) : Call<RelationShipExistsRes>?
 
+    @GET("api/member_invite/")
+    fun inviteFamilyMember( @Query("apikey") apikey: String,@Query("userid") user : String?) : Call<CommonResponse?>?
 
 }

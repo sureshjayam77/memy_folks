@@ -142,6 +142,7 @@
     <string name="label_about">About</string>
     <string name="label_blog">Blog</string>
     <string name="label_help">Help</string>
+    <string name="label_guide">Guide</string>
     <string name="label_facebook">Facebook link</string>
     <string name="label_instagram">Instagram link</string>
     <string name="label_twitter">Twitter link</string>
@@ -149,6 +150,7 @@
     <string name="error_invalid_url">Enter valid URL</string>
     <string name="error_invalid_about">Enter about</string>
     <string name="label_about_me">About Me</string>
+    <string name="label_invite">Invite</string>
 
    // Firebase messaging
     <string name="notification_channel_id">Activity</string>
@@ -383,5 +385,8 @@
     <string name="host1">Host1</string>
     <string name="host2">Host2</string>
     <string name="drive_link">Drive link(Photo)</string>
+
+    //Guide
+    <string name="label_contact_assi">Contact <font color='#0C8AB7'>memyfolks@gmail.com</font> for any assistance.</string>
 
 </resources>

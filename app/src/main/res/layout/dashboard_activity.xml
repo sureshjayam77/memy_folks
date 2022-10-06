@@ -39,11 +39,20 @@
                     app:contentInsetLeft="0dp"
                     app:contentInsetStart="0dp">
 
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/backIconImageView"
                         android:layout_width="@dimen/back_icon_height"
                         android:layout_height="@dimen/back_icon_height"
                         android:layout_marginStart="@dimen/common_action_left_space"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         android:src="@drawable/ic_baseline_menu_24" />
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -52,9 +61,27 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_weight="1"
                         android:text="@{viewModel.isTreeView() ? @string/label_family_tree : @string/label_profile}"
                         android:textColor="@color/white"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         android:textSize="@dimen/common_header_text_size" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/guideImageView"
+                            android:layout_width="@dimen/help_icon_height"
+                            android:layout_height="@dimen/help_icon_height"
+                            android:layout_gravity="end|center"
+                            android:layout_marginEnd="@dimen/common_margin_size"
+                            android:onClick="openGuideIntent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/menuIconImageView"
+                            android:src="@drawable/ic_question_mark_guide"
+                            android:visibility="visible" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/menuIconImageView"
@@ -64,7 +91,14 @@
                         android:layout_marginEnd="@dimen/common_margin_size"
                         android:onClick="showMenuPopup"
                         android:src="@drawable/ic_logout"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         android:visibility="visible" />
+
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
                 </androidx.appcompat.widget.Toolbar>
@@ -537,6 +571,25 @@
                                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                                 app:spanCount="4"
                                 tools:itemCount="10" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/inviteBtn"
+                                style="@style/ButtonBoldWithBg"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/common_margin_size"
+                                android:layout_marginBottom="@dimen/common_edit_txt_padding"
+                                android:padding="@dimen/common_edit_txt_padding"
+                                android:text="@string/label_invite"
+                                android:textColor="@color/white"
+                                android:enabled="true"
+                                android:visibility="gone"
+                                android:layout_marginStart="@dimen/common_edit_txt_padding"
+                                android:layout_marginEnd="@dimen/common_edit_txt_padding"
+                                android:textSize="@dimen/common_text_size"
+                                app:cornerRadius="30dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/termsConditionLayout" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
                     <!-- </androidx.core.widget.NestedScrollView>-->

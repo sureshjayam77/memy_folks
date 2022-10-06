@@ -18,8 +18,11 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.messaging.FirebaseMessaging
+import com.memy.MemyApplication
 import com.memy.R
+import com.memy.adapter.GuideFragmentAdapter
 import com.memy.adapter.RelationSelectionAdapter
 import com.memy.databinding.DashboardActivityBinding
 import com.memy.fragment.StoryVIewFragment
@@ -47,6 +50,9 @@ class DashboardActivity : AppBaseActivity() {
         updateFCMToken()
         checkDeepLink()
         fetchProfileData(false)
+        if((!prefhelper.getGuideSkipClick())) {
+            fetchMemberRelationShipData(viewModel.userData.value?.mid?.toString())
+        }
     }
 
     override fun dialogPositiveCallBack(id: Int?) {
@@ -174,6 +180,7 @@ class DashboardActivity : AppBaseActivity() {
         viewModel.memberRelationData.observe(this, this::validateMemberRelationRes)
         viewModel.profileResForEdit.observe(this, this::validateProfileForEditRes)
         viewModel.deleteAccountRes.observe(this,this::validateDeleteAccountRes)
+        viewModel.inviteCommonResData.observe(this,this::validateInviteApiRes)
 
         viewModel.isTreeView.observe(this, { v ->
             fetchProfileData(true)
@@ -536,6 +543,10 @@ class DashboardActivity : AppBaseActivity() {
         startActivity(Intent(this, FeedbackActivity::class.java))
     }
 
+    fun openGuideIntent(v: View) {
+        startActivity(Intent(this, HelpActivity::class.java))
+    }
+
     fun updateFCMToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
@@ -697,8 +708,29 @@ class DashboardActivity : AppBaseActivity() {
         binding.progressFrameLayout.visibility = View.GONE
         if (res != null) {
             if ((res.statusCode == 200) && (res.data != null)) {
-                openAddRelationPopup(res.data as MutableList)
+                    if ((TextUtils.isEmpty(viewModel.selectedMemberId)) && (!prefhelper.getGuideSkipClick())) {
+                        var canShowGuideView = true
+                        val list = res.data as List<RelationSelectionObj>?
+                        if ((list != null) && (list.size > 0)) {
+                            for (item in list) {
+                                if ((item?.is_applicable == false) && (item?.id!! <= 3)) {
+                                    canShowGuideView = false
+                                }
+                            }
+                            if (canShowGuideView) {
+                                startActivity(
+                                    Intent(
+                                        this@DashboardActivity,
+                                        GuideActivity::class.java
+                                    )
+                                )
+                            }
+                        }
+                    }else{
+                    openAddRelationPopup(res.data as MutableList)
+                }
             }
+            prefhelper.saveGuideSkipClick(false)
         }
     }
 
@@ -770,7 +802,20 @@ class DashboardActivity : AppBaseActivity() {
 
             })
         binding.addMemberPopupRecyclerview.adapter = adapter
+
+        binding.inviteBtn.setOnClickListener {
+            if(!TextUtils.isEmpty(viewModel.selectedMemberId)) {
+                binding.progressFrameLayout.visibility = View.VISIBLE
+                viewModel.inviteFamilyMember(viewModel.selectedMemberId)
+            }
+            viewModel.showAddRelationView.value = false
+        }
         binding.addMemberPopupRecyclerview.postDelayed(Runnable {
+            if((prefhelper.fetchUserData()?.mid != viewModel.selectedMemberId?.toInt()) && (viewModel.profileResForEdit.value != null) && (viewModel.profileResForEdit.value?.data != null) && (!TextUtils.isEmpty(viewModel.profileResForEdit.value?.data?.mobile))){
+                binding.inviteBtn.visibility = View.VISIBLE
+            }else{
+                binding.inviteBtn.visibility = View.GONE
+            }
             viewModel.showAddRelationView.value = true
             binding.chooseActionTextView.text = viewModel.profileResForEdit.value?.data?.firstname+" - "+getString(R.string.label_choose_action)
             binding.relationPopupLayout.visibility = View.VISIBLE
@@ -824,6 +869,17 @@ class DashboardActivity : AppBaseActivity() {
             message = getString(R.string.something_went_wrong)
         }
         showAlertDialog(R.id.do_nothing, message, getString(R.string.close_label), "")
+    }
+
+    private fun validateInviteApiRes(res : CommonResponse){
+        binding.progressFrameLayout.visibility = View.GONE
+        if (res != null) {
+            if (res.statusCode == 200) {
+                if (res?.data != null) {
+                    showAlertDialog(R.id.do_nothing, "Invitation sent successfully", getString(R.string.close_label), "")
+                }
+            }
+        }
     }
 
 }

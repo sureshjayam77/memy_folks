@@ -26,6 +26,9 @@ class FeedbackActivity : AppBaseActivity() {
         viewModel = ViewModelProvider(this).get(FeedbackViewModel::class.java)
         binding.viewModel = viewModel
         initObserver()
+        binding.backIconImageView.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     fun initObserver(){
