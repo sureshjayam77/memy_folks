@@ -152,7 +152,7 @@
     <string name="label_about_me">About Me</string>
     <string name="label_invite">Invite</string>
     <string name="label_invite_with_fname">Invite %s</string>
-    <string name="label_kindly_add_mobile_number_to_invite">Kindly add mobile number of %s\'s to invite</string>
+    <string name="label_kindly_add_mobile_number_to_invite">Kindly add %s\'s mobile number to send invite</string>
 
    // Firebase messaging
     <string name="notification_channel_id">Activity</string>
