@@ -16,6 +16,7 @@ open class Constents {
         val SHOW_PROFILE_INTENT_TAG : String = "show_profile_intent_tag"
         val FAMILY_MEMBER_ROW_ID_INTENT_TAG : String = "family_member_row_id_intent_tag"
         val FAMILY_MEMBER_RELATIONSHIP_ID_INTENT_TAG : String = "family_member_relationship_id_intent_tag"
+        val FAMILY_MEMBER_INVITE_INTENT_TAG : String = "family_member_invite_intent_tag"
         val GENDER_MALE = "M"
         val GENDER_FEMALE = "F"
         val GENDER_OTHER = "O"

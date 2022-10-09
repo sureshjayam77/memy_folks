@@ -50,7 +50,7 @@ class DashboardActivity : AppBaseActivity() {
         updateFCMToken()
         checkDeepLink()
         fetchProfileData(false)
-        if((!prefhelper.getGuideSkipClick())) {
+        if ((!prefhelper.getGuideSkipClick())) {
             fetchMemberRelationShipData(viewModel.userData.value?.mid?.toString())
         }
     }
@@ -59,17 +59,17 @@ class DashboardActivity : AppBaseActivity() {
         dismissAlertDialog()
         if (id == R.id.storage_camera_permission) {
             navigatePermissionSettingsPage()
-        }else if(id == R.id.delete_account_res_id){
-            if(viewModel.selectedMemberId?.toInt() == prefhelper.fetchUserData()?.mid){
+        } else if (id == R.id.delete_account_res_id) {
+            if (viewModel.selectedMemberId?.toInt() == prefhelper.fetchUserData()?.mid) {
                 prefhelper.clearPref()
                 val intent = Intent(this, SignInActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK )
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK )
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivityIntent(intent, true)
-            }else{
+            } else {
                 val intent = Intent(this, DashboardActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK )
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK )
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivityIntent(intent, true)
             }
 
@@ -80,7 +80,7 @@ class DashboardActivity : AppBaseActivity() {
         super.onResume()
         viewModel.userData.value = prefhelper.fetchUserData()
         loadProfileImage(viewModel.userData.value?.photo)
-        if(viewModel.tabPos == 0){
+        if (viewModel.tabPos == 0) {
             viewModel.isTreeView.value = true
         }
     }
@@ -128,10 +128,25 @@ class DashboardActivity : AppBaseActivity() {
 
                 binding.familyImageView.setImageResource(R.drawable.ic_mmf_select)
                 binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
-                binding.storyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+                binding.storyTextView.setTextColor(
+                    ContextCompat.getColor(
+                        this,
+                        R.color.footer_bar_txt_color
+                    )
+                )
                 binding.familyTextView.setTextColor(ContextCompat.getColor(this, R.color.app_color))
-                binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
-                binding.notificationTextView.setTextColor(ContextCompat.getColor(this, R.color.footer_bar_txt_color))
+                binding.bubblesTextView.setTextColor(
+                    ContextCompat.getColor(
+                        this,
+                        R.color.footer_bar_txt_color
+                    )
+                )
+                binding.notificationTextView.setTextColor(
+                    ContextCompat.getColor(
+                        this,
+                        R.color.footer_bar_txt_color
+                    )
+                )
             } else if (refreshStroy) {
                 val manager: FragmentManager = supportFragmentManager
                 val transaction: FragmentTransaction = manager.beginTransaction()
@@ -155,8 +170,18 @@ class DashboardActivity : AppBaseActivity() {
                         R.color.footer_bar_txt_color
                     )
                 )
-                binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
-                binding.notificationTextView.setTextColor(ContextCompat.getColor(this, R.color.footer_bar_txt_color))
+                binding.bubblesTextView.setTextColor(
+                    ContextCompat.getColor(
+                        this,
+                        R.color.footer_bar_txt_color
+                    )
+                )
+                binding.notificationTextView.setTextColor(
+                    ContextCompat.getColor(
+                        this,
+                        R.color.footer_bar_txt_color
+                    )
+                )
             }
             loadProfileImage(viewModel.userData.value?.photo)
         }
@@ -179,8 +204,8 @@ class DashboardActivity : AppBaseActivity() {
         viewModel.profileSocialLinkUpdateRes.observe(this, this::validateSocialLinkRes)
         viewModel.memberRelationData.observe(this, this::validateMemberRelationRes)
         viewModel.profileResForEdit.observe(this, this::validateProfileForEditRes)
-        viewModel.deleteAccountRes.observe(this,this::validateDeleteAccountRes)
-        viewModel.inviteCommonResData.observe(this,this::validateInviteApiRes)
+        viewModel.deleteAccountRes.observe(this, this::validateDeleteAccountRes)
+        viewModel.inviteCommonResData.observe(this, this::validateInviteApiRes)
 
         viewModel.isTreeView.observe(this, { v ->
             fetchProfileData(true)
@@ -290,7 +315,10 @@ class DashboardActivity : AppBaseActivity() {
     fun navigateProfileScreen(v: View) {
         val intent = Intent(this, AddFamilyActivity::class.java)
         intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
-        intent.putExtra(Constents.FAMILY_MEMBER_FNAME_INTENT_TAG, viewModel?.userData?.value?.firstname)
+        intent.putExtra(
+            Constents.FAMILY_MEMBER_FNAME_INTENT_TAG,
+            viewModel?.userData?.value?.firstname
+        )
         intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel?.userData?.value?.mid)
         startActivityIntent(intent, false)
     }
@@ -429,7 +457,7 @@ class DashboardActivity : AppBaseActivity() {
     fun switchTree(v: View) {
         viewModel.isTreeSwitched = true
         val isTreeView = viewModel.isTreeView.value
-       /* if ((isTreeView == true)*//* && (!(PermissionUtil().requestPermissionForCamera(this, false)))*//*) {
+        /* if ((isTreeView == true)*//* && (!(PermissionUtil().requestPermissionForCamera(this, false)))*//*) {
             validateOpenStoryView()
             return
         }*/
@@ -691,7 +719,7 @@ class DashboardActivity : AppBaseActivity() {
         viewModel.fetchMemberRelationShip(userId)
     }
 
-    fun fetchTempProfileData(userId: String?){
+    fun fetchTempProfileData(userId: String?) {
         GlobalScope.launch(Dispatchers.Main) {
             binding.progressFrameLayout.visibility = View.VISIBLE
         }
@@ -703,30 +731,29 @@ class DashboardActivity : AppBaseActivity() {
     }
 
 
-
     private fun validateMemberRelationRes(res: MemberRelationShipResData) {
         binding.progressFrameLayout.visibility = View.GONE
         if (res != null) {
             if ((res.statusCode == 200) && (res.data != null)) {
-                    if ((TextUtils.isEmpty(viewModel.selectedMemberId)) && (!prefhelper.getGuideSkipClick())) {
-                        var canShowGuideView = true
-                        val list = res.data as List<RelationSelectionObj>?
-                        if ((list != null) && (list.size > 0)) {
-                            for (item in list) {
-                                if ((item?.is_applicable == false) && (item?.id!! <= 3)) {
-                                    canShowGuideView = false
-                                }
-                            }
-                            if (canShowGuideView) {
-                                startActivity(
-                                    Intent(
-                                        this@DashboardActivity,
-                                        GuideActivity::class.java
-                                    )
-                                )
+                if ((TextUtils.isEmpty(viewModel.selectedMemberId)) && (!prefhelper.getGuideSkipClick())) {
+                    var canShowGuideView = true
+                    val list = res.data as List<RelationSelectionObj>?
+                    if ((list != null) && (list.size > 0)) {
+                        for (item in list) {
+                            if ((item?.is_applicable == false) && (item?.id!! <= 3)) {
+                                canShowGuideView = false
                             }
                         }
-                    }else{
+                        if (canShowGuideView) {
+                            startActivity(
+                                Intent(
+                                    this@DashboardActivity,
+                                    GuideActivity::class.java
+                                )
+                            )
+                        }
+                    }
+                } else {
                     openAddRelationPopup(res.data as MutableList)
                 }
             }
@@ -742,12 +769,16 @@ class DashboardActivity : AppBaseActivity() {
                 override fun updateAction(actionCode: Int, data: Any?) {
                     val item = data as RelationSelectionObj
                     viewModel.selectedMemberAction = actionCode
-                    val editProfileData = if(viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
-                    if(editProfileData != null) {
+                    val editProfileData =
+                        if (viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
+                    if (editProfileData != null) {
                         if ((viewModel.selectedMemberAction == 1001) || (viewModel.selectedMemberAction == 1002)) {
                             if ((editProfileData.mid == prefhelper.fetchUserData()?.mid) || (editProfileData.owner_id == prefhelper.fetchUserData()?.mid)) {
                                 if (actionCode == 1001) {
-                                    val intent = Intent(this@DashboardActivity, AddFamilyActivity::class.java)
+                                    val intent = Intent(
+                                        this@DashboardActivity,
+                                        AddFamilyActivity::class.java
+                                    )
                                     intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
                                     intent.putExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG, true)
                                     intent.putExtra(
@@ -793,7 +824,10 @@ class DashboardActivity : AppBaseActivity() {
                             )
                             intent.putExtra(Constents.FAMILY_MEMBER_INTENT_TAG, true)
                             intent.putExtra(Constents.FAMILY_MEMBER_GENDER_INTENT_TAG, item.gender)
-                            intent.putExtra(Constents.FAMILY_MEMBER_GENDER_NAME_INTENT_TAG, item.name)
+                            intent.putExtra(
+                                Constents.FAMILY_MEMBER_GENDER_NAME_INTENT_TAG,
+                                item.name
+                            )
                             startActivityIntent(intent, false)
                         }
                     }
@@ -804,20 +838,54 @@ class DashboardActivity : AppBaseActivity() {
         binding.addMemberPopupRecyclerview.adapter = adapter
 
         binding.inviteBtn.setOnClickListener {
-            if(!TextUtils.isEmpty(viewModel.selectedMemberId)) {
-                binding.progressFrameLayout.visibility = View.VISIBLE
-                viewModel.inviteFamilyMember(viewModel.selectedMemberId)
+            val editProfileData =
+                if (viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
+
+            if (editProfileData != null) {
+                if ((!TextUtils.isEmpty(viewModel.selectedMemberId)) && (!TextUtils.isEmpty(
+                        editProfileData?.mobile
+                    ))
+                ) {
+                    binding.progressFrameLayout.visibility = View.VISIBLE
+                    viewModel.inviteFamilyMember(viewModel.selectedMemberId)
+                } else {
+                    val intent = Intent(this@DashboardActivity, AddFamilyActivity::class.java)
+                    intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
+                    intent.putExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG, true)
+                    intent.putExtra(
+                        Constents.FAMILY_MEMBER_ID_INTENT_TAG,
+                        editProfileData.mid
+                    )
+                    intent.putExtra(
+                        Constents.FAMILY_MEMBER_FNAME_INTENT_TAG,
+                        editProfileData.firstname
+                    )
+                    intent.putExtra(
+                        Constents.FAMILY_MEMBER_INVITE_INTENT_TAG,
+                        true
+                    )
+
+                    startActivityIntent(intent, false)
+
+                }
             }
             viewModel.showAddRelationView.value = false
         }
         binding.addMemberPopupRecyclerview.postDelayed(Runnable {
-            if((prefhelper.fetchUserData()?.mid != viewModel.selectedMemberId?.toInt()) && (viewModel.profileResForEdit.value != null) && (viewModel.profileResForEdit.value?.data != null) && (!TextUtils.isEmpty(viewModel.profileResForEdit.value?.data?.mobile))){
+            val editProfileData =
+                if (viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
+            if ((editProfileData != null) && ((prefhelper.fetchUserData()?.mid != viewModel.selectedMemberId?.toInt())) && (editProfileData.owner_id == prefhelper.fetchUserData()?.mid)) {
                 binding.inviteBtn.visibility = View.VISIBLE
-            }else{
+                binding.inviteBtn.text = String.format(
+                    getString(R.string.label_invite_with_fname),
+                    viewModel.profileResForEdit.value?.data?.firstname
+                )
+            } else {
                 binding.inviteBtn.visibility = View.GONE
             }
             viewModel.showAddRelationView.value = true
-            binding.chooseActionTextView.text = viewModel.profileResForEdit.value?.data?.firstname+" - "+getString(R.string.label_choose_action)
+            binding.chooseActionTextView.text =
+                viewModel.profileResForEdit.value?.data?.firstname + " - " + getString(R.string.label_choose_action)
             binding.relationPopupLayout.visibility = View.VISIBLE
         }, 1000)
     }
@@ -840,7 +908,7 @@ class DashboardActivity : AppBaseActivity() {
         }
     }
 
-    private fun validateDeleteAccountRes(res: CommonResponse){
+    private fun validateDeleteAccountRes(res: CommonResponse) {
         binding.progressFrameLayout.visibility = View.GONE
         if (res != null) {
             if (res.statusCode == 200) {
@@ -871,12 +939,17 @@ class DashboardActivity : AppBaseActivity() {
         showAlertDialog(R.id.do_nothing, message, getString(R.string.close_label), "")
     }
 
-    private fun validateInviteApiRes(res : CommonResponse){
+    private fun validateInviteApiRes(res: CommonResponse) {
         binding.progressFrameLayout.visibility = View.GONE
         if (res != null) {
             if (res.statusCode == 200) {
                 if (res?.data != null) {
-                    showAlertDialog(R.id.do_nothing, "Invitation sent successfully", getString(R.string.close_label), "")
+                    showAlertDialog(
+                        R.id.do_nothing,
+                        getString(R.string.invitation_sent_success_fully),
+                        getString(R.string.label_ok),
+                        ""
+                    )
                 }
             }
         }

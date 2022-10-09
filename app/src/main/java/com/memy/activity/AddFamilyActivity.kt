@@ -145,7 +145,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             }
         }
         viewModel.isForEditFamily.value = intent?.getBooleanExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG, false)
-
+        viewModel.isForInviteFamilyMember.value = intent?.getBooleanExtra(Constents.FAMILY_MEMBER_INVITE_INTENT_TAG,false)
         if(((viewModel.isForOwnProfileUpdate.value == true) && (viewModel.isForNewOwnProfileUpdate.value == false)) || (viewModel.isForEditFamily.value == true)){
             viewModel.showMoreOnfoOption.value = true
         }
@@ -161,14 +161,28 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             val genderLable = intent?.getStringExtra(Constents.FAMILY_MEMBER_GENDER_NAME_INTENT_TAG)
             binding.titleTextView.text = String.format(getString(R.string.label_adding_relationship),genderLable,fName)
         }
-        if((viewModel.isForAddFamily.value == true)){
+        if(viewModel.isForAddFamily.value == true){
             viewModel.allowEditMobileNumber.value = true
             viewModel.inviteSendSMS.value = false
+            viewModel.canShowInviteCheckBox.value = true
+        }
+        if(viewModel.isForInviteFamilyMember.value == true){
+            viewModel.allowEditMobileNumber.value = true
+            viewModel.inviteSendSMS.value = true
+            viewModel.canShowInviteCheckBox.value = true
+
+            showAlertDialog(
+                R.id.do_nothing,
+                String.format(getString(R.string.label_kindly_add_mobile_number_to_invite),fName),
+                getString(R.string.label_ok),
+                ""
+            )
         }
         if((viewModel.isForEditFamily.value == true)){
            // viewModel.fetchProfile(viewModel.addFamilyMemberId.value,prefhelper?.fetchUserData()?.mid)
             viewModel.fetchProfile(viewModel.addFamilyMemberId.value)
         }
+
     }
 
     private fun setupObserver() {
@@ -199,6 +213,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         })
         viewModel.mainMobileNumber.observe(this,this::validateMobileNumber)
         viewModel.mainCountryCode.observe(this,this::validateMobileNumber)
+        viewModel.inviteCommonResData.observe(this,this::validateInviteApiRes)
     }
 
     private fun initProfileData() {
@@ -1220,12 +1235,17 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                     if(res?.data?.mid == prefhelper.fetchUserData()?.mid){
                         prefhelper.saveUserData(res.data)
                     }
-                    showAlertDialog(
-                        R.id.profile_update_success,
-                        getString(R.string.profile_updated_success_fully),
-                        getString(R.string.label_ok),
-                        ""
-                    )
+                    if((viewModel.isForInviteFamilyMember.value == true) && (!TextUtils.isEmpty(res?.data?.mobile)) && (viewModel.inviteSendSMS.value == true)){
+                        showProgressBar()
+                        viewModel.inviteFamilyMember(res?.data?.mid?.toString())
+                    }else {
+                        showAlertDialog(
+                            R.id.profile_update_success,
+                            getString(R.string.profile_updated_success_fully),
+                            getString(R.string.label_ok),
+                            ""
+                        )
+                    }
                 } else {
                     errorHandler(CommonResponse(null,res.statusCode,res.errorDetails))
                 }
@@ -1361,6 +1381,17 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         }
     }
 
+    private fun validateInviteApiRes(res : CommonResponse){
+        hideProgressBar()
+        if (res != null) {
+            if (res.statusCode == 200) {
+                if (res?.data != null) {
+                    showAlertDialog(R.id.profile_update_success, getString(R.string.invitation_sent_success_fully), getString(R.string.label_ok), "")
+                }
+            }
+        }
+    }
+
     /*fun showYearPicker(v:View?){
         binding.yearSpinner.performClick()
     }*/
@@ -1414,6 +1445,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         yearBottomSheet.setContentView(birthYearBottomSheetBinding.root)
         yearBottomSheet.show()
     }
+
 }
 
 

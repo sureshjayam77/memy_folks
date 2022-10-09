@@ -261,9 +261,8 @@
                             android:textColor="@color/black"
                             android:onClick="@{() -> viewModel.inviteClick()}"
                             android:checked="@{viewModel.inviteSendSMS}"
-                            android:visibility="@{viewModel.isForAddFamily() ? View.VISIBLE : View.GONE}"
+                            android:visibility="@{viewModel.canShowInviteCheckBox ? View.VISIBLE : View.GONE}"
                             android:paddingEnd="10dp"/>
-
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/phoneContactIcon"
@@ -272,7 +271,7 @@
                             android:src="@drawable/ic_contacts"
                             android:onClick="contactChooseOption"
                             android:layout_gravity="bottom"
-                            android:visibility="@{viewModel.isForAddFamily() ? View.VISIBLE : View.GONE}"
+                            android:visibility="@{viewModel.canShowInviteCheckBox ? View.VISIBLE : View.GONE}"
                             android:padding="5dp"
                             android:layout_marginBottom="5dp"/>
                     </LinearLayout>

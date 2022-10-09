@@ -585,16 +585,47 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
 
 
         binding.inviteBtn.setOnClickListener {
-            if(!TextUtils.isEmpty(viewModel.selectedMemberId)) {
-                binding.progressFrameLayout.visibility = View.VISIBLE
-                viewModel.inviteFamilyMember(viewModel.selectedMemberId)
+            val editProfileData =
+                if (viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
+
+            if (editProfileData != null) {
+                if ((!TextUtils.isEmpty(viewModel.selectedMemberId)) && (!TextUtils.isEmpty(
+                        editProfileData?.mobile
+                    ))
+                ) {
+                    binding.progressFrameLayout.visibility = View.VISIBLE
+                    viewModel.inviteFamilyMember(viewModel.selectedMemberId)
+                } else {
+                    val intent =
+                        Intent(this@FamilyMemberProfileActivity, AddFamilyActivity::class.java)
+                    intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
+                    intent.putExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG, true)
+                    intent.putExtra(
+                        Constents.FAMILY_MEMBER_ID_INTENT_TAG,
+                        editProfileData?.mid
+                    )
+                    intent.putExtra(
+                        Constents.FAMILY_MEMBER_FNAME_INTENT_TAG,
+                        editProfileData?.firstname
+                    )
+                    intent.putExtra(
+                        Constents.FAMILY_MEMBER_INVITE_INTENT_TAG,
+                        true
+                    )
+
+                    startActivityIntent(intent, false)
+                }
             }
             viewModel.showAddRelationView.value = false
         }
 
+
         binding.addMemberPopupRecyclerview.postDelayed(Runnable {
-            if((prefhelper.fetchUserData()?.mid != viewModel.selectedMemberId?.toInt()) && (viewModel.profileResForEdit.value != null) && (viewModel.profileResForEdit.value?.data != null) && (!TextUtils.isEmpty(viewModel.profileResForEdit.value?.data?.mobile))){
-                binding.inviteBtn.visibility = View.VISIBLE
+        val editProfileData =
+            if (viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
+        if ((editProfileData != null) && ((prefhelper.fetchUserData()?.mid != viewModel.selectedMemberId?.toInt())) && (editProfileData.owner_id == prefhelper.fetchUserData()?.mid)) {
+            binding.inviteBtn.visibility = View.VISIBLE
+                binding.inviteBtn.text = String.format(getString(R.string.label_invite_with_fname),viewModel.profileResForEdit.value?.data?.firstname)
             }else{
                 binding.inviteBtn.visibility = View.GONE
             }
@@ -681,7 +712,12 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         if (res != null) {
             if (res.statusCode == 200) {
                 if (res?.data != null) {
-                    showAlertDialog(R.id.do_nothing, "Invitation sent successfully", getString(R.string.close_label), "")
+                    showAlertDialog(
+                        R.id.do_nothing,
+                        getString(R.string.invitation_sent_success_fully),
+                        getString(R.string.label_ok),
+                        ""
+                    )
                 }
             }
         }

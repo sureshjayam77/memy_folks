@@ -24,6 +24,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
     var addFamilyRepository: AddFamilyRepository
     var relationShipResObj = MutableLiveData<RelationShipResObj>()
     var avatarImageRes = MutableLiveData<AvatarImageListRes>()
+    var isForInviteFamilyMember: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
 
     var familyTagName: MutableLiveData<String> = MutableLiveData()
     var familyTagId: MutableLiveData<String> = MutableLiveData()
@@ -32,6 +33,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
     var lineageName: MutableLiveData<String> = MutableLiveData()
     var villageName: MutableLiveData<String> = MutableLiveData()
     var inviteSendSMS: MutableLiveData<Boolean> = MutableLiveData()
+    var canShowInviteCheckBox: MutableLiveData<Boolean> = MutableLiveData()
     var mainCountryCode: MutableLiveData<String> = MutableLiveData()
     var mainMobileNumber: MutableLiveData<String> = MutableLiveData()
     var altCountryCode: MutableLiveData<String> = MutableLiveData()
@@ -80,6 +82,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
 
 
     var showRelationPopup: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
+    var inviteCommonResData = MutableLiveData<CommonResponse>()
 
     init {
         addFamilyRepository = AddFamilyRepository()
@@ -96,6 +99,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
         isCusExistRes = addFamilyRepository.isCusExistRes
         relationUpdateSuccessRes = addFamilyRepository.relationUpdateSuccessRes
         relationShipExistsRes = addFamilyRepository.relationShipExistsRes
+        inviteCommonResData = dashboardRepository.inviteCommonResData
         moreInfoClicked.value = false
         isForPrimaryCountryCode = false
         isForAddFamily.value = false
@@ -108,6 +112,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
         addFamilyMemberId.value = -1
         familyTagId.value = ""
         mainCountryCode.value = "+91"
+        isForInviteFamilyMember.value = false
     }
 
     fun moreInfoClicked() {
@@ -237,5 +242,9 @@ class AddFamilyViewModel : AppBaseViewModel() {
 
     fun clearBirthYear(){
         birthYear.value = ""
+    }
+
+    fun inviteFamilyMember(userId : String?){
+        dashboardRepository.inviteFamilyMember(userId)
     }
 }
