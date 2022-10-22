@@ -18,4 +18,7 @@
     <external-files-path
         name="my_images"
         path="/"/>
+    <cache-path
+        name="shared_images"
+        path="images/" />
 </paths>

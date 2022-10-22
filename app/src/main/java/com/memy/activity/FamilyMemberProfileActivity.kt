@@ -29,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import androidx.fragment.app.Fragment
+import com.memy.fragment.ShareFragment
 
 
 class FamilyMemberProfileActivity : AppBaseActivity() {
@@ -162,10 +163,11 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                                transaction.addToBackStack(null)
                                transaction.commit()
                                viewModel.tabPos = 0
+                               viewModel.actionTitle.value = getString(R.string.label_family_tree)
                                binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
-                               binding.notificationImageView.setImageResource(R.drawable.ic_notification_unselect)
+                               binding.shareTabImageView.setImageResource(R.drawable.ic_notification_unselect)
                                binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
-                               binding.notificationTextView.setTextColor(ContextCompat.getColor(this, R.color.footer_bar_txt_color))
+                               binding.shareTabTextView.setTextColor(ContextCompat.getColor(this, R.color.footer_bar_txt_color))
 
                                binding.familyImageView.setImageResource(R.drawable.ic_mmf_select)
                                binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
@@ -192,10 +194,11 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                                transaction.addToBackStack(null)
                                transaction.commit()
                                viewModel.tabPos = 1
+                               viewModel.actionTitle.value = getString(R.string.label_story)
                                binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
-                               binding.notificationImageView.setImageResource(R.drawable.ic_notification_unselect)
+                               binding.shareTabImageView.setImageResource(R.drawable.ic_share_unselect)
                                binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
-                               binding.notificationTextView.setTextColor(ContextCompat.getColor(this, R.color.footer_bar_txt_color))
+                               binding.shareTabTextView.setTextColor(ContextCompat.getColor(this, R.color.footer_bar_txt_color))
 
 
                                binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
@@ -254,13 +257,14 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         transaction.addToBackStack(null)
         transaction.commit()
         viewModel.tabPos = 2
+        viewModel.actionTitle.value = getString(R.string.label_bubbles)
         binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_select)
         binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
         binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
-        binding.notificationImageView.setImageResource(R.drawable.ic_notification_unselect)
+        binding.shareTabImageView.setImageResource(R.drawable.ic_share_unselect)
         binding.storyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
         binding.familyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
-        binding.notificationTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
+        binding.shareTabTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
         binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.app_color))
 
     }
@@ -447,11 +451,11 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
 
 
 
-    fun navigateNotificationScreen(v: View) {
+    fun navigateShareScreen(v: View) {
 
         val manager: FragmentManager = supportFragmentManager
         val transaction: FragmentTransaction = manager.beginTransaction()
-        val notificationActivity=NotificationFragment()
+        val notificationActivity=ShareFragment()
         val bundle=Bundle()
         bundle.putBoolean(Constents.OWN_PROFILE_INTENT_TAG, true)
         bundle.putInt(Constents.FAMILY_MEMBER_ID_INTENT_TAG, prefhelper.fetchUserData()?.mid!!)
@@ -459,14 +463,15 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         transaction.replace(R.id.fragmentContainer, notificationActivity, NotificationFragment::javaClass.name)
         transaction.addToBackStack(null)
         transaction.commit()
+        viewModel.actionTitle.value = getString(R.string.label_share)
         binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
         binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
         binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
-        binding.notificationImageView.setImageResource(R.drawable.ic_notification_select__1_)
+        binding.shareTabImageView.setImageResource(R.drawable.ic_share_select)
         binding.storyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
         binding.familyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
         binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
-        binding.notificationTextView.setTextColor(ContextCompat.getColor(this,R.color.app_color))
+        binding.shareTabTextView.setTextColor(ContextCompat.getColor(this,R.color.app_color))
     }
     fun navigateBottomProfileScreen() {
         val intent = Intent(this, AddFamilyActivity::class.java)

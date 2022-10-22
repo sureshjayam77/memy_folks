@@ -244,6 +244,7 @@
                             android:inputType="phone"
                             android:maxLength="10"
                             android:layout_weight="1"
+                            android:digits="0123456789"
                             android:maxLines="1"
                             android:padding="@dimen/field_margin_top"
                             android:singleLine="true"
@@ -252,6 +253,17 @@
                             android:textColorHint="@color/hint_color"
                             android:textSize="@dimen/common_text_size" />
 
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/inviteBtn"
+                            style="@style/ButtonBoldWithBg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/common_edit_txt_padding"
+                            android:text="@string/label_invite"
+                            android:textColor="@color/white"
+                            android:visibility="gone"
+                            android:textSize="@dimen/common_text_size"
+                            app:cornerRadius="30dp" />
 
                         <CheckBox
                             android:id="@+id/inviteCheckBox"
@@ -333,6 +345,7 @@
                             android:maxLength="10"
                             android:maxLines="1"
                             android:padding="@dimen/field_margin_top"
+                            android:digits="0123456789"
                             android:singleLine="true"
                             android:text="@={viewModel.altMobileNumber}"
                             android:textColor="@color/black"

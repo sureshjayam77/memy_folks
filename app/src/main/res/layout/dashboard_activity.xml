@@ -62,7 +62,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="@{viewModel.isTreeView() ? @string/label_family_tree : @string/label_profile}"
+                        android:text="@{viewModel.actionTitle}"
                         android:textColor="@color/white"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -110,45 +110,6 @@
                 android:background="@color/white"
                 android:fillViewport="true"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-                <!--<RelativeLayout
-                    android:id="@+id/searchBarLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/app_color"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/phone_number_margin_top"
-                        android:background="@drawable/appoint_card_bg"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
-
-                        <androidx.appcompat.widget.AppCompatEditText
-                            android:id="@+id/searchEditText"
-                            style="@style/RegularText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@null"
-                            android:hint="Search"
-                            android:padding="@dimen/field_margin_top"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/common_text_size" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@id/searchIconImageView"
-                            android:layout_width="@dimen/search_icon_height"
-                            android:layout_height="@dimen/search_icon_height"
-                            android:layout_marginEnd="@dimen/field_margin_top"
-                            android:src="@drawable/ic_search" />
-
-
-                    </LinearLayout>
-                </RelativeLayout>-->
 
                 <LinearLayout
                     android:id="@+id/profileCardView"
@@ -442,7 +403,7 @@
                     </LinearLayout>
 
 
-                    <LinearLayout
+                    <!--<LinearLayout
                         android:id="@+id/notificationLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -465,6 +426,35 @@
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="@string/label_notification"
+                            android:textColor="@color/footer_bar_txt_color"
+                            android:textSize="@dimen/common_small_text_size"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/livingLayout" />
+                    </LinearLayout>-->
+
+                    <LinearLayout
+                        android:id="@+id/shareLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical|center"
+                        android:onClick="navigateShareScreen"
+                        android:orientation="vertical"
+                        android:padding="@dimen/field_margin_top">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/shareTabImageView"
+                            android:layout_width="@dimen/footer_icon_height"
+                            android:layout_height="@dimen/footer_icon_height"
+                            android:src="@drawable/ic_share_unselect" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/shareTabTextView"
+                            style="@style/RegularText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:text="@string/share_label"
                             android:textColor="@color/footer_bar_txt_color"
                             android:textSize="@dimen/common_small_text_size"
                             app:layout_constraintStart_toStartOf="parent"

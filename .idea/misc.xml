@@ -22,6 +22,7 @@
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_logout.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_mmf_select.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_mmf_unselect.xml" value="0.19054054054054054" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_notification_unselect.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_question_mark_guide.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_right_arrow.xml" value="0.19054054054054054" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/drawable/ic_story_select.xml" value="0.19054054054054054" />
@@ -54,6 +55,7 @@
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/progressbar_layout.xml" value="0.17657657657657658" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/relation_item_layout.xml" value="0.1742489270386266" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/relation_selection_layout.xml" value="0.17657657657657658" />
+        <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/share_fragment.xml" value="0.17657657657657658" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/signin_activity.xml" value="0.20416666666666666" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/story_media_bottom_sheet.xml" value="0.17422222222222222" />
         <entry key="..\:/Android workspace/github/memy/app/src/main/res/layout/story_view_fragment.xml" value="0.17422222222222222" />

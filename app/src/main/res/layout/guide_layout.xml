@@ -67,6 +67,7 @@
             android:textAllCaps="true"
             android:onClick="closeActicity"
             android:textSize="@dimen/common_header_text_size"
+            android:visibility="invisible"
             android:layout_marginStart="@dimen/story_title_left_margin"
             app:layout_constraintEnd_toStartOf="@+id/skipImageView"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -77,9 +78,23 @@
             android:layout_height="18dp"
             android:src="@drawable/ic_right_arrow"
             android:layout_marginEnd="@dimen/story_title_left_margin"
+            android:visibility="invisible"
             app:layout_constraintTop_toTopOf="@id/skipTextView"
             app:layout_constraintBottom_toBottomOf="@id/skipTextView"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/backImageView"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_right_arrow"
+            android:rotation="180"
+            android:onClick="backPressed"
+            android:layout_margin="20dp"
+            android:layout_marginEnd="@dimen/story_title_left_margin"
+            app:layout_constraintTop_toTopOf="@id/skipTextView"
+            app:layout_constraintBottom_toBottomOf="@id/skipTextView"
+            app:layout_constraintStart_toStartOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

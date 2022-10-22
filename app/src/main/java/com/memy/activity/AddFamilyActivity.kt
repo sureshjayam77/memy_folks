@@ -91,7 +91,10 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         initProfileData()
         showProgressBar()
         initYearAdapter()
-        viewModel.fetchAvatarImageList()
+        binding.familyTagTextView.postDelayed(Runnable {
+            viewModel.fetchAvatarImageList()
+           // viewModel.fetchCountryList()
+        },1000)
     }
 
     override fun onBackPressed() {
@@ -113,6 +116,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         binding.lifecycleOwner = this
         binding.familyTagTextView.setOnClickListener(this)
         binding.addFamilyBtnTextView.setOnClickListener(this)
+        binding.inviteBtn.setOnClickListener(this)
         binding.backIconImageView.setOnClickListener(this)
        // binding.saveBtnTextView.setOnClickListener(this)
         binding.requestBtn.setOnClickListener(this)
@@ -169,8 +173,8 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         if(viewModel.isForInviteFamilyMember.value == true){
             viewModel.allowEditMobileNumber.value = true
             viewModel.inviteSendSMS.value = true
-            viewModel.canShowInviteCheckBox.value = true
-
+            //viewModel.canShowInviteCheckBox.value = true
+            binding.inviteBtn.visibility = View.VISIBLE
             showAlertDialog(
                 R.id.do_nothing,
                 String.format(getString(R.string.label_kindly_add_mobile_number_to_invite),fName),
@@ -217,7 +221,6 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     }
 
     private fun initProfileData() {
-        viewModel.fetchCountryList()
         if ((viewModel.isForOwnProfileUpdate.value != null) && (viewModel.isForOwnProfileUpdate.value == true)) {
            if((viewModel.addFamilyMemberId.value == prefhelper.fetchUserData()?.mid)) {
                viewModel.userData = prefhelper.fetchUserData()
@@ -402,6 +405,17 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             R.id.addFamilyBtnTextView -> {
                 viewModel.isAddFamilyClicked = true
                 validateProfileSubmit()
+            }
+            R.id.inviteBtn -> {
+                val primaryMobileNumber: String? = viewModel.mainMobileNumber.value?.trim()
+                if ((!TextUtils.isEmpty(primaryMobileNumber)) && (primaryMobileNumber?.length!! > 0) && (primaryMobileNumber?.length!! <= 9)
+                )
+                {
+                    showAlertDialog(R.id.do_nothing, getString(R.string.mobile_number_error), getString(R.string.label_ok), "")
+                }else {
+                    viewModel.isAddFamilyClicked = true
+                    validateProfileSubmit()
+                }
             }
            /* R.id.saveBtnTextView -> {
                 viewModel.isAddFamilyClicked = false

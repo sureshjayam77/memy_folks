@@ -14,6 +14,7 @@ class DashboardRepository : BaseRepository() {
     var profileVerificationResObj = MutableLiveData<ProfileVerificationResObj>()
     var profileResForEdit = MutableLiveData<ProfileVerificationResObj>()
     var inviteCommonResData = MutableLiveData<CommonResponse>()
+    var shareResData = MutableLiveData<ShareResponse>()
     var updateFcmRes = MutableLiveData<CommonResponse>()
 
     fun fetchUserProfile(userId : Int?){
@@ -109,6 +110,21 @@ class DashboardRepository : BaseRepository() {
 
             override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
                 inviteCommonResData.value = CommonResponse(null,null,null)
+            }
+        })
+    }
+    fun fetchShareData(userId : String?){
+        val profileCall = retrofit.create(APIInterface::class.java).fetchShareData(BaseRepository.APP_KEY_VALUE,userId)
+        profileCall?.enqueue(object : Callback<ShareResponse?> {
+            override fun onResponse(
+                call: Call<ShareResponse?>?,
+                response: Response<ShareResponse?>?
+            ) {
+                shareResData.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<ShareResponse?>?, t: Throwable) {
+                shareResData.value = ShareResponse(null,null,null)
             }
         })
     }

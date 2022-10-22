@@ -9,6 +9,7 @@ import com.memy.retrofit.StoryRepository
 class DashboardViewModel : AppBaseViewModel() {
     var userData : MutableLiveData<ProfileData> = MutableLiveData()
     var isTreeView : MutableLiveData<Boolean> = MutableLiveData()
+    var actionTitle : MutableLiveData<String> = MutableLiveData()
     var storyListRes = MutableLiveData<StoryListRes>()
     var profileResForEdit = MutableLiveData<ProfileVerificationResObj>()
     var profileVerificationResObj = MutableLiveData<ProfileVerificationResObj>()
@@ -39,6 +40,7 @@ class DashboardViewModel : AppBaseViewModel() {
     var showAddRelationView : MutableLiveData<Boolean> = MutableLiveData()
     var memberRelationData = MutableLiveData<MemberRelationShipResData>()
     var showProgressBar : MutableLiveData<Boolean> = MutableLiveData()
+    var shareResData = MutableLiveData<ShareResponse>()
     var selectedMemberId : String? = ""
     var selectedMemberAction : Int? = 0
     var deleteAccountRes = MutableLiveData<CommonResponse>()
@@ -57,6 +59,7 @@ class DashboardViewModel : AppBaseViewModel() {
         deleteAccountRes = addFamilyRepository.deleteAccountRes
         profileSocialLinkUpdateRes = addFamilyRepository.profileSocialLinkUpdateRes
         inviteCommonResData = dashboardRepository.inviteCommonResData
+        shareResData = dashboardRepository.shareResData
         isTreeView.value = true
         showGuideListView.value = true
     }
@@ -107,5 +110,9 @@ class DashboardViewModel : AppBaseViewModel() {
 
     fun inviteFamilyMember(userId : String?){
         dashboardRepository.inviteFamilyMember(userId)
+    }
+
+    fun shareFamilyMember(userId : String?){
+        dashboardRepository.fetchShareData(userId)
     }
 }

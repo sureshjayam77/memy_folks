@@ -145,4 +145,7 @@ interface APIInterface {
     @GET("api/member_invite/")
     fun inviteFamilyMember( @Query("apikey") apikey: String,@Query("userid") user : String?) : Call<CommonResponse?>?
 
+    @GET("/api/membershare/")
+    fun fetchShareData( @Query("apikey") apikey: String,@Query("mid") user : String?) : Call<ShareResponse?>?
+
 }

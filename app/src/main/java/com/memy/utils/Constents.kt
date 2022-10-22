@@ -46,5 +46,6 @@ open class Constents {
 
         val INTENT_BUNDLE_GUIDE_ARGUMENT_TAG = "guide_argument_tag"
         val INTENT_BUNDLE_GUIDE_ARGUMENT_POS_TAG = "guide_argument_pos_tag"
+        val INTENT_BUNDLE_GUIDE_ARGUMENT_FROM_HELP_TAG = "guide_argument_from_help_tag"
     }
 }

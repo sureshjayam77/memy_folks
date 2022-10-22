@@ -25,6 +25,7 @@ import com.memy.R
 import com.memy.adapter.GuideFragmentAdapter
 import com.memy.adapter.RelationSelectionAdapter
 import com.memy.databinding.DashboardActivityBinding
+import com.memy.fragment.ShareFragment
 import com.memy.fragment.StoryVIewFragment
 import com.memy.fragment.TreeViewFragment
 import com.memy.listener.AdapterListener
@@ -123,8 +124,9 @@ class DashboardActivity : AppBaseActivity() {
                 transaction.addToBackStack(null)
                 transaction.commit()
                 viewModel.tabPos = 0
+                viewModel.actionTitle.value = getString(R.string.label_family_tree)
                 binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
-                binding.notificationImageView.setImageResource(R.drawable.ic_notification_unselect)
+                binding.shareTabImageView.setImageResource(R.drawable.ic_share_unselect)
 
                 binding.familyImageView.setImageResource(R.drawable.ic_mmf_select)
                 binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
@@ -141,7 +143,7 @@ class DashboardActivity : AppBaseActivity() {
                         R.color.footer_bar_txt_color
                     )
                 )
-                binding.notificationTextView.setTextColor(
+                binding.shareTabTextView.setTextColor(
                     ContextCompat.getColor(
                         this,
                         R.color.footer_bar_txt_color
@@ -158,9 +160,10 @@ class DashboardActivity : AppBaseActivity() {
                 transaction.addToBackStack(null)
                 transaction.commit()
                 viewModel.tabPos = 1
+                viewModel.actionTitle.value = getString(R.string.label_story)
 
                 binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
-                binding.notificationImageView.setImageResource(R.drawable.ic_notification_unselect)
+                binding.shareTabImageView.setImageResource(R.drawable.ic_share_unselect)
                 binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
                 binding.storyImageView.setImageResource(R.drawable.ic_story_select)
                 binding.storyTextView.setTextColor(ContextCompat.getColor(this, R.color.app_color))
@@ -176,7 +179,7 @@ class DashboardActivity : AppBaseActivity() {
                         R.color.footer_bar_txt_color
                     )
                 )
-                binding.notificationTextView.setTextColor(
+                binding.shareTabTextView.setTextColor(
                     ContextCompat.getColor(
                         this,
                         R.color.footer_bar_txt_color
@@ -323,7 +326,94 @@ class DashboardActivity : AppBaseActivity() {
         startActivityIntent(intent, false)
     }
 
-    fun navigateNotificationScreen(v: View) {
+    /*fun navigateNotificationScreen(v: View) {
+        viewModel.tabPos = 3
+        val manager: FragmentManager = supportFragmentManager
+        val transaction: FragmentTransaction = manager.beginTransaction()
+        val notiFragment = NotificationFragment()
+        val bundle = Bundle()
+        bundle.putBoolean(Constents.OWN_PROFILE_INTENT_TAG, true)
+        bundle.putInt(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel?.userData?.value?.mid!!)
+        notiFragment.arguments = bundle
+        transaction.replace(
+            R.id.fragmentContainer,
+            notiFragment,
+            NotificationFragment::javaClass.name
+        )
+        transaction.addToBackStack(null)
+        transaction.commit()
+        viewModel.actionTitle.value = getString(R.string.label_share)
+        binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
+        binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
+        binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
+        binding.shareTabImageView.setImageResource(R.drawable.ic_share_select)
+        binding.storyTextView.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.footer_bar_txt_color
+            )
+        )
+        binding.familyTextView.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.footer_bar_txt_color
+            )
+        )
+        binding.bubblesTextView.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.footer_bar_txt_color
+            )
+        )
+        binding.shareTabTextView.setTextColor(ContextCompat.getColor(this, R.color.app_color))
+
+    }*/
+
+
+    fun navigateShareScreen(v: View) {
+        viewModel.tabPos = 3
+        val manager: FragmentManager = supportFragmentManager
+        val transaction: FragmentTransaction = manager.beginTransaction()
+        val shareFragment = ShareFragment()
+        val bundle = Bundle()
+        bundle.putBoolean(Constents.OWN_PROFILE_INTENT_TAG, true)
+        bundle.putInt(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel?.userData?.value?.mid!!)
+        shareFragment.arguments = bundle
+        transaction.replace(
+            R.id.fragmentContainer,
+            shareFragment,
+            NotificationFragment::javaClass.name
+        )
+        transaction.addToBackStack(null)
+        transaction.commit()
+        viewModel.actionTitle.value = getString(R.string.label_share)
+        binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
+        binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
+        binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
+        binding.shareTabImageView.setImageResource(R.drawable.ic_share_select)
+        binding.storyTextView.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.footer_bar_txt_color
+            )
+        )
+        binding.familyTextView.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.footer_bar_txt_color
+            )
+        )
+        binding.bubblesTextView.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.footer_bar_txt_color
+            )
+        )
+        binding.shareTabTextView.setTextColor(ContextCompat.getColor(this, R.color.app_color))
+
+    }
+
+    /*fun navigateNotificationScreen(v: View) {
         val manager: FragmentManager = supportFragmentManager
         val transaction: FragmentTransaction = manager.beginTransaction()
         val notificationActivity = NotificationFragment()
@@ -362,7 +452,7 @@ class DashboardActivity : AppBaseActivity() {
         )
         binding.notificationTextView.setTextColor(ContextCompat.getColor(this, R.color.app_color))
 
-    }
+    }*/
 
     /* fun navigateBottomProfileScreen(v: View) {
          val intent = Intent(this, AddFamilyActivity::class.java)
@@ -523,10 +613,11 @@ class DashboardActivity : AppBaseActivity() {
         transaction.commit()
 
         viewModel.tabPos = 2
+        viewModel.actionTitle.value = getString(R.string.label_bubbles)
         binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_select)
         binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
         binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
-        binding.notificationImageView.setImageResource(R.drawable.ic_notification_unselect)
+        binding.shareTabImageView.setImageResource(R.drawable.ic_share_unselect)
         binding.storyTextView.setTextColor(
             ContextCompat.getColor(
                 this,
@@ -539,7 +630,7 @@ class DashboardActivity : AppBaseActivity() {
                 R.color.footer_bar_txt_color
             )
         )
-        binding.notificationTextView.setTextColor(
+        binding.shareTabTextView.setTextColor(
             ContextCompat.getColor(
                 this,
                 R.color.footer_bar_txt_color
@@ -608,7 +699,7 @@ class DashboardActivity : AppBaseActivity() {
                     true
                 ))
             ) {
-                navigateNotificationScreen(binding.menuIconImageView)
+                //navigateNotificationScreen(binding.menuIconImageView)
             }
         }
     }

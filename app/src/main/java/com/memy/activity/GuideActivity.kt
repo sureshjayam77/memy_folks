@@ -24,6 +24,16 @@ class GuideActivity : AppBaseActivity() {
         viewModel = ViewModelProvider(this).get(DashboardViewModel::class.java)
         binding.viewModel = viewModel
         guideSelectedPos = intent.getIntExtra(Constents.INTENT_BUNDLE_GUIDE_ARGUMENT_POS_TAG,0) ?: 0
+        val isFromHelp = intent.getBooleanExtra(Constents.INTENT_BUNDLE_GUIDE_ARGUMENT_FROM_HELP_TAG,false)
+        if(isFromHelp){
+            binding.backImageView.visibility = View.VISIBLE
+            binding.skipImageView.visibility = View.INVISIBLE
+            binding.skipTextView.visibility = View.INVISIBLE
+        }else{
+            binding.backImageView.visibility = View.INVISIBLE
+            binding.skipImageView.visibility = View.VISIBLE
+            binding.skipTextView.visibility = View.VISIBLE
+        }
         guideShowEnable()
     }
 
@@ -85,5 +95,9 @@ class GuideActivity : AppBaseActivity() {
         if(nextPos == 0){
             binding.prevImageView.alpha = 0.5f
         }
+    }
+
+    fun backPressed(v:View?){
+        onBackPressed()
     }
 }

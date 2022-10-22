@@ -33,6 +33,7 @@ class HelpAdapter(val ctx : Context,val list : List<HelpItemObj>) : RecyclerView
                 val tagValue : Int = (v.getTag()) as Int
                 val intent = Intent(ctx, GuideActivity::class.java)
                 intent.putExtra(Constents.INTENT_BUNDLE_GUIDE_ARGUMENT_POS_TAG,tagValue)
+                intent.putExtra(Constents.INTENT_BUNDLE_GUIDE_ARGUMENT_FROM_HELP_TAG,true)
                 ctx.startActivity(intent)
              }
         }
