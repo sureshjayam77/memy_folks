@@ -30,6 +30,9 @@ class HelpActivity : AppBaseActivity() {
         list.add(HelpItemObj("Add many generations. No limits",R.drawable.guide_3))
         list.add(HelpItemObj("Add many family members. No limits",R.drawable.guide_4))
         list.add(HelpItemObj("How to add story",R.drawable.guide_5))
+        list.add(HelpItemObj("How to edit profile",R.drawable.guide_6))
+        list.add(HelpItemObj("How to delete family member",R.drawable.guide_7))
+        list.add(HelpItemObj("Add siblings",R.drawable.guide_8))
         val helpAdapter = HelpAdapter(this,list)
         binding.recyclerView.adapter = helpAdapter
 

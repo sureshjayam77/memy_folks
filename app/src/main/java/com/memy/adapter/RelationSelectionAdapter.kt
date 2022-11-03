@@ -71,6 +71,9 @@ class RelationSelectionAdapter(ctx : Context,val list : List<RelationSelectionOb
                 1002 -> {
                     binding.iconImageView.setImageResource(R.drawable.ic_remove_popup)
                 }
+                1003 -> {
+                    binding.iconImageView.setImageResource(R.drawable.ic_admin_access)
+                }
             }
             val isAdded = obj.is_applicable
             binding.iconImageView.alpha = if(isAdded==false) (0.5f) else(1f)

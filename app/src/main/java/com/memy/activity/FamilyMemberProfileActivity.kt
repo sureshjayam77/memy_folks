@@ -35,7 +35,8 @@ import com.memy.fragment.ShareFragment
 class FamilyMemberProfileActivity : AppBaseActivity() {
     lateinit var binding: DashboardActivityBinding
     lateinit var viewModel: DashboardViewModel
-    private var isInitialCall = true;
+    private var isInitialCall = true
+    var accessList = emptyList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +64,9 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK )
                 startActivityIntent(intent, true)
             }
-
+        }else if (id == R.id.member_admin_access_id) {
+            binding.progressFrameLayout.visibility = View.VISIBLE
+            viewModel.updateAdminAccess()
         }
     }
 
@@ -135,6 +138,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         viewModel.profileResForEdit.observe(this, this::validateProfileForEditRes)
         viewModel.deleteAccountRes.observe(this,this::validateDeleteAccountRes)
         viewModel.inviteCommonResData.observe(this,this::validateInviteApiRes)
+        viewModel.updateAdminRes.observe(this, this::validateAdminAccessRes)
         viewModel.isTreeView.observe(this, { v ->
             fetchProfileData(true)
         })
@@ -506,6 +510,9 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
     private fun openAddRelationPopup(data : MutableList<RelationSelectionObj>?){
         data?.add(RelationSelectionObj("M","Edit Profile",0,1001,true))
         data?.add(RelationSelectionObj("M","Remove Profile",0,1002,true))
+        if(prefhelper?.fetchUserData()?.mid == viewModel.profileResForEdit.value?.data?.owner_id) {
+            data?.add(RelationSelectionObj("M", "Admin Access", 0, 1003, true))
+        }
         val adapter = RelationSelectionAdapter(this@FamilyMemberProfileActivity,data!!,object :
             AdapterListener {
             override fun updateAction(actionCode: Int, data: Any?) {
@@ -530,8 +537,8 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
 
                 val editProfileData = if(viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
                 if(editProfileData != null) {
-                    if ((viewModel.selectedMemberAction == 1001) || (viewModel.selectedMemberAction == 1002)) {
-                        if ((editProfileData.mid == prefhelper.fetchUserData()?.mid) || (editProfileData.owner_id == prefhelper.fetchUserData()?.mid)) {
+                    if ((viewModel.selectedMemberAction == 1001) || (viewModel.selectedMemberAction == 1002) || (viewModel.selectedMemberAction == 1003)) {
+                        if ((editProfileData.mid == prefhelper.fetchUserData()?.mid) || (editProfileData.owner_id == prefhelper.fetchUserData()?.mid) || ((prefhelper.fetchUserData()?.can_access?.contains(editProfileData.mid.toString()))?: false)) {
                             if (actionCode == 1001) {
                                 val intent = Intent(this@FamilyMemberProfileActivity, AddFamilyActivity::class.java)
                                 intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
@@ -548,7 +555,17 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                             } else if (actionCode == 1002) {
                                 binding.progressFrameLayout.visibility = View.VISIBLE
                                 viewModel.deleteAccount(editProfileData.mid)
+                            } else if (actionCode == 1003) {
+                                accessList = editProfileData.can_access ?: emptyList<String>()
+                                showAlertDialog(
+                                    R.id.member_admin_access_id,
+                                    if ((accessList == null) || (accessList.size == 0)) (String.format(getString(R.string.give_admin_access_msg),editProfileData?.firstname)) else (String.format(getString(R.string.remove_admin_access_msg),editProfileData?.firstname)),
+                                    getString(R.string.label_ok),
+                                    getString(R.string.label_cancel)
+                                )
                             }
+
+
                         } else {
                             showAlertDialog(
                                 R.id.do_nothing,
@@ -628,7 +645,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         binding.addMemberPopupRecyclerview.postDelayed(Runnable {
         val editProfileData =
             if (viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
-        if ((editProfileData != null) && ((prefhelper.fetchUserData()?.mid != viewModel.selectedMemberId?.toInt())) && (editProfileData.owner_id == prefhelper.fetchUserData()?.mid)) {
+        if ((editProfileData != null) && ((prefhelper.fetchUserData()?.mid != viewModel.selectedMemberId?.toInt())) && ((editProfileData.owner_id == prefhelper.fetchUserData()?.mid) || ((prefhelper.fetchUserData()?.can_access?.contains(editProfileData.mid.toString()))?: false))) {
             binding.inviteBtn.visibility = View.VISIBLE
                 binding.inviteBtn.text = String.format(getString(R.string.label_invite_with_fname),viewModel.profileResForEdit.value?.data?.firstname)
             }else{
@@ -725,6 +742,17 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                     )
                 }
             }
+        }
+    }
+    private fun validateAdminAccessRes(res: CommonResponse) {
+        binding.progressFrameLayout.visibility = View.GONE
+        if ((res != null) && (res.statusCode == 200) && (res?.data != null)) {
+            showAlertDialog(
+                R.id.do_nothing,
+                getString(R.string.success_admin_access_msg),
+                getString(R.string.label_ok),
+                ""
+            )
         }
     }
 

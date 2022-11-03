@@ -103,5 +103,7 @@ data class ProfileData(
 	var native: String? = null,
 	@Json(name="lineage")
 	var lineage: String? = null,
+	@Json(name="can_access")
+	var can_access: List<String>? = null
 )
 

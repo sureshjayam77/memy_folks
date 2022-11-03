@@ -53,6 +53,9 @@ class GuideActivity : AppBaseActivity() {
         guideImageList.add(R.drawable.guide_3)
         guideImageList.add(R.drawable.guide_4)
         guideImageList.add(R.drawable.guide_5)
+        guideImageList.add(R.drawable.guide_6)
+        guideImageList.add(R.drawable.guide_7)
+        guideImageList.add(R.drawable.guide_8)
         val adapter = GuideFragmentAdapter(supportFragmentManager,lifecycle, guideImageList)
         binding.guideViewPager.adapter = adapter
         TabLayoutMediator(binding.tabLayout, binding.guideViewPager) { tab, position ->

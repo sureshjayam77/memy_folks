@@ -46,6 +46,7 @@ class DashboardViewModel : AppBaseViewModel() {
     var deleteAccountRes = MutableLiveData<CommonResponse>()
     var inviteCommonResData = MutableLiveData<CommonResponse>()
     var tabPos = 0 //Tree 0, story = 1,bubble = 2
+    var updateAdminRes = MutableLiveData<CommonResponse>()
 
     init {
         dashboardRepository = DashboardRepository()
@@ -60,6 +61,7 @@ class DashboardViewModel : AppBaseViewModel() {
         profileSocialLinkUpdateRes = addFamilyRepository.profileSocialLinkUpdateRes
         inviteCommonResData = dashboardRepository.inviteCommonResData
         shareResData = dashboardRepository.shareResData
+        updateAdminRes = dashboardRepository.updateAdminRes
         isTreeView.value = true
         showGuideListView.value = true
     }
@@ -114,5 +116,9 @@ class DashboardViewModel : AppBaseViewModel() {
 
     fun shareFamilyMember(userId : String?){
         dashboardRepository.fetchShareData(userId)
+    }
+
+    fun updateAdminAccess(){
+        dashboardRepository.updateShareAccess(userData?.value?.mid,profileResForEdit?.value?.data?.mid)
     }
 }

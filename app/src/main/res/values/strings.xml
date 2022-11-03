@@ -7,6 +7,9 @@
     <string name="close_label">Close</string>
     <string name="no_internet">No/Poor internet connection</string>
     <string name="modify_profile_error">You don\'t have access to modify/edit the profile</string>
+    <string name="give_admin_access_msg">Would you like to provide admin access to %s</string>
+    <string name="remove_admin_access_msg">Would you like to remove admin access to %s</string>
+    <string name="success_admin_access_msg">Admin access updated successfully</string>
 
     //Sign in
     <string name="login_search">Search</string>

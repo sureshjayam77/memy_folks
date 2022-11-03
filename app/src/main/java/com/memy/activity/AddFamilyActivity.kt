@@ -170,6 +170,12 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             viewModel.inviteSendSMS.value = false
             viewModel.canShowInviteCheckBox.value = true
         }
+
+        if(viewModel.isForNewOwnProfileUpdate.value == true){
+            binding.logoutImageView.visibility = View.VISIBLE
+        }else{
+            binding.logoutImageView.visibility = View.GONE
+        }
         if(viewModel.isForInviteFamilyMember.value == true){
             viewModel.allowEditMobileNumber.value = true
             viewModel.inviteSendSMS.value = true
@@ -233,6 +239,14 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         } else {
           //  viewModel.fetchRelationShip()
         }
+    }
+
+    fun logoutCall(v: View?) {
+        prefhelper.clearPref()
+        val intent = Intent(this@AddFamilyActivity, SignInActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivityIntent(intent, true)
     }
 
     private fun openContactPicker(){
