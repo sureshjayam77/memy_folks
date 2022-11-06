@@ -104,6 +104,11 @@ data class ProfileData(
 	@Json(name="lineage")
 	var lineage: String? = null,
 	@Json(name="can_access")
-	var can_access: List<String>? = null
+	var can_access: List<String>? = null,
+	@Json(name="is_super_admin")
+	var is_super_admin: Boolean? = null,
+	@Json(name="is_admin")
+	var is_admin: Boolean? = null
+
 )
 

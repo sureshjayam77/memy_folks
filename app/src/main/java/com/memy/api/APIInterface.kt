@@ -148,8 +148,11 @@ interface APIInterface {
     @GET("api/membershare/")
     fun fetchShareData( @Query("apikey") apikey: String,@Query("mid") user : String?) : Call<ShareResponse?>?
 
-    @PUT("api/v1/member_access/")
+    @PUT("api/v1/member_admin_access/")
     fun updateAdminAccess(@Query("apikey") apikey: String,@Query("mid1") mid1: Int?,@Query("mid2") mid2: Int?) : Call<CommonResponse?>?
+
+    @DELETE("api/v1/member_admin_access/")
+    fun removeAdminAccess(@Query("apikey") apikey: String,@Query("mid1") mid1: Int?,@Query("mid2") mid2: Int?) : Call<CommonResponse?>?
 
 
 }

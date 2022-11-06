@@ -36,7 +36,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
     lateinit var binding: DashboardActivityBinding
     lateinit var viewModel: DashboardViewModel
     private var isInitialCall = true
-    var accessList = emptyList<String>()
+    var isAdmin = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,22 +51,22 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         dismissAlertDialog()
         if (id == R.id.storage_camera_permission) {
             navigatePermissionSettingsPage()
-        }else if(id == R.id.delete_account_res_id){
-            if(viewModel.selectedMemberId?.toInt() == prefhelper.fetchUserData()?.mid){
+        } else if (id == R.id.delete_account_res_id) {
+            if (viewModel.selectedMemberId?.toInt() == prefhelper.fetchUserData()?.mid) {
                 prefhelper.clearPref()
                 val intent = Intent(this, SignInActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK )
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK )
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivityIntent(intent, true)
-            }else{
+            } else {
                 val intent = Intent(this, DashboardActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK )
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK )
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivityIntent(intent, true)
             }
-        }else if (id == R.id.member_admin_access_id) {
+        } else if (id == R.id.member_admin_access_id) {
             binding.progressFrameLayout.visibility = View.VISIBLE
-            viewModel.updateAdminAccess()
+            viewModel.updateAdminAccess(isAdmin,prefhelper?.fetchUserData()?.mid ?: -1)
         }
     }
 
@@ -76,7 +76,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        if(viewModel.tabPos == 0){
+        if (viewModel.tabPos == 0) {
             isInitialCall = true
         }
 
@@ -109,7 +109,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         viewModel.showProfile = intent?.getBooleanExtra(Constents.SHOW_PROFILE_INTENT_TAG, false);
         if (viewModel.showProfile == true) {
             switchProfile(null)
-        }else{
+        } else {
             switchTree(null)
         }
     }
@@ -134,10 +134,10 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
 
     private fun setupObservers() {
         viewModel.profileVerificationResObj.observe(this, this::validateProfileRes)
-        viewModel.memberRelationData.observe(this,this::validateMemberRelationRes)
+        viewModel.memberRelationData.observe(this, this::validateMemberRelationRes)
         viewModel.profileResForEdit.observe(this, this::validateProfileForEditRes)
-        viewModel.deleteAccountRes.observe(this,this::validateDeleteAccountRes)
-        viewModel.inviteCommonResData.observe(this,this::validateInviteApiRes)
+        viewModel.deleteAccountRes.observe(this, this::validateDeleteAccountRes)
+        viewModel.inviteCommonResData.observe(this, this::validateInviteApiRes)
         viewModel.updateAdminRes.observe(this, this::validateAdminAccessRes)
         viewModel.isTreeView.observe(this, { v ->
             fetchProfileData(true)
@@ -149,80 +149,101 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         if (res != null) {
             if ((res.statusCode == 200) && (res.data != null)) {
                 viewModel.userData.value = res.data
-                binding.callTextView.visibility = if ((viewModel.userData.value?.mid != prefhelper.fetchUserData()?.mid) && (!TextUtils.isEmpty(
-                        viewModel.userData.value?.mobile
-                    ))
-                ) (View.VISIBLE) else (View.GONE)
+                binding.callTextView.visibility =
+                    if ((viewModel.userData.value?.mid != prefhelper.fetchUserData()?.mid) && (!TextUtils.isEmpty(
+                            viewModel.userData.value?.mobile
+                        ))
+                    ) (View.VISIBLE) else (View.GONE)
 //                val f: Fragment? = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
 //                if((f== null) || ((!( f is FamilyWallFragment)) && (!( f is NotificationFragment)))){
-                       if(isInitialCall) {
-                           if (viewModel.isTreeView.value == true) {
-                               val manager: FragmentManager = supportFragmentManager
-                               val transaction: FragmentTransaction = manager.beginTransaction()
-                               transaction.replace(
-                                   R.id.fragmentContainer,
-                                   TreeViewFragment(),
-                                   TreeViewFragment::javaClass.name
-                               )
-                               transaction.addToBackStack(null)
-                               transaction.commit()
-                               viewModel.tabPos = 0
-                               viewModel.actionTitle.value = getString(R.string.label_family_tree)
-                               binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
-                               binding.shareTabImageView.setImageResource(R.drawable.ic_notification_unselect)
-                               binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
-                               binding.shareTabTextView.setTextColor(ContextCompat.getColor(this, R.color.footer_bar_txt_color))
+                if (isInitialCall) {
+                    if (viewModel.isTreeView.value == true) {
+                        val manager: FragmentManager = supportFragmentManager
+                        val transaction: FragmentTransaction = manager.beginTransaction()
+                        transaction.replace(
+                            R.id.fragmentContainer,
+                            TreeViewFragment(),
+                            TreeViewFragment::javaClass.name
+                        )
+                        transaction.addToBackStack(null)
+                        transaction.commit()
+                        viewModel.tabPos = 0
+                        viewModel.actionTitle.value = getString(R.string.label_family_tree)
+                        binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
+                        binding.shareTabImageView.setImageResource(R.drawable.ic_notification_unselect)
+                        binding.bubblesTextView.setTextColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.footer_bar_txt_color
+                            )
+                        )
+                        binding.shareTabTextView.setTextColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.footer_bar_txt_color
+                            )
+                        )
 
-                               binding.familyImageView.setImageResource(R.drawable.ic_mmf_select)
-                               binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
-                               binding.storyTextView.setTextColor(
-                                   ContextCompat.getColor(
-                                       this,
-                                       R.color.footer_bar_txt_color
-                                   )
-                               )
-                               binding.familyTextView.setTextColor(
-                                   ContextCompat.getColor(
-                                       this,
-                                       R.color.app_color
-                                   )
-                               )
-                           } else {
-                               val manager: FragmentManager = supportFragmentManager
-                               val transaction: FragmentTransaction = manager.beginTransaction()
-                               transaction.replace(
-                                   R.id.fragmentContainer,
-                                   StoryVIewFragment(),
-                                   StoryVIewFragment::javaClass.name
-                               )
-                               transaction.addToBackStack(null)
-                               transaction.commit()
-                               viewModel.tabPos = 1
-                               viewModel.actionTitle.value = getString(R.string.label_story)
-                               binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
-                               binding.shareTabImageView.setImageResource(R.drawable.ic_share_unselect)
-                               binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
-                               binding.shareTabTextView.setTextColor(ContextCompat.getColor(this, R.color.footer_bar_txt_color))
+                        binding.familyImageView.setImageResource(R.drawable.ic_mmf_select)
+                        binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
+                        binding.storyTextView.setTextColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.footer_bar_txt_color
+                            )
+                        )
+                        binding.familyTextView.setTextColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.app_color
+                            )
+                        )
+                    } else {
+                        val manager: FragmentManager = supportFragmentManager
+                        val transaction: FragmentTransaction = manager.beginTransaction()
+                        transaction.replace(
+                            R.id.fragmentContainer,
+                            StoryVIewFragment(),
+                            StoryVIewFragment::javaClass.name
+                        )
+                        transaction.addToBackStack(null)
+                        transaction.commit()
+                        viewModel.tabPos = 1
+                        viewModel.actionTitle.value = getString(R.string.label_story)
+                        binding.bubblesImageView.setImageResource(R.drawable.ic_bubbles_unselect)
+                        binding.shareTabImageView.setImageResource(R.drawable.ic_share_unselect)
+                        binding.bubblesTextView.setTextColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.footer_bar_txt_color
+                            )
+                        )
+                        binding.shareTabTextView.setTextColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.footer_bar_txt_color
+                            )
+                        )
 
 
-                               binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
-                               binding.storyImageView.setImageResource(R.drawable.ic_story_select)
-                               binding.storyTextView.setTextColor(
-                                   ContextCompat.getColor(
-                                       this,
-                                       R.color.app_color
-                                   )
-                               )
-                               binding.familyTextView.setTextColor(
-                                   ContextCompat.getColor(
-                                       this,
-                                       R.color.footer_bar_txt_color
-                                   )
-                               )
-                           }
-                       }
+                        binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
+                        binding.storyImageView.setImageResource(R.drawable.ic_story_select)
+                        binding.storyTextView.setTextColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.app_color
+                            )
+                        )
+                        binding.familyTextView.setTextColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.footer_bar_txt_color
+                            )
+                        )
+                    }
+                }
                 isInitialCall = false
-                   // }
+                // }
                 loadProfileImage(viewModel.userData.value?.photo)
             } else {
                 var message = ""
@@ -232,7 +253,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                 if (TextUtils.isEmpty(message)) {
                     message = getString(R.string.something_went_wrong)
                 }
-              //  showAlertDialog(R.id.do_nothing, message, getString(R.string.close_label), "")
+                //  showAlertDialog(R.id.do_nothing, message, getString(R.string.close_label), "")
             }
         }
     }
@@ -254,10 +275,15 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         viewModel.aboutContent.value = viewModel.userData.value?.about_me
         updateSocialMediaIcons()
     }
-    fun openFamilyWall(v:View){
+
+    fun openFamilyWall(v: View) {
         val manager: FragmentManager = supportFragmentManager
         val transaction: FragmentTransaction = manager.beginTransaction()
-        transaction.replace(R.id.fragmentContainer, FamilyWallFragment(), FamilyWallFragment::javaClass.name)
+        transaction.replace(
+            R.id.fragmentContainer,
+            FamilyWallFragment(),
+            FamilyWallFragment::javaClass.name
+        )
         transaction.addToBackStack(null)
         transaction.commit()
         viewModel.tabPos = 2
@@ -266,12 +292,28 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
         binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
         binding.shareTabImageView.setImageResource(R.drawable.ic_share_unselect)
-        binding.storyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
-        binding.familyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
-        binding.shareTabTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
-        binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.app_color))
+        binding.storyTextView.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.footer_bar_txt_color
+            )
+        )
+        binding.familyTextView.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.footer_bar_txt_color
+            )
+        )
+        binding.shareTabTextView.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.footer_bar_txt_color
+            )
+        )
+        binding.bubblesTextView.setTextColor(ContextCompat.getColor(this, R.color.app_color))
 
     }
+
     fun navigateAddFamily(v: View) {
         val intent = Intent(this, AddFamilyActivity::class.java)
         intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, false)
@@ -281,14 +323,17 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
     }
 
     fun navigateProfileScreen(v: View) {
-        if ((viewModel?.userData?.value?.mid == prefhelper.fetchUserData()?.mid) || (viewModel?.userData?.value?.owner_id == prefhelper.fetchUserData()?.mid)) {
+        if ((viewModel?.userData?.value?.mid == prefhelper.fetchUserData()?.mid) || (viewModel?.userData?.value?.owner_id == prefhelper.fetchUserData()?.mid) || (prefhelper?.fetchUserData()?.is_admin == true) || (prefhelper?.fetchUserData()?.is_super_admin == true)) {
             val intent = Intent(this, AddFamilyActivity::class.java)
             intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
-            intent.putExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG,true)
+            intent.putExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG, true)
             intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, viewModel?.userData?.value?.mid)
-            intent.putExtra(Constents.FAMILY_MEMBER_FNAME_INTENT_TAG, viewModel?.userData?.value?.firstname)
+            intent.putExtra(
+                Constents.FAMILY_MEMBER_FNAME_INTENT_TAG,
+                viewModel?.userData?.value?.firstname
+            )
             startActivityIntent(intent, false)
-        }else{
+        } else {
             navigateBottomProfileScreen()
         }
     }
@@ -355,7 +400,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
             }
         }
 
-    fun switchTree(v:View?){
+    fun switchTree(v: View?) {
         isInitialCall = true
         viewModel.isTreeSwitched = true
         val isTreeView = viewModel.isTreeView.value
@@ -367,7 +412,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         viewModel.isTreeView.value = true
     }
 
-    fun switchProfile(v:View?){
+    fun switchProfile(v: View?) {
         isInitialCall = true
         viewModel.isTreeSwitched = false
         /*val isTreeView = viewModel.isTreeView.value
@@ -394,77 +439,78 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
     }
 
 
-    fun onFbClick(v:View){
-        if((!TextUtils.isEmpty(viewModel.facebookLink.value)) && (URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))){
+    fun onFbClick(v: View) {
+        if ((!TextUtils.isEmpty(viewModel.facebookLink.value)) && (URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))) {
             openSocialMediaIntent(viewModel.facebookLink.value)
         }
     }
 
-    fun onInstaClick(v:View){
-        if((!TextUtils.isEmpty(viewModel.instagramLink.value)) && (URLUtil.isValidUrl(viewModel.instagramLink.value?.trim()))){
+    fun onInstaClick(v: View) {
+        if ((!TextUtils.isEmpty(viewModel.instagramLink.value)) && (URLUtil.isValidUrl(viewModel.instagramLink.value?.trim()))) {
             openSocialMediaIntent(viewModel.instagramLink.value)
         }
     }
 
-    fun onTwitterClick(v:View){
-        if((!TextUtils.isEmpty(viewModel.twitterLink.value)) && (URLUtil.isValidUrl(viewModel.twitterLink.value?.trim()))){
+    fun onTwitterClick(v: View) {
+        if ((!TextUtils.isEmpty(viewModel.twitterLink.value)) && (URLUtil.isValidUrl(viewModel.twitterLink.value?.trim()))) {
             openSocialMediaIntent(viewModel.twitterLink.value)
         }
     }
 
-    fun onLinkedInClick(v:View){
-        if((!TextUtils.isEmpty(viewModel.linkedInLink.value)) && (URLUtil.isValidUrl(viewModel.linkedInLink.value?.trim()))){
+    fun onLinkedInClick(v: View) {
+        if ((!TextUtils.isEmpty(viewModel.linkedInLink.value)) && (URLUtil.isValidUrl(viewModel.linkedInLink.value?.trim()))) {
             openSocialMediaIntent(viewModel.linkedInLink.value)
         }
     }
 
-    fun openSocialMediaIntent(strUrl : String?){
-        try{
+    fun openSocialMediaIntent(strUrl: String?) {
+        try {
             val browserIntent = Intent(Intent.ACTION_VIEW)
             browserIntent.setData(Uri.parse(strUrl))
             startActivity(browserIntent)
-        }catch(e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    fun updateSocialMediaIcons(){
-        if((!TextUtils.isEmpty(viewModel.instagramLink.value)) && (URLUtil.isValidUrl(viewModel.instagramLink.value?.trim()))){
+    fun updateSocialMediaIcons() {
+        if ((!TextUtils.isEmpty(viewModel.instagramLink.value)) && (URLUtil.isValidUrl(viewModel.instagramLink.value?.trim()))) {
             binding.instagramIcon.setImageResource(R.drawable.ic_instagram)
-        }else{
+        } else {
             binding.instagramIcon.setImageResource(R.drawable.ic_instagram_unselect)
         }
-        if((!TextUtils.isEmpty(viewModel.facebookLink.value)) && (URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))){
+        if ((!TextUtils.isEmpty(viewModel.facebookLink.value)) && (URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))) {
             binding.facebookIcon.setImageResource(R.drawable.ic_facebook)
-        }else{
+        } else {
             binding.facebookIcon.setImageResource(R.drawable.ic_facebook_unselect)
         }
-        if((!TextUtils.isEmpty(viewModel.twitterLink.value)) && (URLUtil.isValidUrl(viewModel.twitterLink.value?.trim()))){
+        if ((!TextUtils.isEmpty(viewModel.twitterLink.value)) && (URLUtil.isValidUrl(viewModel.twitterLink.value?.trim()))) {
             binding.twitterIcon.setImageResource(R.drawable.ic_twitter)
-        }else{
+        } else {
             binding.twitterIcon.setImageResource(R.drawable.ic_twitter_unselect)
         }
-        if((!TextUtils.isEmpty(viewModel.linkedInLink.value)) && (URLUtil.isValidUrl(viewModel.linkedInLink.value?.trim()))){
+        if ((!TextUtils.isEmpty(viewModel.linkedInLink.value)) && (URLUtil.isValidUrl(viewModel.linkedInLink.value?.trim()))) {
             binding.linkedInIcon.setImageResource(R.drawable.ic_linkedin)
-        }else{
+        } else {
             binding.linkedInIcon.setImageResource(R.drawable.ic_linkedin_unselect)
         }
     }
-
-
-
 
 
     fun navigateShareScreen(v: View) {
 
         val manager: FragmentManager = supportFragmentManager
         val transaction: FragmentTransaction = manager.beginTransaction()
-        val notificationActivity=ShareFragment()
-        val bundle=Bundle()
+        val notificationActivity = ShareFragment()
+        val bundle = Bundle()
         bundle.putBoolean(Constents.OWN_PROFILE_INTENT_TAG, true)
         bundle.putInt(Constents.FAMILY_MEMBER_ID_INTENT_TAG, prefhelper.fetchUserData()?.mid!!)
-        notificationActivity.arguments=bundle
-        transaction.replace(R.id.fragmentContainer, notificationActivity, NotificationFragment::javaClass.name)
+        notificationActivity.arguments = bundle
+        transaction.replace(
+            R.id.fragmentContainer,
+            notificationActivity,
+            NotificationFragment::javaClass.name
+        )
         transaction.addToBackStack(null)
         transaction.commit()
         viewModel.actionTitle.value = getString(R.string.label_share)
@@ -472,11 +518,27 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         binding.familyImageView.setImageResource(R.drawable.ic_mmf_unselect)
         binding.storyImageView.setImageResource(R.drawable.ic_story_unselect)
         binding.shareTabImageView.setImageResource(R.drawable.ic_share_select)
-        binding.storyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
-        binding.familyTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
-        binding.bubblesTextView.setTextColor(ContextCompat.getColor(this,R.color.footer_bar_txt_color))
-        binding.shareTabTextView.setTextColor(ContextCompat.getColor(this,R.color.app_color))
+        binding.storyTextView.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.footer_bar_txt_color
+            )
+        )
+        binding.familyTextView.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.footer_bar_txt_color
+            )
+        )
+        binding.bubblesTextView.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.footer_bar_txt_color
+            )
+        )
+        binding.shareTabTextView.setTextColor(ContextCompat.getColor(this, R.color.app_color))
     }
+
     fun navigateBottomProfileScreen() {
         val intent = Intent(this, AddFamilyActivity::class.java)
         intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
@@ -485,7 +547,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
     }
 
 
-    fun fetchMemberRelationShipData(userId : String?){
+    fun fetchMemberRelationShipData(userId: String?) {
         viewModel.fetchMemberRelationShip(userId)
         GlobalScope.launch(Dispatchers.Main) {
             viewModel.showProgressBar.value = true
@@ -493,12 +555,12 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         }
     }
 
-    fun closeMemberRelationPopup(v : View){
+    fun closeMemberRelationPopup(v: View) {
         viewModel.showAddRelationView.value = false
     }
 
 
-    private fun validateMemberRelationRes(res : MemberRelationShipResData){
+    private fun validateMemberRelationRes(res: MemberRelationShipResData) {
         binding.progressFrameLayout.visibility = View.GONE
         if (res != null) {
             if ((res.statusCode == 200) && (res.data != null)) {
@@ -507,13 +569,21 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         }
     }
 
-    private fun openAddRelationPopup(data : MutableList<RelationSelectionObj>?){
-        data?.add(RelationSelectionObj("M","Edit Profile",0,1001,true))
-        data?.add(RelationSelectionObj("M","Remove Profile",0,1002,true))
-        if(prefhelper?.fetchUserData()?.mid == viewModel.profileResForEdit.value?.data?.owner_id) {
+    private fun openAddRelationPopup(data: MutableList<RelationSelectionObj>?) {
+        data?.add(RelationSelectionObj("M", "Edit Profile", 0, 1001, true))
+        data?.add(RelationSelectionObj("M", "Remove Profile", 0, 1002, true))
+        /*if(((prefhelper?.fetchUserData()?.mid == viewModel.profileResForEdit.value?.data?.owner_id) || (prefhelper?.fetchUserData()?.is_admin == true) || (prefhelper?.fetchUserData()?.is_super_admin == true)) && (!TextUtils.isEmpty(viewModel.profileResForEdit.value?.data?.mobile))) {
             data?.add(RelationSelectionObj("M", "Admin Access", 0, 1003, true))
+        }*/
+        if (((prefhelper?.fetchUserData()?.is_admin == true) || (prefhelper?.fetchUserData()?.is_super_admin == true)) && ((!TextUtils.isEmpty(
+                viewModel.profileResForEdit.value?.data?.mobile
+            )) && (viewModel.profileResForEdit.value?.data?.is_admin == false) && (viewModel.profileResForEdit.value?.data?.is_super_admin == false))
+        ) {
+            data?.add(RelationSelectionObj("M", "Provide Admin Access", 0, 1003, true))
+        } else if (((prefhelper?.fetchUserData()?.is_super_admin == true)) && ((viewModel.profileResForEdit.value?.data?.is_admin == true))) {
+            data?.add(RelationSelectionObj("M", "Remove Admin Access", 0, 1003, true))
         }
-        val adapter = RelationSelectionAdapter(this@FamilyMemberProfileActivity,data!!,object :
+        val adapter = RelationSelectionAdapter(this@FamilyMemberProfileActivity, data!!, object :
             AdapterListener {
             override fun updateAction(actionCode: Int, data: Any?) {
                 val item = data as RelationSelectionObj
@@ -535,12 +605,17 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                     startActivityIntent(intent, false)
                 }*/
 
-                val editProfileData = if(viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
-                if(editProfileData != null) {
+                val editProfileData =
+                    if (viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
+                if (editProfileData != null) {
                     if ((viewModel.selectedMemberAction == 1001) || (viewModel.selectedMemberAction == 1002) || (viewModel.selectedMemberAction == 1003)) {
-                        if ((editProfileData.mid == prefhelper.fetchUserData()?.mid) || (editProfileData.owner_id == prefhelper.fetchUserData()?.mid) || ((prefhelper.fetchUserData()?.can_access?.contains(editProfileData.mid.toString()))?: false)) {
-                            if (actionCode == 1001) {
-                                val intent = Intent(this@FamilyMemberProfileActivity, AddFamilyActivity::class.java)
+                        //if ((editProfileData.mid == prefhelper.fetchUserData()?.mid) || (editProfileData.owner_id == prefhelper.fetchUserData()?.mid) || ((prefhelper.fetchUserData()?.can_access?.contains(editProfileData.mid.toString()))?: false)) {
+                        if (actionCode == 1001) {
+                            if ((editProfileData.mid == prefhelper.fetchUserData()?.mid) || (editProfileData.owner_id == prefhelper.fetchUserData()?.mid) || (prefhelper?.fetchUserData()?.is_admin == true) || (prefhelper?.fetchUserData()?.is_super_admin == true)) {
+                                val intent = Intent(
+                                    this@FamilyMemberProfileActivity,
+                                    AddFamilyActivity::class.java
+                                )
                                 intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
                                 intent.putExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG, true)
                                 intent.putExtra(
@@ -552,28 +627,51 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                                     editProfileData.firstname
                                 )
                                 startActivityIntent(intent, false)
-                            } else if (actionCode == 1002) {
-                                binding.progressFrameLayout.visibility = View.VISIBLE
-                                viewModel.deleteAccount(editProfileData.mid)
-                            } else if (actionCode == 1003) {
-                                accessList = editProfileData.can_access ?: emptyList<String>()
+                            } else {
                                 showAlertDialog(
-                                    R.id.member_admin_access_id,
-                                    if ((accessList == null) || (accessList.size == 0)) (String.format(getString(R.string.give_admin_access_msg),editProfileData?.firstname)) else (String.format(getString(R.string.remove_admin_access_msg),editProfileData?.firstname)),
-                                    getString(R.string.label_ok),
-                                    getString(R.string.label_cancel)
+                                    R.id.do_nothing,
+                                    getString(R.string.modify_profile_error),
+                                    getString(R.string.close_label),
+                                    ""
                                 )
                             }
+                        } else if (actionCode == 1002) {
+                            if ((editProfileData.mid == prefhelper.fetchUserData()?.mid) || (editProfileData.owner_id == prefhelper.fetchUserData()?.mid) || (prefhelper?.fetchUserData()?.is_admin == true) || (prefhelper?.fetchUserData()?.is_super_admin == true)) {
+                                binding.progressFrameLayout.visibility = View.VISIBLE
+                                viewModel.deleteAccount(editProfileData.mid)
+                            } else {
+                                showAlertDialog(
+                                    R.id.do_nothing,
+                                    getString(R.string.modify_profile_error),
+                                    getString(R.string.close_label),
+                                    ""
+                                )
+                            }
+                        } else if (actionCode == 1003) {
+                            isAdmin = editProfileData.is_admin ?: false
+                            showAlertDialog(
+                                R.id.member_admin_access_id,
+                                if (isAdmin == false) (String.format(
+                                    getString(R.string.give_admin_access_msg),
+                                    editProfileData?.firstname
+                                )) else (String.format(
+                                    getString(R.string.remove_admin_access_msg),
+                                    editProfileData?.firstname
+                                )),
+                                getString(R.string.label_ok),
+                                getString(R.string.label_cancel)
+                            )
+                        }
 
 
-                        } else {
+                        /*} else {
                             showAlertDialog(
                                 R.id.do_nothing,
                                 getString(R.string.modify_profile_error),
                                 getString(R.string.close_label),
                                 ""
                             )
-                        }
+                        }*/
                     } else {
                         val intent =
                             Intent(this@FamilyMemberProfileActivity, AddFamilyActivity::class.java)
@@ -643,19 +741,26 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
 
 
         binding.addMemberPopupRecyclerview.postDelayed(Runnable {
-        val editProfileData =
-            if (viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
-        if ((editProfileData != null) && ((prefhelper.fetchUserData()?.mid != viewModel.selectedMemberId?.toInt())) && ((editProfileData.owner_id == prefhelper.fetchUserData()?.mid) || ((prefhelper.fetchUserData()?.can_access?.contains(editProfileData.mid.toString()))?: false))) {
-            binding.inviteBtn.visibility = View.VISIBLE
-                binding.inviteBtn.text = String.format(getString(R.string.label_invite_with_fname),viewModel.profileResForEdit.value?.data?.firstname)
-            }else{
+            val editProfileData =
+                if (viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
+            if ((editProfileData != null) && ((prefhelper.fetchUserData()?.mid != viewModel.selectedMemberId?.toInt())) && ((editProfileData.owner_id == prefhelper.fetchUserData()?.mid) || ((prefhelper.fetchUserData()?.can_access?.contains(
+                    editProfileData.mid.toString()
+                )) ?: false))
+            ) {
+                binding.inviteBtn.visibility = View.VISIBLE
+                binding.inviteBtn.text = String.format(
+                    getString(R.string.label_invite_with_fname),
+                    viewModel.profileResForEdit.value?.data?.firstname
+                )
+            } else {
                 binding.inviteBtn.visibility = View.GONE
             }
 
             viewModel.showAddRelationView.value = true
-            binding.chooseActionTextView.text = viewModel.profileResForEdit.value?.data?.firstname+" - "+getString(R.string.label_choose_action)
+            binding.chooseActionTextView.text =
+                viewModel.profileResForEdit.value?.data?.firstname + " - " + getString(R.string.label_choose_action)
             binding.relationPopupLayout.visibility = View.VISIBLE
-        },1000)
+        }, 1000)
     }
 
     private fun validateProfileForEditRes(res: ProfileVerificationResObj) {
@@ -691,7 +796,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         }
     }
 
-    private fun validateDeleteAccountRes(res: CommonResponse){
+    private fun validateDeleteAccountRes(res: CommonResponse) {
         binding.progressFrameLayout.visibility = View.GONE
         if (res != null) {
             if (res.statusCode == 200) {
@@ -711,7 +816,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         }
     }
 
-    fun fetchTempProfileData(userId: String?){
+    fun fetchTempProfileData(userId: String?) {
         GlobalScope.launch(Dispatchers.Main) {
             binding.progressFrameLayout.visibility = View.VISIBLE
         }
@@ -729,7 +834,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         showAlertDialog(R.id.do_nothing, message, getString(R.string.close_label), "")
     }
 
-    private fun validateInviteApiRes(res : CommonResponse){
+    private fun validateInviteApiRes(res: CommonResponse) {
         binding.progressFrameLayout.visibility = View.GONE
         if (res != null) {
             if (res.statusCode == 200) {
@@ -744,6 +849,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
             }
         }
     }
+
     private fun validateAdminAccessRes(res: CommonResponse) {
         binding.progressFrameLayout.visibility = View.GONE
         if ((res != null) && (res.statusCode == 200) && (res?.data != null)) {

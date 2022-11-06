@@ -118,7 +118,17 @@ class DashboardViewModel : AppBaseViewModel() {
         dashboardRepository.fetchShareData(userId)
     }
 
-    fun updateAdminAccess(){
-        dashboardRepository.updateShareAccess(userData?.value?.mid,profileResForEdit?.value?.data?.mid)
+    fun updateAdminAccess(isRemoveAccess : Boolean,adminId : Int){
+        if(isRemoveAccess) {
+            dashboardRepository.removeShareAccess(
+                adminId,
+                profileResForEdit?.value?.data?.mid
+            )
+        }else{
+            dashboardRepository.giveShareAccess(
+                adminId,
+                profileResForEdit?.value?.data?.mid
+            )
+        }
     }
 }

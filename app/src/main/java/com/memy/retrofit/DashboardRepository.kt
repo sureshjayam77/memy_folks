@@ -130,8 +130,24 @@ class DashboardRepository : BaseRepository() {
         })
     }
 
-    fun updateShareAccess(parentId : Int?,childId : Int?){
+    fun giveShareAccess(parentId : Int?,childId : Int?){
         val profileCall = retrofit.create(APIInterface::class.java).updateAdminAccess(BaseRepository.APP_KEY_VALUE,parentId,childId)
+        profileCall?.enqueue(object : Callback<CommonResponse?> {
+            override fun onResponse(
+                call: Call<CommonResponse?>?,
+                response: Response<CommonResponse?>?
+            ) {
+                updateAdminRes.value = response?.body()
+            }
+
+            override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
+                updateAdminRes.value = CommonResponse(null,null,null)
+            }
+        })
+    }
+
+    fun removeShareAccess(parentId : Int?,childId : Int?){
+        val profileCall = retrofit.create(APIInterface::class.java).removeAdminAccess(BaseRepository.APP_KEY_VALUE,parentId,childId)
         profileCall?.enqueue(object : Callback<CommonResponse?> {
             override fun onResponse(
                 call: Call<CommonResponse?>?,

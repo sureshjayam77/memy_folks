@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 class DashboardActivity : AppBaseActivity() {
     lateinit var binding: DashboardActivityBinding
     lateinit var viewModel: DashboardViewModel
-    var accessList = emptyList<String>()
+    var isAdmin = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +77,7 @@ class DashboardActivity : AppBaseActivity() {
 
         } else if (id == R.id.member_admin_access_id) {
             binding.progressFrameLayout.visibility = View.VISIBLE
-            viewModel.updateAdminAccess()
+            viewModel.updateAdminAccess(isAdmin,prefhelper?.fetchUserData()?.mid ?: -1)
         }
     }
 
@@ -860,8 +860,13 @@ class DashboardActivity : AppBaseActivity() {
     private fun openAddRelationPopup(data: MutableList<RelationSelectionObj>?) {
         data?.add(RelationSelectionObj("M", "Edit Profile", 0, 1001, true))
         data?.add(RelationSelectionObj("M", "Remove Profile", 0, 1002, true))
-        if(prefhelper?.fetchUserData()?.mid == viewModel.profileResForEdit.value?.data?.owner_id) {
+        /*if(((prefhelper?.fetchUserData()?.mid == viewModel.profileResForEdit.value?.data?.owner_id) || (prefhelper?.fetchUserData()?.is_admin == true) || (prefhelper?.fetchUserData()?.is_super_admin == true)) && (!TextUtils.isEmpty(viewModel.profileResForEdit.value?.data?.mobile))) {
             data?.add(RelationSelectionObj("M", "Admin Access", 0, 1003, true))
+        }*/
+        if(((prefhelper?.fetchUserData()?.is_admin == true) || (prefhelper?.fetchUserData()?.is_super_admin == true)) && ((!TextUtils.isEmpty(viewModel.profileResForEdit.value?.data?.mobile)) && (viewModel.profileResForEdit.value?.data?.is_admin == false) && (viewModel.profileResForEdit.value?.data?.is_super_admin == false))) {
+            data?.add(RelationSelectionObj("M", "Provide Admin Access", 0, 1003, true))
+        }else if(((prefhelper?.fetchUserData()?.is_super_admin == true)) && ((viewModel.profileResForEdit.value?.data?.is_admin == true))) {
+            data?.add(RelationSelectionObj("M", "Remove Admin Access", 0, 1003, true))
         }
         val adapter =
             RelationSelectionAdapter(this@DashboardActivity, data!!, object : AdapterListener {
@@ -872,43 +877,65 @@ class DashboardActivity : AppBaseActivity() {
                         if (viewModel.profileResForEdit.value != null) (viewModel.profileResForEdit.value?.data) else (null)
                     if (editProfileData != null) {
                         if ((viewModel.selectedMemberAction == 1001) || (viewModel.selectedMemberAction == 1002) || (viewModel.selectedMemberAction == 1003)) {
-                            if ((editProfileData.mid == prefhelper.fetchUserData()?.mid) || (editProfileData.owner_id == prefhelper.fetchUserData()?.mid) || ((prefhelper.fetchUserData()?.can_access?.contains(editProfileData.mid.toString()))?: false)) {
+                          //  if ((editProfileData.mid == prefhelper.fetchUserData()?.mid) || (editProfileData.owner_id == prefhelper.fetchUserData()?.mid) || ((prefhelper.fetchUserData()?.can_access?.contains(editProfileData.mid.toString()))?: false)) {
+
                                 if (actionCode == 1001) {
-                                    val intent = Intent(
-                                        this@DashboardActivity,
-                                        AddFamilyActivity::class.java
-                                    )
-                                    intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
-                                    intent.putExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG, true)
-                                    intent.putExtra(
-                                        Constents.FAMILY_MEMBER_ID_INTENT_TAG,
-                                        editProfileData.mid
-                                    )
-                                    intent.putExtra(
-                                        Constents.FAMILY_MEMBER_FNAME_INTENT_TAG,
-                                        editProfileData.firstname
-                                    )
-                                    startActivityIntent(intent, false)
+                                    if ((editProfileData.mid == prefhelper.fetchUserData()?.mid) || (editProfileData.owner_id == prefhelper.fetchUserData()?.mid) ||  (prefhelper?.fetchUserData()?.is_admin == true) || (prefhelper?.fetchUserData()?.is_super_admin == true)) {
+                                        val intent = Intent(
+                                            this@DashboardActivity,
+                                            AddFamilyActivity::class.java
+                                        )
+                                        intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
+                                        intent.putExtra(
+                                            Constents.FAMILY_MEMBER_EDIT_INTENT_TAG,
+                                            true
+                                        )
+                                        intent.putExtra(
+                                            Constents.FAMILY_MEMBER_ID_INTENT_TAG,
+                                            editProfileData.mid
+                                        )
+                                        intent.putExtra(
+                                            Constents.FAMILY_MEMBER_FNAME_INTENT_TAG,
+                                            editProfileData.firstname
+                                        )
+                                        startActivityIntent(intent, false)
+                                    }else {
+                                        showAlertDialog(
+                                            R.id.do_nothing,
+                                            getString(R.string.modify_profile_error),
+                                            getString(R.string.close_label),
+                                            ""
+                                        )
+                                    }
                                 } else if (actionCode == 1002) {
-                                    binding.progressFrameLayout.visibility = View.VISIBLE
-                                    viewModel.deleteAccount(editProfileData.mid)
+                                    if ((editProfileData.mid == prefhelper.fetchUserData()?.mid) || (editProfileData.owner_id == prefhelper.fetchUserData()?.mid) ||  (prefhelper?.fetchUserData()?.is_admin == true) || (prefhelper?.fetchUserData()?.is_super_admin == true)) {
+                                        binding.progressFrameLayout.visibility = View.VISIBLE
+                                        viewModel.deleteAccount(editProfileData.mid)
+                                   }else {
+                                        showAlertDialog(
+                                            R.id.do_nothing,
+                                            getString(R.string.modify_profile_error),
+                                            getString(R.string.close_label),
+                                            ""
+                                        )
+                                    }
                                 } else if (actionCode == 1003) {
-                                    accessList = editProfileData.can_access ?: emptyList<String>()
+                                    isAdmin = editProfileData.is_admin ?: false
                                     showAlertDialog(
                                         R.id.member_admin_access_id,
-                                        if ((accessList == null) || (accessList.size == 0)) (String.format(getString(R.string.give_admin_access_msg),editProfileData?.firstname)) else (String.format(getString(R.string.remove_admin_access_msg),editProfileData?.firstname)),
+                                        if ((isAdmin == false)) (String.format(getString(R.string.give_admin_access_msg),editProfileData?.firstname)) else (String.format(getString(R.string.remove_admin_access_msg),editProfileData?.firstname)),
                                         getString(R.string.label_ok),
                                         getString(R.string.label_cancel)
                                     )
                                 }
-                            } else {
+                           /* } else {
                                 showAlertDialog(
                                     R.id.do_nothing,
                                     getString(R.string.modify_profile_error),
                                     getString(R.string.close_label),
                                     ""
                                 )
-                            }
+                            }*/
                         } else {
                             val intent =
                                 Intent(this@DashboardActivity, AddFamilyActivity::class.java)
