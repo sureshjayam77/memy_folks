@@ -21,6 +21,7 @@ import com.bumptech.glide.request.target.Target
 import com.memy.BuildConfig
 import com.memy.R
 import com.memy.activity.DashboardActivity
+import com.memy.activity.FamilyMemberProfileActivity
 import com.memy.databinding.ShareFragmentBinding
 import com.memy.pojo.ShareResponse
 import com.memy.viewModel.DashboardViewModel
@@ -98,17 +99,26 @@ class ShareFragment : BaseFragment(), View.OnClickListener {
                 viewModel.showProgressBar.value = false
                 var message = ""
                 if ((res != null) && (res.errorDetails != null)) {
-                    message = res.errorDetails.message!!
+                    message = res.errorDetails.message ?: ""
                 }
                 if (TextUtils.isEmpty(message)) {
                     message = getString(R.string.something_went_wrong)
                 }
-                (activity as DashboardActivity).showAlertDialog(
-                    R.id.do_nothing,
-                    message,
-                    getString(R.string.close_label),
-                    ""
-                )
+                try {
+                    (activity as DashboardActivity).showAlertDialog(
+                        R.id.do_nothing,
+                        message,
+                        getString(R.string.close_label),
+                        ""
+                    )
+                }catch (e:Exception){
+                    (activity as FamilyMemberProfileActivity).showAlertDialog(
+                        R.id.do_nothing,
+                        message,
+                        getString(R.string.close_label),
+                        ""
+                    )
+                }
             }
         }
     }

@@ -11,5 +11,6 @@
     <item name="submit_feedback_success_id" type="id"/>
     <item name="member_exists_popup_id" type="id"/>
     <item name="member_admin_access_id" type="id"/>
+    <item name="updare_relationship_id" type="id"/>
     
 </resources>

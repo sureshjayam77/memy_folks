@@ -246,7 +246,7 @@ class DashboardActivity : AppBaseActivity() {
             } else {
                 var message = ""
                 if (res.errorDetails != null) {
-                    message = res.errorDetails.message!!
+                    message = res.errorDetails.message ?: ""
                 }
                 if (TextUtils.isEmpty(message)) {
                     message = getString(R.string.something_went_wrong)
@@ -274,7 +274,7 @@ class DashboardActivity : AppBaseActivity() {
             } else {
                 var message = ""
                 if (res.errorDetails != null) {
-                    message = res.errorDetails.message!!
+                    message = res.errorDetails.message ?: ""
                 }
                 if (TextUtils.isEmpty(message)) {
                     message = getString(R.string.something_went_wrong)
@@ -1032,7 +1032,7 @@ class DashboardActivity : AppBaseActivity() {
             } else {
                 var message = ""
                 if (res.errorDetails != null) {
-                    message = res.errorDetails.message!!
+                    message = res.errorDetails.message ?: ""
                 }
                 if (TextUtils.isEmpty(message)) {
                     message = getString(R.string.something_went_wrong)
@@ -1065,7 +1065,7 @@ class DashboardActivity : AppBaseActivity() {
     private fun errorHandler(res: CommonResponse) {
         var message = ""
         if ((res != null) && (res.errorDetails != null)) {
-            message = res.errorDetails.message!!
+            message = res.errorDetails.message ?: ""
         }
         if (TextUtils.isEmpty(message)) {
             message = getString(R.string.something_went_wrong)

@@ -228,6 +228,7 @@ class AddFamilyViewModel : AppBaseViewModel() {
 
     fun hideRelationPopup(){
         showRelationPopup.value = false
+        mainMobileNumber.value = ""
     }
 
     fun callIsCusExits(){

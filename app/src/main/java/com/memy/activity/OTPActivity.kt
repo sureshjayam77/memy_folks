@@ -197,7 +197,7 @@ class OTPActivity : AppBaseActivity() {
     private fun errorHandler(res: ProfileVerificationResObj) {
         var message = ""
         if (res.errorDetails != null) {
-            message = res.errorDetails.message!!
+            message = res.errorDetails.message ?: ""
         }
         if (TextUtils.isEmpty(message)) {
             message = getString(R.string.something_went_wrong)
@@ -232,7 +232,7 @@ class OTPActivity : AppBaseActivity() {
             } else {
                 var message = ""
                 if (res.errorDetails != null) {
-                    message = res.errorDetails.message!!
+                    message = res.errorDetails.message ?: ""
                 }
                 if (TextUtils.isEmpty(message)) {
                     message = getString(R.string.something_went_wrong)

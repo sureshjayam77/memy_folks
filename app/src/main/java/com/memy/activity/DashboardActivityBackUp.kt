@@ -149,7 +149,7 @@ class DashboardActivityBackUp : AppBaseActivity() {
             } else {
                 var message = ""
                 if (res.errorDetails != null) {
-                    message = res.errorDetails.message!!
+                    message = res.errorDetails.message ?: ""
                 }
                 if (TextUtils.isEmpty(message)) {
                     message = getString(R.string.something_went_wrong)
@@ -326,7 +326,7 @@ class DashboardActivityBackUp : AppBaseActivity() {
             } else {
                 var message = ""
                 if (res.errorDetails != null) {
-                    message = res.errorDetails.message!!
+                    message = res.errorDetails.message ?: ""
                 }
                 if (TextUtils.isEmpty(message)) {
                     message = getString(R.string.something_went_wrong)

@@ -91,6 +91,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         initProfileData()
         showProgressBar()
         initYearAdapter()
+        viewModel.fetchRelationShip()
         binding.familyTagTextView.postDelayed(Runnable {
             viewModel.fetchAvatarImageList()
            // viewModel.fetchCountryList()
@@ -647,6 +648,8 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
         } else if(id == R.id.member_exists_popup_id){
             showProgressBar()
             viewModel.addFamilyMember()
+        } else if(id == R.id.updare_relationship_id){
+            finish()
         }
     }
 
@@ -898,7 +901,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             } else {
                 var message = ""
                 if (res.errorDetails != null) {
-                    message = res.errorDetails.message!!
+                    message = res.errorDetails.message ?: ""
                 }
                 if (TextUtils.isEmpty(message)) {
                     message = getString(R.string.something_went_wrong)
@@ -924,7 +927,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             } else {
                 var message = ""
                 if (res.errorDetails != null) {
-                    message = res.errorDetails.message!!
+                    message = res.errorDetails.message ?: ""
                 }
                 if (TextUtils.isEmpty(message)) {
                     message = getString(R.string.something_went_wrong)
@@ -949,7 +952,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             } else {
                 var message = ""
                 if (res.errorDetails != null) {
-                    message = res.errorDetails.message!!
+                    message = res.errorDetails.message ?: ""
                 }
                 if (TextUtils.isEmpty(message)) {
                     message = getString(R.string.something_went_wrong)
@@ -1187,7 +1190,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             } else {
                 var message = ""
                 if (res.errorDetails != null) {
-                    message = res.errorDetails.message!!
+                    message = res.errorDetails.message ?: ""
                 }
                 if (TextUtils.isEmpty(message)) {
                     message = getString(R.string.something_went_wrong)
@@ -1247,7 +1250,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     private fun errorHandler(res: AddFamilyResponse) {
         var message = ""
         if ((res != null) && (res.errorDetails != null)) {
-            message = res.errorDetails.message!!
+            message = res.errorDetails.message ?: ""
         }
         if (TextUtils.isEmpty(message)) {
             message = getString(R.string.something_went_wrong)
@@ -1309,7 +1312,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             if (res.statusCode == 200) {
                 if (res?.data != null) {
                     showAlertDialog(
-                        R.id.add_family_success,
+                        R.id.updare_relationship_id,
                         getString(R.string.relation_updated_success_fully),
                         getString(R.string.label_ok),
                         ""

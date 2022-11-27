@@ -54,7 +54,7 @@ open class CommunicationDialog : DialogFragment {
     fun show() {
         try {
             if (activity != null) {
-                show(activity?.supportFragmentManager!!, "")
+                activity?.supportFragmentManager?.let { show(it, "a") }
             }
         }catch (e:Exception){
             e.printStackTrace()
