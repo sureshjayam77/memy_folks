@@ -1142,7 +1142,11 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 val selectedImage = BitmapFactory.decodeStream(imageStream)
                 req.photobase64 = "data:$mineType;base64," + "" + Utils.encodeImage(selectedImage)*/
                   //  file = File(viewModel.updatedImageURI.toString())
-                file = File(URI(viewModel.updatedImageURI.toString()))
+                      try {
+                          file = File(URI(viewModel.updatedImageURI.toString()))
+                      }catch(e:Exception){
+                          e.printStackTrace()
+                      }
 
             }
             if ((!TextUtils.isEmpty(altCC)) && (!TextUtils.isEmpty(altMobile))) {

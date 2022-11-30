@@ -98,7 +98,6 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         binding.titleTextView.text = getString(R.string.label_profile)
         binding.menuIconImageView.visibility = View.GONE
         binding.bottomTempView.visibility = View.VISIBLE
-        binding.editTextView.visibility = View.GONE
         binding.guideImageView.visibility = View.GONE
     }
 
@@ -120,6 +119,11 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         if (userId!! > -1) {
             binding.progressFrameLayout.visibility = View.VISIBLE
             viewModel.fetchProfile(userId)
+            if(userId == prefhelper.fetchUserData()?.mid){
+                binding.editTextView.visibility = View.VISIBLE
+            }else{
+                binding.editTextView.visibility = View.GONE
+            }
         }
     }
 
@@ -139,6 +143,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         viewModel.deleteAccountRes.observe(this, this::validateDeleteAccountRes)
         viewModel.inviteCommonResData.observe(this, this::validateInviteApiRes)
         viewModel.updateAdminRes.observe(this, this::validateAdminAccessRes)
+        viewModel.profileSocialLinkUpdateRes.observe(this, this::validateSocialLinkRes)
         viewModel.isTreeView.observe(this, { v ->
             fetchProfileData(true)
         })
@@ -438,6 +443,40 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
+
+    fun validateSocialLinks(v: View) {
+        if ((!TextUtils.isEmpty(viewModel.instagramLink.value)) && (!URLUtil.isValidUrl(viewModel.instagramLink.value?.trim()))) {
+//            binding.instagramLayout.isErrorEnabled = true
+//            binding.instagramLayout.error = getString(R.string.error_invalid_url)
+            viewModel.instagramLink.value =
+                "https://www.instagram.com/" + (viewModel.instagramLink.value)
+        }
+        if ((!TextUtils.isEmpty(viewModel.facebookLink.value)) && (!URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))) {
+//            binding.facebookLayout.isErrorEnabled = true
+//            binding.facebookLayout.error = getString(R.string.error_invalid_url)
+            viewModel.facebookLink.value =
+                "https://www.facebook.com/" + viewModel.facebookLink.value
+        }
+        if ((!TextUtils.isEmpty(viewModel.twitterLink.value)) && (!URLUtil.isValidUrl(viewModel.twitterLink.value?.trim()))) {
+//            binding.twitterLayout.isErrorEnabled = true
+//            binding.twitterLayout.error = getString(R.string.error_invalid_url)
+            viewModel.twitterLink.value = "https://twitter.com/" + viewModel.twitterLink.value
+        }
+        if ((!TextUtils.isEmpty(viewModel.linkedInLink.value)) && (!URLUtil.isValidUrl(viewModel.linkedInLink.value?.trim()))) {
+//            binding.linkedInLayout.isErrorEnabled = true
+//            binding.linkedInLayout.error = getString(R.string.error_invalid_url)
+            viewModel.linkedInLink.value =
+                "https://www.linkedin.com/in/" + viewModel.linkedInLink.value
+        }
+        if ((TextUtils.isEmpty(viewModel.aboutContent.value))) {
+//            binding.aboutLayout.isErrorEnabled = true
+//            binding.aboutLayout.error = getString(R.string.error_invalid_about)
+        }
+
+        binding.progressFrameLayout.visibility = View.VISIBLE
+        viewModel.saveSocialMediaLink(prefhelper.fetchUserData()?.mid)
+
+    }
 
     fun onFbClick(v: View) {
         if ((!TextUtils.isEmpty(viewModel.facebookLink.value)) && (URLUtil.isValidUrl(viewModel.facebookLink.value?.trim()))) {
@@ -862,4 +901,31 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         }
     }
 
+    private fun validateSocialLinkRes(res: CommonResponse) {
+        binding.progressFrameLayout.visibility = View.GONE
+        if (res != null) {
+            if ((res.statusCode == 200) && (res.data != null)) {
+                viewModel.showSocialLinkAddView.value = false
+                var userData = viewModel.userData.value
+
+                userData?.instagram_link = viewModel.instagramLink.value
+                userData?.facebook_link = viewModel.facebookLink.value
+                userData?.twitter_link = viewModel.twitterLink.value
+                userData?.linkedin_link = viewModel.linkedInLink.value
+                userData?.about_me = viewModel.aboutContent.value
+                viewModel.userData.value = userData
+                updateSocialMediaIcons()
+
+            } else {
+                var message = ""
+                if (res.errorDetails != null) {
+                    message = res.errorDetails.message ?: ""
+                }
+                if (TextUtils.isEmpty(message)) {
+                    message = getString(R.string.something_went_wrong)
+                }
+                showAlertDialog(R.id.do_nothing, message, getString(R.string.close_label), "")
+            }
+        }
+    }
 }
