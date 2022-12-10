@@ -59,5 +59,9 @@
         <!-- Defines whether to automatically resize text to fit to the view's bounds. -->
         <attr name="sizeToFit" format="boolean" />
     </declare-styleable>
+    <style name="ButtonBoldWithBg2" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="backgroundTint">@color/disable_color_code</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+    </style>
 
 </resources>

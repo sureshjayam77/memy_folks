@@ -88,6 +88,23 @@ interface APIInterface {
     fun addEventData(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>,@Part file: MultipartBody.Part?) : Call<CommonResponse?>?
 
     @Multipart
+    @POST("api/v1/event/")
+    fun addEventData(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>,@Part file: MultipartBody.Part?,@Part file1: MultipartBody.Part?) : Call<CommonResponse?>?
+
+    @Multipart
+    @PUT("api/v1/event/")
+    fun editEvent(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>,@Part file: MultipartBody.Part?) : Call<CommonResponse?>?
+
+    @Multipart
+    @PUT("api/v1/event/")
+    fun editEvent(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>,@Part file: MultipartBody.Part?,@Part file1: MultipartBody.Part?) : Call<CommonResponse?>?
+
+
+    @Multipart
+    @PUT("api/v1/event/")
+    fun editEvent(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>) : Call<CommonResponse?>?
+
+    @Multipart
     @POST("api/v1/wall/")
     fun addStatusEventData(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>,@Part file: MultipartBody.Part?) : Call<CommonResponse?>?
 
@@ -126,12 +143,12 @@ interface APIInterface {
 
     @GET("api/v1/family_members/")
     fun getFamilyMembersList(@Query("apikey") apikey: String,@Query("mid") mid: String) : Call<FamilyMembersResult?>?
-    @Multipart
-    @POST("api/v1/wall/")
-    fun deleteWall(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>) : Call<CommonResponse?>?
-    @Multipart
-    @POST("api/v1/event/")
-    fun deleteEvent(@Query("apikey") apikey: String,@PartMap() partMap :  HashMap<String?, RequestBody?>) : Call<CommonResponse?>?
+    @FormUrlEncoded
+    @HTTP(method = "DELETE",path="api/v1/wall/", hasBody = true)
+    fun deleteWall(@Query("apikey") apikey: String,@Field("id") id:String) : Call<CommonResponse?>?
+    @FormUrlEncoded
+    @HTTP(method = "DELETE",path="api/v1/event/", hasBody = true)
+    fun deleteEvent(@Query("apikey") apikey: String,@Field("id") id:String) : Call<CommonResponse?>?
 
     @GET("api/memberrelationships/")
     fun getMemberRelationShip(@Query("apikey") apikey: String,@Query("mid") mid: String?) : Call<MemberRelationShipResData?>?

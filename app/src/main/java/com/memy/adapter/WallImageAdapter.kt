@@ -5,6 +5,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -35,64 +36,68 @@ class WallImageAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         var viewHolder = holder as WallImageAdapter.VHItem
         viewHolder.sLay.visibility = View.GONE
-        if((data[position].media != null) && (data[position].media.size > 0) && (data[position].media[0].file.contains(".mp4"))){
-            viewHolder.imgLay.visibility = View.GONE
-            viewHolder.playerView.visibility = View.VISIBLE
-            viewHolder.playLay.visibility = View.VISIBLE
-            var player = ExoPlayer.Builder( /* context= */context)
-                .build()
-            val mediaItem = MediaItem.fromUri(data[position].media[0].file)
-            player.addMediaItem(mediaItem)
-            player.setPlayWhenReady(false)
-            player.seekTo(1)
-            holder.playerView.player = player
-            player.addListener(object : Player.Listener   {
-                override  fun onPlaybackStateChanged(state: Int) {
-                    if (state == Player.STATE_READY) {
 
+            viewHolder.parentLay.visibility=View.VISIBLE
+            if((data[position].media != null) && (data[position].media!!.size > 0) && (data[position].media!![0].file.contains(".mp4"))){
+                viewHolder.imgLay.visibility = View.GONE
+                viewHolder.playerView.visibility = View.VISIBLE
+                viewHolder.playLay.visibility = View.VISIBLE
+                var player = ExoPlayer.Builder( /* context= */context)
+                    .build()
+                val mediaItem = MediaItem.fromUri(data[position].media!![0].file)
+                player.addMediaItem(mediaItem)
+                player.setPlayWhenReady(false)
+                player.seekTo(1)
+                holder.playerView.player = player
+                player.addListener(object : Player.Listener   {
+                    override  fun onPlaybackStateChanged(state: Int) {
+                        if (state == Player.STATE_READY) {
+
+                        }
                     }
+                })
+                viewHolder.img_play.setTag(position)
+                holder.img_play.setOnClickListener {
+                    val pos=viewHolder.img_play.getTag() as Int?
+                    itemClickListener.updateAction(1000,data[pos!!]);
                 }
-            })
-            viewHolder.img_play.setTag(position)
-            holder.img_play.setOnClickListener {
-                val pos=viewHolder.img_play.getTag() as Int?
-                itemClickListener.updateAction(1000,data[pos!!]);
+
+            }else {
+                viewHolder.imgLay.visibility = View.VISIBLE
+                viewHolder.playerView.visibility = View.GONE
+                viewHolder.playLay.visibility = View.GONE
+                var txtC = data[position].content
+                /* if(!TextUtils.isEmpty(data[position].location)){
+                    txtC=txtC+"\n"+data[position].location
+                }*/
+                viewHolder.txtContent.visibility = View.GONE
+                if (!TextUtils.isEmpty(txtC)) {
+                    viewHolder.txtContent.visibility = View.VISIBLE
+                    viewHolder.txtContent.text = txtC
+                }
+                if ((data[position].media != null) && (data[position].media!!.size > 0)){
+                    Glide.with(context)
+                        .load(data[position].media!![0].file)
+                        .into(viewHolder.wall_image)
+                }
+                viewHolder.wall_image.setTag(position)
+                viewHolder.wall_image.setOnClickListener {
+                    val pos=viewHolder.wall_image.getTag() as Int?
+                    itemClickListener.updateAction(1000,data[pos!!]);
+                }
+            }
+            if(mid.equals(data[position!!].mid_id)){
+                holder.dlt_img.visibility=View.GONE
+            }else{
+                holder.dlt_img.visibility=View.GONE
+            }
+            holder.dlt_img.setTag(position)
+            holder.dlt_img.setOnClickListener {
+                val pos=viewHolder.wall_image.getTag() as Int?
+                itemClickListener.updateAction(1001,data[pos!!]);
             }
 
-        }else {
-            viewHolder.imgLay.visibility = View.VISIBLE
-            viewHolder.playerView.visibility = View.GONE
-            viewHolder.playLay.visibility = View.GONE
-            var txtC = data[position].content
-            /* if(!TextUtils.isEmpty(data[position].location)){
-                txtC=txtC+"\n"+data[position].location
-            }*/
-            viewHolder.txtContent.visibility = View.GONE
-            if (!TextUtils.isEmpty(txtC)) {
-                viewHolder.txtContent.visibility = View.VISIBLE
-                viewHolder.txtContent.text = txtC
-            }
-            if ((data[position].media != null) && (data[position].media.size > 0)){
-                Glide.with(context)
-                    .load(data[position].media[0].file)
-                    .into(viewHolder.wall_image)
-        }
-            viewHolder.wall_image.setTag(position)
-            viewHolder.wall_image.setOnClickListener {
-                val pos=viewHolder.wall_image.getTag() as Int?
-                itemClickListener.updateAction(1000,data[pos!!]);
-            }
-        }
-        if(mid.equals(data[position!!].mid_id)){
-            holder.dlt_img.visibility=View.VISIBLE
-        }else{
-            holder.dlt_img.visibility=View.GONE
-        }
-        holder.dlt_img.setTag(position)
-        holder.dlt_img.setOnClickListener {
-            val pos=viewHolder.wall_image.getTag() as Int?
-            itemClickListener.updateAction(1001,data[pos!!]);
-        }
+
 
     }
 
@@ -110,9 +115,11 @@ class WallImageAdapter(
         var playLay: RelativeLayout
         var imgLay: RelativeLayout
         var addFloat: FloatingActionButton
+        var parentLay:LinearLayout
 
         init {
             wall_image = itemView.findViewById<View>(R.id.wall_image) as AppCompatImageView
+            parentLay = itemView.findViewById<View>(R.id.parentLay) as LinearLayout
             dlt_img = itemView.findViewById<View>(R.id.img_delete) as AppCompatImageView
             img_play = itemView.findViewById<View>(R.id.img_play) as AppCompatImageView
             txtContent = itemView.findViewById<View>(R.id.txt_content) as AppCompatTextView

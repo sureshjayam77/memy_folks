@@ -1,5 +1,6 @@
 package com.memy.activity
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
@@ -27,10 +28,7 @@ import com.memy.R
 import com.memy.adapter.ItemClickListener
 import com.memy.databinding.ActivityAddEventBinding
 import com.memy.databinding.ChoosePhotoDialogBinding
-import com.memy.pojo.AddEvent
-import com.memy.pojo.CommonResponse
-import com.memy.pojo.FamilyMembersObject
-import com.memy.pojo.FamilyMembersResult
+import com.memy.pojo.*
 import com.memy.viewModel.AddEventViewModel
 import java.io.File
 import java.io.FileOutputStream
@@ -51,11 +49,17 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
     var mMinute = 0
     var eventImageType=0
     var mFile:File?=null
+    var attachFile:File?=null
     var hostId=""
     var hostId2=""
+    var wallData:WallData?=null
+    var isInvitiation=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_event)
+        if(intent.getSerializableExtra("event")!=null){
+            wallData= intent.getSerializableExtra("event") as WallData?
+        }
         viewModel = ViewModelProvider(this).get(AddEventViewModel::class.java)
         viewModel.addFamilyRes.observe(this, this::validateAddFamilyRes)
         viewModel.familyMemRes.observe(this, this::getFamilyResponse)
@@ -64,6 +68,11 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
             openDatePicker(it)
         }
         binding.addCustomImage.setOnClickListener {
+            isInvitiation=false
+            dispatchImagePickerIntent()
+        }
+        binding.uploadInvBtn.setOnClickListener {
+            isInvitiation=true
             dispatchImagePickerIntent()
         }
         binding.startDateEditText.setOnClickListener {
@@ -71,6 +80,26 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
         }
         binding.backIconImageView.setOnClickListener {
             onBackPressed()
+        }
+        wallData?.let {
+            binding.startDateEditText.text= wallData?.event_start_date
+            binding.endDateEditText.text= wallData?.event_start_date
+            binding.locationEditText.setText(wallData?.location)
+            binding.descEditText.setText(wallData?.content)
+            binding.descEditText.setText(wallData?.content)
+            eventImageType= wallData?.location_pin?.toInt()!!
+            binding.host3EditText.setText(wallData?.media_link)
+            binding.hostEditText.setText(wallData?.host1_details?.get(0)!!.firstname!!)
+            binding.host2EditText.setText(wallData?.host2_details?.get(0)!!.firstname!!)
+            hostId= wallData?.host1!!
+            hostId2= wallData?.host2!!
+            if ((wallData?.attachments != null) && (wallData?.attachments!!.size > 0)){
+                binding.infoLay.visibility=View.GONE
+                binding.imgLay.visibility=View.GONE
+                Glide.with(this)
+                    .load(wallData?.attachments?.get(0)?.file!!)
+                    .into(binding.statusImage)
+            }
         }
         binding.popupCancelBtn.setOnClickListener {
             if (TextUtils.isEmpty(binding.startDateEditText.text.toString())) {
@@ -83,10 +112,18 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
                 showToast("Please enter the location")
             } else {
                 val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.ENGLISH)
+                val simpleDateFormat2 = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
                 val simpleDateFormat1 =
                     SimpleDateFormat("MMM dd,yyyy\n hh:mm a", Locale.ENGLISH)
-                val startDate = simpleDateFormat.parse(binding.startDateEditText.text.toString())
-                val formattedDate = simpleDateFormat1.format(startDate)
+                var startDate: Date?
+                if(binding.startDateEditText.text.toString().contains("T")){
+                     startDate = simpleDateFormat2.parse(binding.startDateEditText.text.toString())
+                }else{
+                     startDate = simpleDateFormat.parse(binding.startDateEditText.text.toString())
+                }
+
+                val formattedDate: String
+                formattedDate = simpleDateFormat1.format(startDate)
                 binding.displayLay.visibility = View.VISIBLE
                 binding.eventLay.visibility = View.GONE
                 binding.dateTextView.text = formattedDate
@@ -99,11 +136,11 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
                 if(!TextUtils.isEmpty(binding.host3EditText.text.toString())){
                     binding.host3TextView.text ="Click here to view link"
                     binding.host3TextView.setOnClickListener {
-                       try{
-                           startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(binding.host3EditText.text.toString())))
-                       }catch (ex:Exception){
-                           ex.message
-                       }
+                        try{
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(binding.host3EditText.text.toString())))
+                        }catch (ex:Exception){
+                            ex.message
+                        }
                     }
                 }
             }
@@ -111,18 +148,29 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
 
         binding.addEventBtn.setOnClickListener {
             showProgressBar()
-            var destinationFilename =
-                File(filesDir.path + File.separatorChar + "event_template.png")
+            var destinationFilename:File? =null
             if(eventImageType==0){
-                val bm = BitmapFactory.decodeResource(getResources(), R.drawable.event_template_1)
-                saveBitmapToFile(destinationFilename,bm, CompressFormat.PNG,100);
+                if(wallData==null){
+                    destinationFilename =
+                        File(filesDir.path + File.separatorChar + "event_template.png")
+                    val bm = BitmapFactory.decodeResource(getResources(), R.drawable.event_template_1)
+                    saveBitmapToFile(destinationFilename,bm, CompressFormat.PNG,100)
+                }else{
+                    destinationFilename= null
+                }
             }else{
                 destinationFilename= mFile!!
             }
-            val addEvent=AddEvent(prefhelper.fetchUserData()?.mid.toString(),"HBD163","2",binding.startDateEditText.text.toString(),binding.endDateEditText.text.toString(),binding.descEditText.text.toString(), binding.locationEditText.text.toString(),eventImageType.toString(),"center",destinationFilename,hostId,hostId2,binding.host3EditText.text.toString());
-            viewModel.addEvent(addEvent)
+            val addEvent=AddEvent(prefhelper.fetchUserData()?.mid.toString(),"HBD163","2",binding.startDateEditText.text.toString(),binding.endDateEditText.text.toString(),binding.descEditText.text.toString(), binding.locationEditText.text.toString(),eventImageType.toString(),"center",destinationFilename,hostId,hostId2,binding.host3EditText.text.toString(),attachFile);
+           if(wallData!=null){
+               viewModel.editEvent(addEvent,wallData!!.id)
+           }else{
+               viewModel.addEvent(addEvent)
+           }
         }
         binding.imgTemplate.setOnClickListener {
+            attachFile=null
+            binding.infoLay.visibility=View.VISIBLE
             binding.contentTextView.setTextColor(ContextCompat.getColor(this,R.color.black))
             binding.txtInfo.setTextColor(ContextCompat.getColor(this,R.color.black))
             binding.dateTextView.setTextColor(ContextCompat.getColor(this,R.color.black))
@@ -194,6 +242,9 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
         hideProgressBar()
         if (res.statusCode == 200) {
             showToast("Event added successfully")
+            val intent=Intent()
+            intent.putExtra("is_done",true)
+            setResult(Activity.RESULT_OK,intent)
             finish()
         } else {
             res.errorDetails?.message?.let { showToast(it) }
@@ -326,17 +377,27 @@ class AddEventActivity : AppBaseActivity(), ItemClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            binding.contentTextView.setTextColor(ContextCompat.getColor(this,R.color.white))
-            binding.txtInfo.setTextColor(ContextCompat.getColor(this,R.color.white))
-            binding.dateTextView.setTextColor(ContextCompat.getColor(this,R.color.white))
-            binding.addressTextView.setTextColor(ContextCompat.getColor(this,R.color.white))
-            binding.host2TextView.setTextColor(ContextCompat.getColor(this,R.color.white))
-            binding.host1TextView.setTextColor(ContextCompat.getColor(this,R.color.white))
-            binding.host3TextView.setTextColor(ContextCompat.getColor(this,R.color.white))
-            viewModel.photoFileUri = intent?.data
-            eventImageType=1
-            mFile= getFile(this, viewModel.photoFileUri!!)
-            loadProfileImageFromURI(intent?.data!!)
+            if(!isInvitiation){
+                attachFile=null
+                binding.infoLay.visibility=View.VISIBLE
+                binding.contentTextView.setTextColor(ContextCompat.getColor(this,R.color.white))
+                binding.txtInfo.setTextColor(ContextCompat.getColor(this,R.color.white))
+                binding.dateTextView.setTextColor(ContextCompat.getColor(this,R.color.white))
+                binding.addressTextView.setTextColor(ContextCompat.getColor(this,R.color.white))
+                binding.host2TextView.setTextColor(ContextCompat.getColor(this,R.color.white))
+                binding.host1TextView.setTextColor(ContextCompat.getColor(this,R.color.white))
+                binding.host3TextView.setTextColor(ContextCompat.getColor(this,R.color.white))
+                viewModel.photoFileUri = intent?.data
+                eventImageType=1
+                mFile= getFile(this, viewModel.photoFileUri!!)
+                loadProfileImageFromURI(intent?.data!!)
+            }else{
+                binding.infoLay.visibility=View.GONE
+                viewModel.attachFileUri = intent?.data
+                attachFile= getFile(this, viewModel.attachFileUri!!)
+                loadProfileImageFromURI(intent?.data!!)
+            }
+
         }
         super.onActivityResult(requestCode, resultCode, intent)
     }

@@ -1,6 +1,8 @@
 package com.memy.activity
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -39,11 +41,11 @@ class AddTextStoryActivity : AppBaseActivity(), ItemClickListener {
         viewModel.addFamilyRes.observe(this, this::validateAddFamilyRes)
         binding.addEventBtn.setOnClickListener {
             binding.clrLay.visibility=View.GONE
+            showProgressBar()
             var destinationFilename =
                 File(filesDir.path + File.separatorChar + "story_text.png")
             val bm =getBitmapFromView(binding.bgLay)
             saveBitmapToFile(destinationFilename,bm, Bitmap.CompressFormat.PNG,100);
-            showProgressBar()
             viewModel.addStatusEvent(prefhelper.fetchUserData()?.mid.toString(), destinationFilename,"")
         }
         binding.imgColor.setOnClickListener {
@@ -84,6 +86,9 @@ class AddTextStoryActivity : AppBaseActivity(), ItemClickListener {
         hideProgressBar()
         if (res.statusCode == 200) {
             showToast("Post added successfully")
+            val intent= Intent()
+            intent.putExtra("is_done",true)
+            setResult(Activity.RESULT_OK,intent)
             finish()
         } else {
             binding.clrLay.visibility=View.VISIBLE

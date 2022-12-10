@@ -1,5 +1,7 @@
 package com.memy.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -64,6 +66,9 @@ class WallPostActivity : AppBaseActivity() {
         hideProgressBar()
         if (res.statusCode == 200) {
             showToast("Post added successfully")
+            val intent= Intent()
+            intent.putExtra("is_done",true)
+            setResult(Activity.RESULT_OK,intent)
             finish()
         } else {
             res.errorDetails?.message?.let { showToast(it) }

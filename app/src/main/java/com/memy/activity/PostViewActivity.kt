@@ -1,32 +1,50 @@
 package com.memy.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.memy.R
+import com.memy.adapter.CommentListAdapter
+import com.memy.databinding.ActivityCommentViewBinding
 import com.memy.databinding.ActivityPostViewBinding
+import com.memy.databinding.StoryMediaBottomSheetBinding
+import com.memy.pojo.CommentObject
+import com.memy.pojo.CommentResult
 import com.memy.pojo.CommonResponse
 import com.memy.pojo.WallData
 import com.memy.viewModel.AddEventViewModel
 import com.teresaholfeld.stories.StoriesProgressView
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener {
@@ -37,7 +55,13 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
     var wallData: WallData? = null
     private var storiesProgressView: StoriesProgressView? = null
     private var counter = 0
+    var mCommentBinding:ActivityCommentViewBinding?=null
     private var isOpenKeyBoard = false
+    var uploadedFile: File?=null
+    private val SELECT_VIDEO = 9002
+
+    private val SELECT_PICTURE = 9001
+    var commentList: ArrayList<CommentObject>? = ArrayList()
 
     companion object {
         private const val PROGRESS_COUNT = 1
@@ -52,10 +76,14 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
 
         wallData = intent.getSerializableExtra("file") as WallData?
         file = wallData?.media?.get(0)?.file
+        if ((wallData!!.attachments != null) && (wallData!!.attachments!!.size > 0)){
+            file =wallData?.attachments?.get(0)?.file!!
+        }
         storiesProgressView = binding.stories
         storiesProgressView?.setStoriesListener(this) // <- set listener
         storiesProgressView?.setStoriesCount(PROGRESS_COUNT) // <- set stories
-        binding.backIconImageView.setOnClickListener { onBackPressed()
+        binding.backIconImageView.setOnClickListener {
+            onBackPressed()
         }
         if (file!!.contains(".mp4")) {
             playVideo()
@@ -73,6 +101,7 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
             storiesProgressView?.startStories() // <- start progress
             if (!TextUtils.isEmpty(wallData?.location)) {
                 binding.eventLay.visibility = View.VISIBLE
+                binding.lEdit.visibility=View.VISIBLE
                 val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
                 val simpleDateFormat1 =
@@ -82,7 +111,6 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
                 binding.wallImageLay.visibility = View.VISIBLE
                 binding.addressTextView.text = wallData?.location
                 binding.contentTextView.text = wallData?.content
-                binding.dateTextView.text = formattedDate
                 binding.dateTextView.text = formattedDate
                 if(wallData?.host1_details?.size?:0>0){
                     binding.host1TextView.text = "Host: "+ wallData?.host1_details?.get(0)?.firstname
@@ -137,18 +165,28 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
                         )
                     )
                 }
+               if(wallData!!.attachments!=null&&wallData!!.attachments!!.size>0){
+                   binding.contentTextView.visibility=View.GONE
+                   binding.txtInfo.visibility=View.GONE
+                   binding.dateTextView.visibility=View.GONE
+                   binding.host1TextView.visibility=View.GONE
+                   binding.host2TextView.visibility=View.GONE
+                   binding.host3TextView.visibility=View.GONE
+                   binding.addressTextView.visibility=View.GONE
+               }
 
             }
         }
         Glide.with(this)
-            .load(wallData!!.photo)   .placeholder(R.drawable.img_place_holder)
+            .load(wallData!!.photo).placeholder(R.drawable.img_place_holder)
             .error(R.drawable.img_place_holder)
             .into(binding.pImg)
         binding.txtName.text=wallData!!.firstname
-        binding.btnPost.setOnClickListener {
-            val intent=Intent(this,CommentViewActivity::class.java)
+        binding.lComments.setOnClickListener {
+            commentDialog()
+           /* val intent=Intent(this,CommentViewActivity::class.java)
             intent.putExtra("file",wallData)
-           startActivity(intent)
+           startActivity(intent)*/
         }
         binding.parentLay.setOnTouchListener({ v, event ->
             if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -172,6 +210,11 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
             intent.putExtra("file",wallData)
             startActivity(intent)
         }
+        binding.lEdit.setOnClickListener {
+            val intent=Intent(this,AddEventActivity::class.java)
+            intent.putExtra("event",wallData)
+            someActivityResultLauncher.launch(intent)
+        }
         binding.parentLay.viewTreeObserver.addOnGlobalLayoutListener(object :
             OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -194,11 +237,13 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
             }
         })
         if(prefhelper.fetchUserData()?.mid.toString().equals(wallData!!.mid_id)){
-            binding.btnDelete.visibility=View.VISIBLE
+            binding.lDelete.visibility=View.VISIBLE
+            binding.lEdit.visibility=View.VISIBLE
         }else{
-            binding.btnDelete.visibility=View.GONE
+            binding.lEdit.visibility=View.GONE
+            binding.lDelete.visibility=View.GONE
         }
-        binding.btnDelete.setOnClickListener {
+        binding.lDelete.setOnClickListener {
             var isWall=true
             if(!TextUtils.isEmpty(wallData!!.location_pin)){
                 isWall=false
@@ -206,14 +251,106 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
             deleteDialog(isWall,wallData!!.id)
         }
         binding.txtContent.text = wallData?.content
+        if(TextUtils.isEmpty(wallData?.content)){
+            binding.txtContent.visibility=View.GONE
+        }
     }
     private fun deleteWallRes(res: CommonResponse) {
         if (res.statusCode == 200) {
             showToast("Deleted successfully")
-            finish()
+            backToActivity()
         } else {
             res.errorDetails?.message?.let { showToast(it) }
         }
+    }
+    fun commentDialog(){
+
+        viewModel.commentRes.observe(this, this::getWallDataResponse)
+        viewModel.addFamilyRes.observe(this, this::validateAddFamilyRes)
+        val bottomSheetDialog=BottomSheetDialog(this)
+        mCommentBinding=ActivityCommentViewBinding.inflate(layoutInflater)
+
+        bottomSheetDialog.setContentView(mCommentBinding!!.root)
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(mCommentBinding!!.root.parent as View)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetBehavior.maxHeight=resources.displayMetrics.heightPixels-200
+        mCommentBinding!!.backIconImageView.setOnClickListener {
+            onBackPressed()
+        }
+        val linearLayoutManager = LinearLayoutManager(this)
+        linearLayoutManager.orientation = RecyclerView.VERTICAL
+        mCommentBinding!!.rvComments.layoutManager = linearLayoutManager
+        mCommentBinding!!.btnPost.setOnClickListener {
+            postComment()
+        }
+        mCommentBinding!!.attachmentImg.setOnClickListener {
+            openChoosePhoto()
+        }
+        mCommentBinding!!.clearImg.setOnClickListener {
+            uploadedFile=null
+            mCommentBinding!!.captureLay.visibility=View.GONE
+        }
+        if(TextUtils.isEmpty(wallData!!.location)){
+            viewModel.getCommentList(wallData!!.id)
+        }else{
+            viewModel.getEventCommentList(wallData!!.id)
+        }
+        bottomSheetDialog.show()
+    }
+    private fun validateAddFamilyRes(res: CommonResponse) {
+        if (res.statusCode == 200) {
+            uploadedFile=null
+            showToast("Comments added successfully")
+            mCommentBinding!!.captureLay.visibility=View.GONE
+            if(TextUtils.isEmpty(wallData!!.location)){
+                viewModel.getCommentList(wallData!!.id)
+            }else{
+                viewModel.getEventCommentList(wallData!!.id)
+            }
+        } else {
+            res.errorDetails?.message?.let { showToast(it) }
+        }
+    }
+    private fun getWallDataResponse(res: CommentResult) {
+        if (res.statusCode == 200) {
+            if(res.data!=null&&res.data!!.isNotEmpty()){
+                commentList= ArrayList()
+                commentList!!.addAll(res.data!!)
+                commentList?.reverse()
+                mCommentBinding!!.rvComments?.adapter = CommentListAdapter(this, commentList!!)
+                Log.d("", "")
+            }else{
+
+            }
+        }
+    }
+    private fun photoPicker() {
+//        val i = Intent()
+//        i.type = "image/*"
+//        i.action = Intent.ACTION_GET_CONTENT
+//        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE)
+
+        val photo_picker_intent = Intent(
+            Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
+        startActivityForResult(photo_picker_intent, SELECT_PICTURE)
+    }
+    private fun openChoosePhoto() {
+        val photoBottomSheet = BottomSheetDialog(this, R.style.bottomSheetDialogTheme)
+        val storyMediaBottomSheetBinding: StoryMediaBottomSheetBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(this), R.layout.story_media_bottom_sheet, null, false
+        )
+        storyMediaBottomSheetBinding.videoTextView.visibility=View.GONE
+        storyMediaBottomSheetBinding.photoTextView.setOnClickListener({photoBottomSheet.dismiss()
+            photoPicker()})
+        /* storyMediaBottomSheetBinding.videoTextView.setOnClickListener({photoBottomSheet.dismiss()
+         videoPicker()})*/
+        storyMediaBottomSheetBinding.audioTextView.visibility=View.GONE
+        storyMediaBottomSheetBinding.cancelTextView.setOnClickListener({ photoBottomSheet.dismiss() })
+        photoBottomSheet.setContentView(storyMediaBottomSheetBinding.root)
+        photoBottomSheet.show()
     }
     fun deleteDialog(isWall:Boolean,id:String){
         AlertDialog.Builder(this)
@@ -266,22 +403,47 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
                     val realDurationMillis: Long = player?.duration!!
                     storiesProgressView?.setStoryDuration(realDurationMillis)
                     storiesProgressView?.startStories() // <- start progress
-
                 }
             }
         })
     }
+    var someActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+        { result ->
+            if (result.getResultCode() === RESULT_OK) {
+                // There are no request codes
+                if(result.getData()!=null){
+                    if(result.data!!.getBooleanExtra("is_done",false)){
+                        backToActivity()
+                    }
+                }
 
+            }
+        })
     private fun postComment() {
-        if (TextUtils.isEmpty(binding.edtComment.text.toString())) return
-        viewModel.addComment(
-            prefhelper.fetchUserData()?.mid.toString(),
-            null,
-            binding.edtComment.text.toString(),
-            wallData!!.id
-        )
-        binding.edtComment.setText("")
-        showToast("Comment added successfully")
+        if(TextUtils.isEmpty(wallData!!.location)){
+            if (TextUtils.isEmpty(mCommentBinding!!.edtComment.text.toString())){
+                showToast("Please give your comments")
+                return
+            }
+            viewModel.addComment(
+                prefhelper.fetchUserData()?.mid.toString(),
+                uploadedFile,
+                mCommentBinding!!.edtComment.text.toString(),
+                wallData!!.id
+            )
+            mCommentBinding!!.edtComment.setText("")
+        }else{
+            if (TextUtils.isEmpty(mCommentBinding!!.edtComment.text.toString())&&uploadedFile==null)return
+            viewModel.addEventComment(
+                prefhelper.fetchUserData()?.mid.toString(),
+                uploadedFile,
+                mCommentBinding!!.edtComment.text.toString(),
+                wallData!!.id
+            )
+            mCommentBinding!!.edtComment.setText("")
+        }
+
     }
 
     fun showToast(text: String) {
@@ -322,6 +484,77 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
         storiesProgressView?.destroy()
         player?.stop()
         super.onDestroy()
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        if (requestCode == SELECT_PICTURE && resultCode == RESULT_OK) {
+
+            uploadedFile=getFile(this, intent?.data!!)
+        } else if (requestCode == SELECT_VIDEO && resultCode == RESULT_OK) {
+            if (intent != null) {
+                uploadedFile=getFile(this, intent.data!!)
+            }
+        }
+        if (uploadedFile != null) {
+            mCommentBinding!!.captureLay.visibility=View.VISIBLE
+            Glide
+                .with(this)
+                .load(uploadedFile)
+                .centerCrop()
+                .into(mCommentBinding!!.captureImg)
+        }
+        super.onActivityResult(requestCode, resultCode, intent)
+    }
+    fun getFile(context: Context, uri: Uri): File {
+        val destinationFilename =
+            File(context.filesDir.path + File.separatorChar + queryName(context, uri))
+        try {
+            context.contentResolver.openInputStream(uri).use { ins ->
+                ins?.let {
+                    createFileFromStream(
+                        it,
+                        destinationFilename
+                    )
+                }
+            }
+        } catch (ex: java.lang.Exception) {
+            ex.message?.let { Log.e("Save File", it) }
+            ex.printStackTrace()
+        }
+        return destinationFilename
+    }
+
+    fun createFileFromStream(ins: InputStream, destination: File?) {
+        try {
+            FileOutputStream(destination).use { os ->
+                val buffer = ByteArray(4096)
+                var length: Int
+                while (ins.read(buffer).also { length = it } > 0) {
+                    os.write(buffer, 0, length)
+                }
+                os.flush()
+            }
+        } catch (ex: java.lang.Exception) {
+            ex.message?.let { Log.e("Save File", it) }
+            ex.printStackTrace()
+        }
+    }
+
+    private fun queryName(context: Context, uri: Uri): String {
+        val returnCursor: Cursor = context.contentResolver.query(uri, null, null, null, null)!!
+        val nameIndex: Int = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        returnCursor.moveToFirst()
+        val name: String = returnCursor.getString(nameIndex)
+        returnCursor.close()
+        return name
+    }
+    fun backToActivity(){
+        val intent=Intent()
+        intent.putExtra("is_back",false)
+        setResult(Activity.RESULT_OK,intent)
+        finish()
+    }
+    override fun onBackPressed() {
+      super.onBackPressed()
     }
 
 

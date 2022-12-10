@@ -8,6 +8,7 @@ import java.io.File
 
 class AddEventViewModel:AppBaseViewModel() {
     var photoFileUri: Uri? = null
+    var attachFileUri: Uri? = null
     var addFamilyRepository: AddFamilyRepository
     var addFamilyRes = MutableLiveData<CommonResponse>()
     var deleteWallRes = MutableLiveData<CommonResponse>()
@@ -33,6 +34,9 @@ class AddEventViewModel:AppBaseViewModel() {
     }
     fun addEvent(addEvent: AddEvent) {
         addFamilyRepository.addEvent(addEvent)
+    }
+    fun editEvent(addEvent: AddEvent,id:String) {
+        addFamilyRepository.editEvent(addEvent,id)
     }
     fun getWallMedia(mid:String) {
         addFamilyRepository.getWallMedia(mid)

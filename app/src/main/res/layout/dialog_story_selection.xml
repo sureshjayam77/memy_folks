@@ -3,7 +3,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:background="@color/white"
         android:orientation="horizontal"
         android:padding="15dp">
@@ -11,20 +11,22 @@
         <LinearLayout
             android:id="@+id/addImageLay"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
                 android:src="@drawable/ic_baseline_camera_alt_24" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
+                android:layout_weight="1"
                 android:text="@string/add_image"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
@@ -32,20 +34,22 @@
         <LinearLayout
             android:id="@+id/addVideoLay"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:src="@drawable/ic_baseline_videocam_24" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
+                android:layout_weight="1"
                 android:text="@string/add_video"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
@@ -54,20 +58,22 @@
         <LinearLayout
             android:id="@+id/addTextLay"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:src="@drawable/ic_baseline_text_fields_24" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
+                android:layout_weight="1"
                 android:text="Add Story"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
@@ -76,19 +82,21 @@
         <LinearLayout
             android:id="@+id/addEventLay"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:src="@drawable/ic_calendar" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:layout_marginTop="10dp"
                 android:text="@string/add_event"
                 android:textColor="@color/black"

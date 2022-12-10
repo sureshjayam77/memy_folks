@@ -372,15 +372,33 @@ class AddFamilyRepository : BaseRepository() {
 
             var photoBody: MultipartBody.Part? = null
             var file=req.file
-            val reqFile: RequestBody = RequestBody.create("*/*".toMediaTypeOrNull(), file)
+            val reqFile: RequestBody = RequestBody.create("*/*".toMediaTypeOrNull(), file!!)
             photoBody = MultipartBody.Part.createFormData("file", file.name, reqFile)
+            var attachmentBody: MultipartBody.Part? = null
 
-            var addFamilyCall: Call<CommonResponse?>? =
-                retrofit.create(APIInterface::class.java).addEventData(
-                    APP_KEY_VALUE,
-                    stringHashMap,
-                    photoBody
-                )
+            if(req.attachment!=null){
+                var file=req.attachment
+                val reqFile: RequestBody = RequestBody.create("*/*".toMediaTypeOrNull(), file!!)
+                attachmentBody = MultipartBody.Part.createFormData("attachments", file.name, reqFile)
+
+            }
+            var addFamilyCall: Call<CommonResponse?>?=null
+            if(attachmentBody!=null){
+                 addFamilyCall=
+                    retrofit.create(APIInterface::class.java).addEventData(
+                        APP_KEY_VALUE,
+                        stringHashMap,
+                        photoBody,attachmentBody
+                    )
+            }else{
+                 addFamilyCall=
+                    retrofit.create(APIInterface::class.java).addEventData(
+                        APP_KEY_VALUE,
+                        stringHashMap,
+                        photoBody
+                    )
+            }
+
 
             addFamilyCall?.enqueue(object : Callback<CommonResponse?> {
                 override fun onResponse(
@@ -396,6 +414,88 @@ class AddFamilyRepository : BaseRepository() {
             })
         }
     }
+    fun editEvent(req: AddEvent?,id:String) {
+
+        var stringHashMap: HashMap<String?, RequestBody?> = HashMap()
+        var arrayHashMap: HashMap<String?, List<CommonMobileNumberObj>?> = HashMap()
+        if (req != null) {
+
+            stringHashMap["mid"] = createPartFromString(req.mid)
+            stringHashMap["id"] = createPartFromString(id)
+            stringHashMap["slug"] = createPartFromString(req.slug)
+            stringHashMap["event_type"] = createPartFromString(req.event_type)
+            stringHashMap["event_start_date"] = createPartFromString(req.event_start_date)
+            stringHashMap["event_end_date"] = createPartFromString(req.event_end_date)
+            stringHashMap["content"] = createPartFromString(req.content)
+            stringHashMap["location"] = createPartFromString(req.location)
+            stringHashMap["location_pin"] = createPartFromString(req.location_pin)
+            stringHashMap["alignment"] = createPartFromString(req.alignment)
+            stringHashMap["host1"] =RequestBody.create(MultipartBody.FORM, req.host)
+            stringHashMap["host2"] = RequestBody.create(MultipartBody.FORM, req.host2)
+            stringHashMap["media_link"] = RequestBody.create(MultipartBody.FORM, req.driveLink)
+
+            var photoBody: MultipartBody.Part? = null
+            var file=req.file
+            var   addFamilyCall: Call<CommonResponse?>?=null;
+
+            var attachmentBody: MultipartBody.Part? = null
+
+            if(req.attachment!=null){
+                var file=req.attachment
+                val reqFile: RequestBody = RequestBody.create("*/*".toMediaTypeOrNull(), file!!)
+                attachmentBody = MultipartBody.Part.createFormData("attachment", file.name, reqFile)
+
+            }
+            if(file!=null){
+                val reqFile: RequestBody = RequestBody.create("*/*".toMediaTypeOrNull(), file)
+                photoBody = MultipartBody.Part.createFormData("file", file.name, reqFile)
+              if(attachmentBody!=null){
+                  addFamilyCall  =
+                      retrofit.create(APIInterface::class.java).editEvent(
+                          APP_KEY_VALUE,
+                          stringHashMap,
+                          photoBody,attachmentBody
+                      )
+              }else{
+                  addFamilyCall  =
+                      retrofit.create(APIInterface::class.java).editEvent(
+                          APP_KEY_VALUE,
+                          stringHashMap,
+                          photoBody
+                      )
+              }
+
+            }else{
+                if(attachmentBody!=null){
+                    addFamilyCall =
+                        retrofit.create(APIInterface::class.java).editEvent(
+                            APP_KEY_VALUE,
+                            stringHashMap,attachmentBody
+                        )
+                }else{
+                    addFamilyCall =
+                        retrofit.create(APIInterface::class.java).editEvent(
+                            APP_KEY_VALUE,
+                            stringHashMap
+                        )
+                }
+            }
+
+            addFamilyCall?.enqueue(object : Callback<CommonResponse?> {
+                override fun onResponse(
+                    call: Call<CommonResponse?>?,
+                    response: Response<CommonResponse?>?
+                ) {
+                    addFamilyRes.value = response?.body()
+                }
+
+                override fun onFailure(call: Call<CommonResponse?>?, t: Throwable) {
+                    addFamilyRes.value = CommonResponse(null, 0, null)
+                }
+            })
+        }
+    }
+
     fun addStatusEvent(mid:String,file:File,text:String) {
 
         var stringHashMap: HashMap<String?, RequestBody?> = HashMap()
@@ -636,7 +736,7 @@ class AddFamilyRepository : BaseRepository() {
         stringHashMap["id"] = createPartFromString(id)
         stringHashMap["mid"] = createPartFromString(mid)
         val relationShipCall = retrofit.create(APIInterface::class.java)
-            .deleteEvent(APP_KEY_VALUE,stringHashMap)
+            .deleteEvent(APP_KEY_VALUE,id)
         relationShipCall?.enqueue(object : Callback<CommonResponse?> {
             override fun onResponse(
                 call: Call<CommonResponse?>?,
@@ -656,7 +756,7 @@ class AddFamilyRepository : BaseRepository() {
         stringHashMap["mid"] = createPartFromString(mid)
 
         val relationShipCall = retrofit.create(APIInterface::class.java)
-            .deleteWall(APP_KEY_VALUE,stringHashMap)
+            .deleteWall(APP_KEY_VALUE,id)
         relationShipCall?.enqueue(object : Callback<CommonResponse?> {
             override fun onResponse(
                 call: Call<CommonResponse?>?,

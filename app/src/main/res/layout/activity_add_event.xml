@@ -195,6 +195,7 @@
                     android:layout_height="match_parent" />
 
                 <LinearLayout
+                    android:id="@+id/infoLay"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"
@@ -287,8 +288,24 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/common_hint_text_size"
                 app:cornerRadius="30dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/uploadInvBtn"
+                style="@style/ButtonBoldWithBg2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:padding="@dimen/common_edit_txt_padding"
+                android:text="+ INVITATION"
+                android:textColor="@color/black"
+                android:textSize="@dimen/common_hint_text_size"
+                app:cornerRadius="30dp" />
 
             <LinearLayout
+                android:id="@+id/img_lay"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_alignParentBottom="true"

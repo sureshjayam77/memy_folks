@@ -2,10 +2,10 @@ package com.memy.activity
 
 import android.app.Activity.RESULT_OK
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.OpenableColumns
@@ -15,14 +15,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.tabs.TabLayout
 import com.memy.R
 import com.memy.adapter.MyRecyclerAdapter
 import com.memy.databinding.ActivityFamilyWallBinding
@@ -32,7 +35,6 @@ import com.memy.fragment.BaseFragment
 import com.memy.listener.AdapterListener
 import com.memy.pojo.CommonResponse
 import com.memy.pojo.WallData
-import com.memy.pojo.WallGroupData
 import com.memy.pojo.WallResult
 import com.memy.viewModel.AddEventViewModel
 import java.io.File
@@ -41,61 +43,96 @@ import java.io.InputStream
 import java.util.*
 
 
-class FamilyWallFragment : BaseFragment(), AdapterListener , LifecycleObserver {
+class FamilyWallFragment : BaseFragment(), AdapterListener, LifecycleObserver {
     lateinit var photoBottomSheet: BottomSheetDialog
     val REQUEST_IMAGE_CAPTURE: Int = 1001
     lateinit var viewModel: AddEventViewModel
     var recylerView: RecyclerView? = null
     private val SELECT_VIDEO = 9002
-
-    var wallList: ArrayList<WallGroupData>? = ArrayList()
-    private lateinit var binding : ActivityFamilyWallBinding
-
+    var adapter: MyRecyclerAdapter? = null
+    var wallList: ArrayList<WallData>? = ArrayList()
+    var eventList: ArrayList<WallData>? = ArrayList()
+    private lateinit var binding: ActivityFamilyWallBinding
+     private var tabPosition=0
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = ActivityFamilyWallBinding.inflate(inflater,container,false)
+        binding = ActivityFamilyWallBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(AddEventViewModel::class.java)
+
         viewModel.addFamilyRes.observe(requireActivity(), this::validateAddFamilyRes)
         viewModel.deleteWallRes.observe(requireActivity(), this::deleteWallRes)
         viewModel.wallRes.observe(requireActivity(), this::getWallDataResponse)
         recylerView = binding.recFamilyWall
         val linearLayoutManager = LinearLayoutManager(requireActivity())
         linearLayoutManager.orientation = RecyclerView.VERTICAL
-        recylerView?.layoutManager = linearLayoutManager
+        //  recylerView?.layoutManager = linearLayoutManager
         var imgUrl = prefhelper.fetchUserData()?.photo
         binding.addFloat.setOnClickListener {
             openAddStoryDialog()
         }
+        val layoutManager = GridLayoutManager(activity, 3)
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return if (adapter!!.getItemViewType(position) == adapter!!.TYPE_HEADER) 3 else 1
+            }
+        }
+        recylerView!!.layoutManager = layoutManager
+        tabPosition=0
+        binding.tab.addTab(binding.tab.newTab().setText("Walls"))
+        binding.tab.addTab(binding.tab.newTab().setText("Events"))
+        binding.tab.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                tabPosition=tab!!.position
+                if(tab!!.position==0){
+                    setWallAdapter(true)
+                }else{
+                    setWallAdapter(false)
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                tabPosition=tab!!.position
+                if(tab!!.position==0){
+                    setWallAdapter(true)
+                }else{
+                    setWallAdapter(false)
+                }
+            }
+        })
 
         loadProfileImage(imgUrl)
+        viewModel.getWallMedia(prefhelper.fetchUserData()?.mid.toString())
         showProgressBar()
     }
 
 
     override fun onResume() {
         super.onResume()
-        viewModel.getWallMedia(prefhelper.fetchUserData()?.mid.toString())
     }
 
     private fun loadProfileImage(url: String?) {
-       /* if (!TextUtils.isEmpty(url)) {
-            Glide.with(this)
-                .load(url)
-                .centerCrop()
-                .placeholder(R.drawable.ic_profile_male)
-                .error(R.drawable.ic_profile_male)
-                .into(findViewById(R.id.add_story_image))
-        }
-*/
+        /* if (!TextUtils.isEmpty(url)) {
+             Glide.with(this)
+                 .load(url)
+                 .centerCrop()
+                 .placeholder(R.drawable.ic_profile_male)
+                 .error(R.drawable.ic_profile_male)
+                 .into(findViewById(R.id.add_story_image))
+         }
+ */
     }
+
     private fun deleteWallRes(res: CommonResponse) {
         if (res.statusCode == 200) {
             viewModel.getWallMedia(prefhelper.fetchUserData()?.mid.toString())
@@ -104,6 +141,7 @@ class FamilyWallFragment : BaseFragment(), AdapterListener , LifecycleObserver {
             res.errorDetails?.message?.let { showToast(it) }
         }
     }
+
     private fun validateAddFamilyRes(res: CommonResponse) {
         hideProgressBar()
         if (res.statusCode == 200) {
@@ -116,78 +154,173 @@ class FamilyWallFragment : BaseFragment(), AdapterListener , LifecycleObserver {
     private fun getWallDataResponse(res: WallResult) {
         hideProgressBar()
         if (res.statusCode == 200) {
-            if (res.data?.walls!=null&&res.data?.walls?.isNotEmpty()!!) {
+            if (res.data?.walls != null && res.data?.walls?.isNotEmpty()!!) {
+                wallList = ArrayList()
+
                 val grouppedByDate =
                     res.data!!.walls.groupBy {
-                        if((it != null) && (it.media != null) && (it.media.size > 0)) {
-                            it.media[0].uploaded_at.split("T")[0]
-                        }else{
+                        if ((it != null) && (it.media != null) && (it.media!!.size > 0)) {
+                            it.media!![0].uploaded_at.split("T")[0]
+                        } else {
                             ""
                         }
                     }
+                var eventsHashMap: HashMap<String, List<WallData>?>? = null
+                if (grouppedByDate != null) {
+                    eventsHashMap = HashMap(grouppedByDate)
+                }
+                lateinit var entries: List<String>
+                entries = grouppedByDate.keys.toList<String>()
+                entries = entries.reversed()
+                for (i in entries) {
+                    val eventList = ArrayList(grouppedByDate.get(i))
+                    if (eventsHashMap != null && eventsHashMap.isNotEmpty()) {
+                        val eventData = eventsHashMap.get(i)
+                        if (eventData != null) {
+                            eventList.addAll(eventData)
+                            eventsHashMap.remove(i)
+                        }
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        eventList.removeIf { wallData -> wallData.media!!.size == 0 }
+                    }
+                    if (eventList.isNotEmpty()) {
+                        var wallDate = WallData("","",
+                            "",
+                            i,
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            null,null,
+                            "",
+                            "",
+                            "",
+                            "",
+                            null,
+                            null,
+                            ""
+                        )
+                        wallList?.add(wallDate)
+                        wallList?.addAll(eventList)
+                    }
+                    // wallList?.add(WallGroupData(i.key, eventList))
+                }
                 var grouppedEventsByDate: Map<String, List<WallData>?>? = null
                 if (res.data!!.events != null) {
                     grouppedEventsByDate =
                         res.data!!.events.groupBy {
-                            if((it != null) && (it.media != null) && (it.media.size > 0)) {
-                                it.media[0].uploaded_at.split("T")[0]
-                            }else{
+                            if ((it != null) && (it.media != null) && (it.media!!.size > 0)) {
+                                it.media!![0].uploaded_at.split("T")[0]
+                            } else {
                                 ""
                             }
                         }
                 }
-                var eventsHashMap: HashMap<String, List<WallData>?>? = null
+                 eventsHashMap= null
                 if (grouppedEventsByDate != null) {
                     eventsHashMap = HashMap(grouppedEventsByDate)
                 }
-
-                wallList = ArrayList()
-                for (i in grouppedByDate) {
-                    val eventList= ArrayList(i.value)
-                    if (eventsHashMap != null && eventsHashMap.isNotEmpty()) {
-                        val eventData = eventsHashMap.get(i.key)
-                       if(eventData!=null){
-                           eventList.addAll(eventData)
-                           eventsHashMap.remove(i.key)
-                       }
-                    }
-                    wallList?.add(WallGroupData(i.key, eventList))
-                }
-                if (eventsHashMap != null&&eventsHashMap.isNotEmpty()) {
-                    for (i in eventsHashMap) {
-                        wallList?.add(WallGroupData(i.key, i.value!!))
-                    }
-                }
-                wallList?.sortBy {
+                eventList = ArrayList()
+                 if (eventsHashMap != null&&eventsHashMap.isNotEmpty()) {
+                     var entries: List<String> = grouppedEventsByDate!!.keys.toList()
+                     entries = entries.reversed()
+                     for (i in entries) {
+                         if (grouppedEventsByDate.get(i)!!.isNotEmpty()&&i.isNotEmpty()) {
+                             var wallDate = WallData("","",
+                                 "",
+                                 i,
+                                 "",
+                                 "",
+                                 "",
+                                 "",
+                                 "",
+                                 null,null,
+                                 "",
+                                 "",
+                                 "",
+                                 "",
+                                 null,
+                                 null,
+                                 ""
+                             )
+                             eventList?.add(wallDate)
+                             eventList?.addAll(grouppedEventsByDate.get(i)!!)
+                         }
+                     }
+                 }
+                /*wallList?.sortBy {
                     it.startedDate
                 }
-                wallList?.reverse()
-                recylerView?.adapter = MyRecyclerAdapter(requireActivity(), this, wallList!!,prefhelper.fetchUserData()?.mid.toString())
-                Log.d("", "")
-            }else{
-                wallList = ArrayList()
-                var grouppedEventsByDate: Map<String, List<WallData>?>? = null
-                if (res.data!=null&&res.data!!.events != null&&res.data!!.events.isNotEmpty()) {
-                    grouppedEventsByDate =
-                        res.data!!.events.groupBy {
-                            it.media[0].uploaded_at.split("T")[0]
-                        }
-                    var eventsHashMap: HashMap<String, List<WallData>?>? = null
-                    if (grouppedEventsByDate != null) {
-                        eventsHashMap = HashMap(grouppedEventsByDate)
-                    }
-                    if (eventsHashMap != null&&eventsHashMap.isNotEmpty()) {
-                        for (i in eventsHashMap) {
-                            wallList?.add(WallGroupData(i.key, i.value!!))
-                        }
-                    }
-                    wallList?.reverse()
-                    recylerView?.adapter = MyRecyclerAdapter(requireActivity(), this, wallList!!,prefhelper.fetchUserData()?.mid.toString())
+                wallList?.reverse()*/
+               /* wallList?.reverse()
+                eventList?.reverse()*/
+                if(tabPosition==0){
+                    setWallAdapter(true)
+                }else{
+                    setWallAdapter(false)
                 }
+                Log.d("", "")
+            } else {
+                eventList = ArrayList()
+                  var grouppedEventsByDate: Map<String, List<WallData>?>? = null
+                  if (res.data!=null&&res.data!!.events != null&&res.data!!.events.isNotEmpty()) {
+                      grouppedEventsByDate =
+                          res.data!!.events.groupBy {
+                              it.media!![0].uploaded_at.split("T")[0]
+                          }
+                      var eventsHashMap: HashMap<String, List<WallData>?>? = null
+                      if (grouppedEventsByDate != null) {
+                          eventsHashMap = HashMap(grouppedEventsByDate)
+                      }
+                      if (eventsHashMap != null&&eventsHashMap.isNotEmpty()) {
+                          var entries: List<String> = grouppedEventsByDate!!.keys.toList()
+                          entries = entries.reversed()
+                          for (i in entries) {
+                              if (grouppedEventsByDate.get(i)!!.isNotEmpty()) {
+                                  var wallDate = WallData("","",
+                                      "",
+                                      i,
+                                      "",
+                                      "",
+                                      "",
+                                      "",
+                                      "",
+                                      null,null,
+                                      "",
+                                      "",
+                                      "",
+                                      "",
+                                      null,
+                                      null,
+                                      ""
+                                  )
+                                  eventList?.add(wallDate)
+                                  eventList?.addAll(grouppedEventsByDate.get(i)!!)
+                              }
+                          }
+                      }
+                    //  eventList?.reverse()
+                      if(tabPosition==0){
+                          setWallAdapter(true)
+                      }else{
+                          setWallAdapter(false)
+                      }
+                  }
             }
         } else {
 
         }
+    }
+    fun setWallAdapter(wall:Boolean){
+        adapter = MyRecyclerAdapter(
+            requireActivity(),
+            this,
+            if(wall){wallList!!}else{eventList!!},
+            prefhelper.fetchUserData()?.mid.toString()
+        )
+        recylerView?.adapter = adapter
     }
 
     fun showToast(text: String) {
@@ -202,7 +335,7 @@ class FamilyWallFragment : BaseFragment(), AdapterListener , LifecycleObserver {
         )
         dialogStorySelectionBinding.addEventLay.setOnClickListener {
             bottomSheetDialog.dismiss()
-            startActivity(Intent(requireActivity(), AddEventActivity::class.java))
+            someActivityResultLauncher.launch(Intent(requireActivity(), AddEventActivity::class.java))
         }
         dialogStorySelectionBinding.addImageLay.setOnClickListener {
             bottomSheetDialog.dismiss()
@@ -211,6 +344,10 @@ class FamilyWallFragment : BaseFragment(), AdapterListener , LifecycleObserver {
         dialogStorySelectionBinding.addVideoLay.setOnClickListener {
             bottomSheetDialog.dismiss()
             videoPicker()
+        }
+        dialogStorySelectionBinding.addTextLay.setOnClickListener {
+            bottomSheetDialog.dismiss()
+            someActivityResultLauncher.launch(Intent(activity, AddTextStoryActivity::class.java))
         }
         bottomSheetDialog.setContentView(dialogStorySelectionBinding.root)
         bottomSheetDialog.show()
@@ -241,26 +378,49 @@ class FamilyWallFragment : BaseFragment(), AdapterListener , LifecycleObserver {
             val url = data as WallData
             val intent = Intent(requireActivity(), PostViewActivity::class.java)
             intent.putExtra("file", url)
-            startActivity(intent)
-        }else if(actionCode==1001){
+            someActivityResultLauncher.launch(intent)
+        } else if (actionCode == 1001) {
             val url = data as WallData
-            var isWall=true
-            if(!TextUtils.isEmpty(url.location_pin)){
-                isWall=false
+            var isWall = true
+            if (!TextUtils.isEmpty(url.location_pin)) {
+                isWall = false
             }
-            deleteDialog(isWall,url.id)
+            deleteDialog(isWall, url.id)
         }
     }
-    fun deleteDialog(isWall:Boolean,id:String){
+    var someActivityResultLauncher = registerForActivityResult(
+        StartActivityForResult(),
+        { result ->
+            if (result.getResultCode() === RESULT_OK) {
+                // There are no request codes
+                    if(result.getData()!=null){
+                        if(!result.data!!.getBooleanExtra("is_back",false)){
+                            viewModel.getWallMedia(prefhelper.fetchUserData()?.mid.toString())
+                        }
+                    }else{
+                        viewModel.getWallMedia(prefhelper.fetchUserData()?.mid.toString())
+                    }
+
+            }
+        })
+    fun deleteDialog(isWall: Boolean, id: String) {
         AlertDialog.Builder(requireContext())
             .setIcon(android.R.drawable.ic_dialog_alert)
-            .setTitle("Delete "+if(isWall){"Wall"}else "Event")
+            .setTitle(
+                "Delete " + if (isWall) {
+                    "Wall"
+                } else "Event"
+            )
             .setMessage("Are you sure you want to delete this wall?")
             .setPositiveButton("Yes",
-                { dialog, which ->  dialog.dismiss()
-                    if(isWall){viewModel.deleteWall(id,prefhelper.fetchUserData()?.mid.toString())}else{
-                    viewModel.deleteEvent(id,prefhelper.fetchUserData()?.mid.toString())
-                } })
+                { dialog, which ->
+                    dialog.dismiss()
+                    if (isWall) {
+                        viewModel.deleteWall(id, prefhelper.fetchUserData()?.mid.toString())
+                    } else {
+                        viewModel.deleteEvent(id, prefhelper.fetchUserData()?.mid.toString())
+                    }
+                })
             .setNegativeButton("No", null)
             .show()
     }
@@ -301,13 +461,13 @@ class FamilyWallFragment : BaseFragment(), AdapterListener , LifecycleObserver {
             }
             val wallIntent = Intent(requireActivity(), WallPostActivity::class.java)
             wallIntent.putExtra("file", getFile(requireActivity(), viewModel.photoFileUri!!))
-            startActivity(wallIntent)
+            someActivityResultLauncher.launch(wallIntent)
         } else if (requestCode == SELECT_VIDEO && resultCode == RESULT_OK) {
             if (intent != null) {
                 viewModel.photoFileUri = intent.data!!
                 val wallIntent = Intent(requireActivity(), WallPostActivity::class.java)
                 wallIntent.putExtra("file", getFile(requireActivity(), viewModel.photoFileUri!!))
-                startActivity(wallIntent)
+                someActivityResultLauncher.launch(wallIntent)
             }
         }
         super.onActivityResult(requestCode, resultCode, intent)
