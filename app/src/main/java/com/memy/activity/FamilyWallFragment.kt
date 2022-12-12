@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,7 +18,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.FileProvider
+import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
@@ -86,14 +89,18 @@ class FamilyWallFragment : BaseFragment(), AdapterListener, LifecycleObserver {
         }
         recylerView!!.layoutManager = layoutManager
         tabPosition=0
-        binding.tab.addTab(binding.tab.newTab().setText("Walls"))
-        binding.tab.addTab(binding.tab.newTab().setText("Events"))
+        binding.tab.addTab(binding.tab.newTab().setText("Family Wall"))
+        binding.tab.addTab(binding.tab.newTab().setText("Family Events"))
         binding.tab.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tabPosition=tab!!.position
-                if(tab!!.position==0){
+                if(tab.position==0){
+                    setTabBG(R.drawable.tab_left_select,R.drawable.tab_right_unselect);
                     setWallAdapter(true)
                 }else{
+
+
+                    setTabBG(R.drawable.tab_left_unselect,R.drawable.tab_right_select);
                     setWallAdapter(false)
                 }
             }
@@ -103,24 +110,59 @@ class FamilyWallFragment : BaseFragment(), AdapterListener, LifecycleObserver {
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 tabPosition=tab!!.position
-                if(tab!!.position==0){
+                if(tab.position==0){
                     setWallAdapter(true)
                 }else{
                     setWallAdapter(false)
                 }
             }
         })
-
+        binding.tab.setTabTextColors(Color.parseColor("#000000"), Color.parseColor("#ffffff"));
+        setTabBG(R.drawable.tab_left_select,R.drawable.tab_right_unselect);
         loadProfileImage(imgUrl)
         viewModel.getWallMedia(prefhelper.fetchUserData()?.mid.toString())
         showProgressBar()
     }
 
-
-    override fun onResume() {
-        super.onResume()
+    private fun setTabBG(tab1: Int, tab2: Int) {
+        val tabStrip = binding.tab.getChildAt(0) as ViewGroup
+        val tabView1 = tabStrip.getChildAt(0)
+        val tabView2 = tabStrip.getChildAt(1)
+        if (tabView1 != null) {
+            val paddingStart = tabView1.paddingStart
+            val paddingTop = tabView1.paddingTop
+            val paddingEnd = tabView1.paddingEnd
+            val paddingBottom = tabView1.paddingBottom
+            ViewCompat.setBackground(
+                tabView1,
+                AppCompatResources.getDrawable(tabView1.context, tab1)
+            )
+            ViewCompat.setPaddingRelative(
+                tabView1,
+                paddingStart,
+                paddingTop,
+                paddingEnd,
+                paddingBottom
+            )
+        }
+        if (tabView2 != null) {
+            val paddingStart = tabView2.paddingStart
+            val paddingTop = tabView2.paddingTop
+            val paddingEnd = tabView2.paddingEnd
+            val paddingBottom = tabView2.paddingBottom
+            ViewCompat.setBackground(
+                tabView2,
+                AppCompatResources.getDrawable(tabView2.context, tab2)
+            )
+            ViewCompat.setPaddingRelative(
+                tabView2,
+                paddingStart,
+                paddingTop,
+                paddingEnd,
+                paddingBottom
+            )
+        }
     }
-
     private fun loadProfileImage(url: String?) {
         /* if (!TextUtils.isEmpty(url)) {
              Glide.with(this)
@@ -171,7 +213,7 @@ class FamilyWallFragment : BaseFragment(), AdapterListener, LifecycleObserver {
                 }
                 lateinit var entries: List<String>
                 entries = grouppedByDate.keys.toList<String>()
-                entries = entries.reversed()
+                entries = entries.sortedDescending()
                 for (i in entries) {
                     val eventList = ArrayList(grouppedByDate.get(i))
                     if (eventsHashMap != null && eventsHashMap.isNotEmpty()) {
@@ -225,7 +267,7 @@ class FamilyWallFragment : BaseFragment(), AdapterListener, LifecycleObserver {
                 eventList = ArrayList()
                  if (eventsHashMap != null&&eventsHashMap.isNotEmpty()) {
                      var entries: List<String> = grouppedEventsByDate!!.keys.toList()
-                     entries = entries.reversed()
+                     entries = entries.sortedDescending()
                      for (i in entries) {
                          if (grouppedEventsByDate.get(i)!!.isNotEmpty()&&i.isNotEmpty()) {
                              var wallDate = WallData("","",
@@ -275,7 +317,7 @@ class FamilyWallFragment : BaseFragment(), AdapterListener, LifecycleObserver {
                           eventsHashMap = HashMap(grouppedEventsByDate)
                       }
                       if (eventsHashMap != null&&eventsHashMap.isNotEmpty()) {
-                          var entries: List<String> = grouppedEventsByDate!!.keys.toList()
+                          var entries: List<String> = grouppedEventsByDate.keys.toList()
                           entries = entries.reversed()
                           for (i in entries) {
                               if (grouppedEventsByDate.get(i)!!.isNotEmpty()) {
@@ -391,13 +433,15 @@ class FamilyWallFragment : BaseFragment(), AdapterListener, LifecycleObserver {
     var someActivityResultLauncher = registerForActivityResult(
         StartActivityForResult(),
         { result ->
-            if (result.getResultCode() === RESULT_OK) {
+            if (result.resultCode === RESULT_OK) {
                 // There are no request codes
-                    if(result.getData()!=null){
+                    if(result.data !=null){
                         if(!result.data!!.getBooleanExtra("is_back",false)){
+                            showProgressBar()
                             viewModel.getWallMedia(prefhelper.fetchUserData()?.mid.toString())
                         }
                     }else{
+                        showProgressBar()
                         viewModel.getWallMedia(prefhelper.fetchUserData()?.mid.toString())
                     }
 
@@ -449,7 +493,7 @@ class FamilyWallFragment : BaseFragment(), AdapterListener, LifecycleObserver {
         val capturedPhoto = File(root, "memy_profile_$timeLng.jpeg")
         return FileProvider.getUriForFile(
             applicationContext,
-            applicationContext.getPackageName().toString() + ".fileprovider",
+            applicationContext.packageName.toString() + ".fileprovider",
             capturedPhoto
         )
     }
