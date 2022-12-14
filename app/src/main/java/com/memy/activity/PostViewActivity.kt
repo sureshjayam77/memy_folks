@@ -99,7 +99,12 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
             storiesProgressView?.setStoriesListener(this) // <- set listener
             counter = 2
             storiesProgressView?.startStories() // <- start progress
+            binding.lEdit.visibility=View.GONE
+            binding.lDelete.visibility=View.GONE
             if (!TextUtils.isEmpty(wallData?.location)) {
+                if(prefhelper.fetchUserData()?.mid.toString().equals(wallData!!.mid_id)){
+                    binding.lEdit.visibility=View.VISIBLE
+                }
                 binding.eventLay.visibility = View.VISIBLE
                 binding.lEdit.visibility=View.VISIBLE
                 val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
@@ -236,19 +241,16 @@ class PostViewActivity : AppBaseActivity(), StoriesProgressView.StoriesListener 
                 }
             }
         })
-        if(prefhelper.fetchUserData()?.mid.toString().equals(wallData!!.mid_id)){
-            binding.lDelete.visibility=View.VISIBLE
-            binding.lEdit.visibility=View.VISIBLE
-        }else{
-            binding.lEdit.visibility=View.GONE
-            binding.lDelete.visibility=View.GONE
-        }
+
         binding.lDelete.setOnClickListener {
             var isWall=true
             if(!TextUtils.isEmpty(wallData!!.location_pin)){
                 isWall=false
             }
             deleteDialog(isWall,wallData!!.id)
+        }
+        if(prefhelper.fetchUserData()?.mid.toString().equals(wallData!!.mid_id)){
+            binding.lDelete.visibility=View.VISIBLE
         }
         binding.txtContent.text = wallData?.content
         if(TextUtils.isEmpty(wallData?.content)){
