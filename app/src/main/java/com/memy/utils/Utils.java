@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Base64;
 import android.view.Display;
@@ -233,5 +234,21 @@ public class Utils {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static boolean isValidMobileNumber(String countryCode, String mobileNumber){
+       if(TextUtils.isEmpty(countryCode)){
+           countryCode = "";
+       }
+
+       if((TextUtils.isEmpty(mobileNumber)) || (TextUtils.isEmpty(mobileNumber.trim()))){
+           mobileNumber = "";
+       }
+
+       if((countryCode.equalsIgnoreCase("+91")) || (countryCode.equalsIgnoreCase("91"))){
+           return (mobileNumber.length() == 10);
+       }else{
+           return (mobileNumber.length() >= 8);
+       }
     }
 }

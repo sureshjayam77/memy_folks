@@ -11,6 +11,7 @@ import android.webkit.URLUtil
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
@@ -99,6 +100,8 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         binding.menuIconImageView.visibility = View.GONE
         binding.bottomTempView.visibility = View.VISIBLE
         binding.guideImageView.visibility = View.GONE
+
+        binding.drwayerLay.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     private fun setupViewModel() {

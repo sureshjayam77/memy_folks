@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.memy.pojo.LoginReqObj
 import com.memy.pojo.MobileNumberVerifyResObj
 import com.memy.retrofit.LoginRepository
+import com.memy.utils.Utils
 
 class SignInViewModel : AppBaseViewModel() {
     var isEnableGenerateOtpBtn = MediatorLiveData<Boolean>()
@@ -28,7 +29,7 @@ class SignInViewModel : AppBaseViewModel() {
         val cc: String? = countryCode.value
         val pn: String? = phoneNumber.value
 
-        isEnableGenerateOtpBtn.value = ((!TextUtils.isEmpty(cc)) && (!TextUtils.isEmpty(pn)) && (pn?.length!! >= MAX_MOBILE_NUMBER_LENGTH) && (isTermsChecked.value ?: false))
+        isEnableGenerateOtpBtn.value = ((!TextUtils.isEmpty(cc)) && (!TextUtils.isEmpty(pn)) && (Utils.isValidMobileNumber(cc,pn)) /*(pn?.length!! >= MAX_MOBILE_NUMBER_LENGTH)*/ && (isTermsChecked.value ?: false))
     }
 
     fun verifyMobileNumber(){

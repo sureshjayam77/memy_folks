@@ -423,7 +423,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             }
             R.id.inviteBtn -> {
                 val primaryMobileNumber: String? = viewModel.mainMobileNumber.value?.trim()
-                if ((!TextUtils.isEmpty(primaryMobileNumber)) && (primaryMobileNumber?.length!! > 0) && (primaryMobileNumber?.length!! <= 9)
+                if ((!TextUtils.isEmpty(primaryMobileNumber)) && (primaryMobileNumber?.length!! > 0) && /*(primaryMobileNumber?.length!! <= 9)*/(!Utils.isValidMobileNumber(viewModel.mainCountryCode.value,viewModel.mainMobileNumber.value))
                 )
                 {
                     showAlertDialog(R.id.do_nothing, getString(R.string.mobile_number_error), getString(R.string.label_ok), "")
@@ -492,7 +492,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            if (intent != null) {
+            if ((intent != null) && (intent.data != null)) {
                 viewModel.photoFileUri = intent.data!!
                 viewModel.updatedImageURI = intent.data!!
                 viewModel.selectedProfileURL = ""
@@ -1072,7 +1072,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
             msg = getString(R.string.first_name_error)
         }/* else if ((TextUtils.isEmpty(lastName)) || (firstName?.length!! < 0)) {
             msg = getString(R.string.last_name_error)
-        }*/else if ((!TextUtils.isEmpty(primaryMobileNumber)) && (primaryMobileNumber?.length!! > 0) && (primaryMobileNumber?.length!! <= 9)
+        }*/else if ((!TextUtils.isEmpty(primaryMobileNumber)) && (primaryMobileNumber?.length!! > 0) && /*(primaryMobileNumber?.length!! <= 9)*/(!Utils.isValidMobileNumber(primaryCC,primaryMobileNumber))
         )
         {
             msg = getString(R.string.mobile_number_error)
@@ -1095,7 +1095,7 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                     primaryCC
                 )) && (TextUtils.isEmpty(primaryMobileNumber)))
             )*/
-            else if ((!TextUtils.isEmpty(primaryMobileNumber)) && (primaryMobileNumber?.length!! > 0) && (primaryMobileNumber?.length!! <= 9)
+            else if ((!TextUtils.isEmpty(primaryMobileNumber)) && (primaryMobileNumber?.length!! > 0) && /*(primaryMobileNumber?.length!! <= 9)*/(!Utils.isValidMobileNumber(primaryCC,primaryMobileNumber))
             )
              {
                 msg = getString(R.string.mobile_number_error)
@@ -1371,6 +1371,14 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                         binding.relationPhotoImageView.setImageResource(R.drawable.ic_profile_male)
                     }
                     binding.relationPersonNameTextView.setText(res?.data.firstname ?: "")
+                }else if ((res?.data != null) && (prefhelper.fetchUserData()?.mid == res?.data?.mid)) {
+                    showAlertDialog(
+                        R.id.do_nothing,
+                        getString(R.string.mobile_number_already_exist),
+                        getString(R.string.close_label),
+                        ""
+                    )
+                    viewModel.mainMobileNumber.value = ""
                 }
             }
         }
@@ -1410,7 +1418,10 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
     }
 
     fun validateMobileNumber(str : String){
-        if((viewModel.isForAddFamily.value != null) && (viewModel.isForAddFamily.value == true) && (viewModel.mainMobileNumber.value != null) && (viewModel.mainMobileNumber.value?.length!! > 9)/* && (viewModel.mainCountryCode.value != null) && (viewModel.mainCountryCode.value?.length!! > 1)*/){
+        if((viewModel.isForAddFamily.value != null) && (viewModel.isForAddFamily.value == true) && (viewModel.mainMobileNumber.value != null) && (Utils.isValidMobileNumber(viewModel.mainCountryCode.value,viewModel.mainMobileNumber.value)) /*(viewModel.mainMobileNumber.value?.length!! > 9)*//* && (viewModel.mainCountryCode.value != null) && (viewModel.mainCountryCode.value?.length!! > 1)*/){
+            showProgressBar()
+            viewModel.callIsCusExits()
+        }else if((viewModel.isForEditFamily.value != null) && (viewModel.isForEditFamily.value == true) && (Utils.isValidMobileNumber(viewModel.mainCountryCode.value,viewModel.mainMobileNumber.value)) && (viewModel.mainMobileNumber.value.equals(viewModel.userData?.mobile) == false)){
             showProgressBar()
             viewModel.callIsCusExits()
         }
