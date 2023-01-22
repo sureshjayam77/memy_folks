@@ -100,7 +100,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         binding.menuIconImageView.visibility = View.GONE
         binding.bottomTempView.visibility = View.VISIBLE
         binding.guideImageView.visibility = View.GONE
-
+        binding.homeImageView.visibility = View.VISIBLE
         binding.drwayerLay.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
@@ -930,5 +930,9 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
                 showAlertDialog(R.id.do_nothing, message, getString(R.string.close_label), "")
             }
         }
+    }
+
+    fun showLoginUserDashboard(v: View?) {
+        startActivityIntent(Intent(this, DashboardActivity::class.java), true)
     }
 }
