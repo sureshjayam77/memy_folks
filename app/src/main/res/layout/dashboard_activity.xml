@@ -533,8 +533,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:orientation="vertical"
-                            android:paddingBottom="@dimen/add_family_parent_margin">
+                            android:orientation="vertical">
+
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -593,7 +593,23 @@
                                 app:cornerRadius="30dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/termsConditionLayout" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/infoLabel"
+                                style="@style/RegularText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:layout_weight="1"
+                                android:visibility="gone"
+                                android:background="@color/app_color"
+                                android:text="@string/label_atleast_one_parent"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/common_text_size" />
+
                         </LinearLayout>
+
+
                     </androidx.cardview.widget.CardView>
                     <!-- </androidx.core.widget.NestedScrollView>-->
                 </FrameLayout>

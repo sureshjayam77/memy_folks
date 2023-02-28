@@ -745,6 +745,18 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         })
         binding.addMemberPopupRecyclerview.adapter = adapter
 
+        var eigibeToAddBrotherSister = 0
+        for(item in data){
+            if((item.is_applicable ?: false == false) && ((item.id == 7) || (item.id == 8) || (item.id == 9) || (item.id == 10))){
+                eigibeToAddBrotherSister = eigibeToAddBrotherSister + 1
+            }
+        }
+
+        if(eigibeToAddBrotherSister == 2){
+            binding.infoLabel.visibility = View.VISIBLE
+        }else{
+            binding.infoLabel.visibility = View.GONE
+        }
 
         binding.inviteBtn.setOnClickListener {
             val editProfileData =
