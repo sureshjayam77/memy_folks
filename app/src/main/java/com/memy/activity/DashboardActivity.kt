@@ -980,6 +980,8 @@ class DashboardActivity : AppBaseActivity() {
 
         if(eigibeToAddBrotherSister == 2){
             binding.infoLabel.visibility = View.VISIBLE
+            binding.infoLabel.setText(String.format(getString(R.string.label_atleast_one_parent),viewModel.profileResForEdit.value?.data?.firstname))
+
         }else{
             binding.infoLabel.visibility = View.GONE
         }

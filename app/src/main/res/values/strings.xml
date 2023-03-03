@@ -87,7 +87,7 @@
     <string name="label_adding_relationship">Adding %s for %s</string>
     <string name="label_native">Native</string>
     <string name="label_lineage">Lineage</string>
-    <string name="label_atleast_one_parent">Add one parent to enable addition of brother or sister</string>
+    <string name="label_atleast_one_parent">Add one parent of %s to enable the addition of a brother or sister</string>
 
 
 
