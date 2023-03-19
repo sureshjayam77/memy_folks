@@ -1,6 +1,8 @@
 package com.memy.activity
 
 import android.app.Activity
+import android.app.DownloadManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -42,6 +44,7 @@ class DashboardActivity : AppBaseActivity() {
     lateinit var binding: DashboardActivityBinding
     lateinit var viewModel: DashboardViewModel
     var isAdmin = false
+    var manager: DownloadManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,10 +86,12 @@ class DashboardActivity : AppBaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.userData.value = prefhelper.fetchUserData()
-        loadProfileImage(viewModel.userData.value?.photo)
-        if (viewModel.tabPos == 0) {
-            viewModel.isTreeView.value = true
+        if(viewModel.isDownloadFileCick == false) {
+            viewModel.userData.value = prefhelper.fetchUserData()
+            loadProfileImage(viewModel.userData.value?.photo)
+            if (viewModel.tabPos == 0) {
+                viewModel.isTreeView.value = true
+            }
         }
     }
 
@@ -576,7 +581,22 @@ class DashboardActivity : AppBaseActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (PermissionUtil().requestPermissionForCamera(this, false)) {
+        if(PermissionUtil().MANDATORY_FOR_STORAGE_ONLY_CODE == requestCode){
+            binding.progressFrameLayout.postDelayed(Runnable {
+                viewModel.isDownloadFileCick = false
+            },3000)
+
+            if(PermissionUtil().requestPermissionForStorage(this,false)){
+                manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                val uri =
+                    Uri.parse(viewModel.downloadURL ?: "")
+                val request: DownloadManager.Request = DownloadManager.Request(uri)
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                val reference: Long = manager!!.enqueue(request)
+            }else if(PermissionUtil().isStoragePermissionUnderDontAsk(this)){
+
+            }
+        }else if (PermissionUtil().requestPermissionForCamera(this, false)) {
             if (viewModel.isTreeSwitched == true) {
                 viewModel.isTreeSwitched = false
                 validateOpenStoryView()

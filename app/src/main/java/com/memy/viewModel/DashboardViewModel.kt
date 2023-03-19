@@ -47,6 +47,8 @@ class DashboardViewModel : AppBaseViewModel() {
     var inviteCommonResData = MutableLiveData<CommonResponse>()
     var tabPos = 0 //Tree 0, story = 1,bubble = 2
     var updateAdminRes = MutableLiveData<CommonResponse>()
+    var isDownloadFileCick = false
+    var downloadURL = ""
 
     init {
         dashboardRepository = DashboardRepository()

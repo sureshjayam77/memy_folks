@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +27,7 @@ import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
 
 import android.webkit.WebChromeClient
 import androidx.databinding.adapters.SeekBarBindingAdapter
+import com.memy.utils.PermissionUtil
 
 
 class TreeViewFragment : BaseFragment() {
@@ -140,6 +143,26 @@ class TreeViewFragment : BaseFragment() {
         }
 
         @JavascriptInterface
+        fun downloadFile(url: String?,data : String?) {
+            Log.d("downloadFile",""+url)
+            if (!TextUtils.isEmpty(url)){
+                viewModel?.downloadURL = url ?: ""
+                viewModel?.isDownloadFileCick = true
+                PermissionUtil().requestPermissionForStorage(mContext,true)
+            }
+        }
+
+        @JavascriptInterface
+        fun downloadFile(url: String?) {
+            Log.d("downloadFile",""+url)
+            if (!TextUtils.isEmpty(url)){
+                viewModel?.downloadURL = url ?: ""
+                viewModel?.isDownloadFileCick = true
+                PermissionUtil().requestPermissionForStorage(mContext,true)
+            }
+        }
+
+        @JavascriptInterface
         fun viewFamilyTree(user: String?) {
             if (user?.toInt() != viewModel?.userData?.value?.mid) {
                 val intent = Intent(mContext, FamilyMemberProfileActivity::class.java)
@@ -166,4 +189,6 @@ class TreeViewFragment : BaseFragment() {
             )
         }
     }
+
+
 }

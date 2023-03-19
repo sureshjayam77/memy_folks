@@ -13,6 +13,7 @@ open class PermissionUtil {
 
     val MANDATORY_FOR_CAMERA_CODE = 1643
     val MANDATORY_FOR_CONTACT_CODE = 1644
+    val MANDATORY_FOR_STORAGE_ONLY_CODE = 1645
 
     /**
      * Method helps to add a permission into permission list
@@ -49,6 +50,30 @@ open class PermissionUtil {
         val permissionList: MutableList<String> = ArrayList()
         addPermission(permissionList, Manifest.permission.CAMERA, context!!)
         addPermission(permissionList, Manifest.permission.READ_EXTERNAL_STORAGE, context)
+        addPermission(permissionList, Manifest.permission.WRITE_EXTERNAL_STORAGE, context)
+        if (permissionList.size > 0) {
+            if(showRationalDialog == true) {
+                ActivityCompat.requestPermissions(
+                    (context as Activity?)!!,
+                    permissionList.toTypedArray(),
+                    0
+                )
+            }
+            status = false
+        }
+        return status
+    }
+
+    /**
+     * Method handling the permissions for camera
+     *
+     * @param context    activity context
+     * @return boolean variable
+     */
+    fun initRequestPermissionForStorage(context: Context?,showRationalDialog: Boolean?): Boolean {
+        var status = true
+        val permissionList: MutableList<String> = ArrayList()
+        addPermission(permissionList, Manifest.permission.READ_EXTERNAL_STORAGE, context!!)
         addPermission(permissionList, Manifest.permission.WRITE_EXTERNAL_STORAGE, context)
         if (permissionList.size > 0) {
             if(showRationalDialog == true) {
@@ -114,6 +139,32 @@ open class PermissionUtil {
         return status
     }
 
+
+    /**
+     * Method handling the permissions for camera
+     *
+     * @param context    activity context
+     * @return boolean variable
+     */
+    fun requestPermissionForStorage(context: Context?,showRationalDialog: Boolean?): Boolean {
+        var status = true
+        val permissionList: MutableList<String> = ArrayList()
+        addPermission(permissionList, Manifest.permission.READ_EXTERNAL_STORAGE, context!!)
+        addPermission(permissionList, Manifest.permission.WRITE_EXTERNAL_STORAGE, context)
+        if (permissionList.size > 0) {
+            if(showRationalDialog == true) {
+                ActivityCompat.requestPermissions(
+                    (context as Activity?)!!,
+                    permissionList.toTypedArray(),
+                    MANDATORY_FOR_STORAGE_ONLY_CODE
+                )
+            }
+            status = false
+        }
+        return status
+    }
+
+
     /**
      * Method handling the permissions for camera
      *
@@ -146,5 +197,9 @@ open class PermissionUtil {
 
     fun isContactPermissionUnderDontAsk(context : Context) : Boolean{
         return ((!ActivityCompat.shouldShowRequestPermissionRationale((context as Activity),Manifest.permission.READ_CONTACTS)))
+    }
+
+    fun isStoragePermissionUnderDontAsk(context : Context) : Boolean{
+        return ((!ActivityCompat.shouldShowRequestPermissionRationale((context as Activity),Manifest.permission.READ_EXTERNAL_STORAGE)) || (!ActivityCompat.shouldShowRequestPermissionRationale((context as Activity),Manifest.permission.WRITE_EXTERNAL_STORAGE)))
     }
 }
