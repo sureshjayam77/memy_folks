@@ -1,7 +1,10 @@
 package com.memy.activity
 
 import android.app.Activity
+import android.app.DownloadManager
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -38,6 +41,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
     lateinit var viewModel: DashboardViewModel
     private var isInitialCall = true
     var isAdmin = false
+    var manager: DownloadManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +72,9 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         } else if (id == R.id.member_admin_access_id) {
             binding.progressFrameLayout.visibility = View.VISIBLE
             viewModel.updateAdminAccess(isAdmin,prefhelper?.fetchUserData()?.mid ?: -1)
-        }
+        }/* else if(id == R.id.storage_permission_id){
+            navigateStoragePermissionSettingsPage()
+        }*/
     }
 
     override fun dialogNegativeCallBack() {
@@ -82,6 +88,10 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         }
 
         fetchProfileData(false)
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     override fun onPause() {
@@ -437,7 +447,18 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (PermissionUtil().requestPermissionForCamera(this, false)) {
+
+        /*if(PermissionUtil().MANDATORY_FOR_STORAGE_ONLY_CODE == requestCode){
+            binding.progressFrameLayout.postDelayed(Runnable {
+                viewModel.isDownloadFileCick = false
+            },3000)
+
+            if(PermissionUtil().requestPermissionForStorage(this,false)){
+                downloadTreeSS()
+            }else if(PermissionUtil().isStoragePermissionUnderDontAsk(this)){
+                showStoragePermissionDialog()
+            }
+        }else*/ if (PermissionUtil().requestPermissionForCamera(this, false)) {
             if (viewModel.isTreeSwitched == true) {
                 viewModel.isTreeSwitched = false
                 validateOpenStoryView()
@@ -948,4 +969,33 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
     fun showLoginUserDashboard(v: View?) {
         startActivityIntent(Intent(this, DashboardActivity::class.java), true)
     }
+
+    /*private fun navigateStoragePermissionSettingsPage() {
+        val intent = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", packageName, null)
+        )
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        resultStorageLauncher.launch(intent)
+    }
+
+    var resultStorageLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                if(PermissionUtil().requestPermissionForStorage(this,false)){
+                    downloadTreeSS()
+                }
+            }
+        }
+
+    private fun showStoragePermissionDialog() {
+        showAlertDialog(
+            R.id.storage_permission_id,
+            getString(R.string.label_camera_storage_permission_req),
+            getString(R.string.label_settings),
+            getString(R.string.label_cancel)
+        )
+    }*/
+
+
 }

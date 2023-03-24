@@ -19,8 +19,15 @@ import com.memy.utils.PreferenceHelper
 import com.memy.utils.Utils
 import com.squareup.moshi.Moshi
 import android.app.Activity
+import android.app.DownloadManager
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+
+import com.memy.MainActivity
+
+import android.content.BroadcastReceiver
+import com.memy.MemyApplication
 
 
 open abstract class AppBaseActivity : AppCompatActivity(), DialogClickCallBack {
@@ -130,6 +137,5 @@ open abstract class AppBaseActivity : AppCompatActivity(), DialogClickCallBack {
             e.printStackTrace()
         }
     }
-
 
 }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -81,7 +82,9 @@ class DashboardActivity : AppBaseActivity() {
         } else if (id == R.id.member_admin_access_id) {
             binding.progressFrameLayout.visibility = View.VISIBLE
             viewModel.updateAdminAccess(isAdmin,prefhelper?.fetchUserData()?.mid ?: -1)
-        }
+        } /*else if(id == R.id.storage_permission_id){
+            navigateStoragePermissionSettingsPage()
+        }*/
     }
 
     override fun onResume() {
@@ -93,6 +96,10 @@ class DashboardActivity : AppBaseActivity() {
                 viewModel.isTreeView.value = true
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
     }
 
     override fun dialogNegativeCallBack() {
@@ -542,6 +549,7 @@ class DashboardActivity : AppBaseActivity() {
         resultLauncher.launch(intent)
     }
 
+
     var resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -553,6 +561,24 @@ class DashboardActivity : AppBaseActivity() {
                 }
             }
         }
+
+   /* private fun navigateStoragePermissionSettingsPage() {
+        val intent = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", packageName, null)
+        )
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        resultStorageLauncher.launch(intent)
+    }
+
+    var resultStorageLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                if(PermissionUtil().requestPermissionForStorage(this,false)){
+                    downloadTreeSS()
+                }
+            }
+        }*/
 
     fun switchTree(v: View) {
         viewModel.isTreeSwitched = true
@@ -581,22 +607,17 @@ class DashboardActivity : AppBaseActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if(PermissionUtil().MANDATORY_FOR_STORAGE_ONLY_CODE == requestCode){
+        /*if(PermissionUtil().MANDATORY_FOR_STORAGE_ONLY_CODE == requestCode){
             binding.progressFrameLayout.postDelayed(Runnable {
                 viewModel.isDownloadFileCick = false
             },3000)
 
             if(PermissionUtil().requestPermissionForStorage(this,false)){
-                manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                val uri =
-                    Uri.parse(viewModel.downloadURL ?: "")
-                val request: DownloadManager.Request = DownloadManager.Request(uri)
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                val reference: Long = manager!!.enqueue(request)
+                downloadTreeSS()
             }else if(PermissionUtil().isStoragePermissionUnderDontAsk(this)){
-
+                showStoragePermissionDialog()
             }
-        }else if (PermissionUtil().requestPermissionForCamera(this, false)) {
+        }else*/ if (PermissionUtil().requestPermissionForCamera(this, false)) {
             if (viewModel.isTreeSwitched == true) {
                 viewModel.isTreeSwitched = false
                 validateOpenStoryView()
@@ -1136,4 +1157,12 @@ class DashboardActivity : AppBaseActivity() {
         }
     }
 
+    private fun showStoragePermissionDialog() {
+        showAlertDialog(
+            R.id.storage_permission_id,
+            getString(R.string.label_camera_storage_permission_req),
+            getString(R.string.label_settings),
+            getString(R.string.label_cancel)
+        )
+    }
 }

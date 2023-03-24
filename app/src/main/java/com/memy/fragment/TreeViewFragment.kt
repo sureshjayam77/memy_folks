@@ -2,9 +2,14 @@ package com.memy.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,8 +31,11 @@ import com.squareup.moshi.Moshi
 import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
 
 import android.webkit.WebChromeClient
+import android.widget.Toast
 import androidx.databinding.adapters.SeekBarBindingAdapter
+import com.memy.MemyApplication
 import com.memy.utils.PermissionUtil
+import java.io.File
 
 
 class TreeViewFragment : BaseFragment() {
@@ -76,9 +84,10 @@ class TreeViewFragment : BaseFragment() {
     class WebAppInterface {
         var mContext: Activity? = null
         var mView: WebView? = null
-        lateinit var moshi: Moshi
+        var moshi: Moshi
         var viewModel : DashboardViewModel? = null
         var prefHelper: PreferenceHelper? = null
+        var manager: DownloadManager? = null
 
         /** Instantiate the interface and set the context  */
         constructor(c: Activity?,vm : DashboardViewModel, w: WebView?) {
@@ -143,22 +152,14 @@ class TreeViewFragment : BaseFragment() {
         }
 
         @JavascriptInterface
-        fun downloadFile(url: String?,data : String?) {
-            Log.d("downloadFile",""+url)
-            if (!TextUtils.isEmpty(url)){
-                viewModel?.downloadURL = url ?: ""
-                viewModel?.isDownloadFileCick = true
-                PermissionUtil().requestPermissionForStorage(mContext,true)
-            }
-        }
-
-        @JavascriptInterface
         fun downloadFile(url: String?) {
             Log.d("downloadFile",""+url)
             if (!TextUtils.isEmpty(url)){
                 viewModel?.downloadURL = url ?: ""
                 viewModel?.isDownloadFileCick = true
-                PermissionUtil().requestPermissionForStorage(mContext,true)
+               // if(PermissionUtil().requestPermissionForStorage(mContext,true)) {
+                    downloadTreeSS()
+               // }
             }
         }
 
@@ -187,6 +188,58 @@ class TreeViewFragment : BaseFragment() {
                 Intent.createChooser(intent, "share"),
                 false
             )
+        }
+
+        fun downloadTreeSS(){
+            manager = mContext?.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            /*val uri =
+                Uri.parse(viewModel?.downloadURL ?: "")
+            val request: DownloadManager.Request = DownloadManager.Request(uri)*/
+
+
+            val url = viewModel?.downloadURL ?: ""
+            var fileName = url.substring(url.lastIndexOf('/') + 1)
+            fileName = fileName.substring(0, 1).toUpperCase() + fileName.substring(1)
+            val extension: String =
+                url.substring(url.lastIndexOf("."))
+
+            val request = DownloadManager.Request(Uri.parse(url))
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED) // Visibility of the download Notification
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,"MeMyFolks_Family_Tree$extension") // Uri of the destination file
+                .setTitle("MeMyFolks_Family_Tree$extension") // Title of the Download Notification
+                .setDescription("Downloading") // Description of the Download Notification
+                .setAllowedOverMetered(true) // Set if download is allowed on Mobile network
+                .setAllowedOverRoaming(true) // Set if download is allowed on roaming network
+
+
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            MemyApplication.downloadFileUniqueId = manager?.enqueue(request) ?: 0
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().registerReceiver(onDownloadComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireActivity().unregisterReceiver(onDownloadComplete)
+    }
+
+    protected val onDownloadComplete: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            try {
+                //Fetching the download id received with the broadcast
+                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                //Checking if the received broadcast is for our enqueued download by matching download id
+                if (MemyApplication.downloadFileUniqueId == id) {
+                    // Toast.makeText(requireActivity().applicationContext, "Download Completed", Toast.LENGTH_SHORT).show()
+                    loadProfileTree()
+                }
+            }catch (e : Exception){
+                e.printStackTrace()
+            }
         }
     }
 

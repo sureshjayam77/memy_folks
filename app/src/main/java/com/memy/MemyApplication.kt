@@ -12,6 +12,7 @@ class MemyApplication : Application() {
 
     companion object {
         var instance: MemyApplication? = null
+        var downloadFileUniqueId : Long = 0
     }
 
     override fun onCreate() {
