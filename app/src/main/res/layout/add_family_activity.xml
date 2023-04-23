@@ -244,7 +244,7 @@
                             android:enabled="@{viewModel.allowEditMobileNumber ? true : false}"
                             android:includeFontPadding="false"
                             android:inputType="phone"
-                            android:maxLength="10"
+                            android:maxLength="11"
                             android:layout_weight="1"
                             android:digits="0123456789"
                             android:maxLines="1"
@@ -344,7 +344,7 @@
                             android:hint="9XXXXXXXXX"
                             android:includeFontPadding="false"
                             android:inputType="phone"
-                            android:maxLength="10"
+                            android:maxLength="11"
                             android:maxLines="1"
                             android:padding="@dimen/field_margin_top"
                             android:digits="0123456789"
@@ -844,30 +844,6 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
-                           <!-- <View
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:visibility="@{viewModel.isForAddFamily ? View.VISIBLE : View.GONE}"
-                                android:background="@color/white" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/saveBtnTextView"
-                                style="@style/RegularText"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:enabled="true"
-                                android:background="@color/app_color"
-                                android:gravity="center"
-                                android:padding="@dimen/field_margin_top"
-                                android:textAllCaps="true"
-                                android:text="@string/label_save"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/common_text_size"
-                                android:visibility="@{viewModel.isForAddFamily ? View.VISIBLE : View.GONE}"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />-->
-
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
@@ -927,8 +903,21 @@
                         android:textColor="@color/white"
                         android:textSize="@dimen/common_text_size"
                         app:cornerRadius="30dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/deleteBtn" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/deleteInfoTextView"
+                        style="@style/RegularText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/field_margin_top"
+                        android:text="@string/label_delete_acc_info"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="@dimen/common_edit_txt_padding"
+                        android:textSize="@dimen/common_text_size"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/cancelBtn" />
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -18,14 +18,17 @@ class PreferenceHelper {
     private val APP_UPDATE_SKIP_TIME = "APP_UPDATE_SKIP_TIME"
     private val FCM_PUSH_NOTIFICATION_DATA_KEY = "FCM_PUSH_NOTIFICATION_DATA_KEY"
     private val GUIDE_SKIP_LABEL_CLICKED = "GUIDE_SKIP_LABEL_CLICKED"
+    private val VERY_FIRST_GUIDE_DISPLAY = "VERY_FIRST_GUIDE_DISPLAY"
 
     companion object {
         var commonPreference: SharedPreferences? = null
+        var nonClearPreference: SharedPreferences? = null
         var moshi: Moshi? = null
     }
 
     fun getInstance(ctx:Context) : PreferenceHelper{
         commonPreference = ctx.getApplicationContext().getSharedPreferences(preferenceKeyName, MODE_PRIVATE)
+        nonClearPreference = ctx.getApplicationContext().getSharedPreferences(preferenceKeyName, MODE_PRIVATE)
         moshi = Moshi.Builder().build()
         return PreferenceHelper()
     }
@@ -124,6 +127,14 @@ class PreferenceHelper {
 
     fun getGuideSkipClick():Boolean{
         return fetchBoolean(GUIDE_SKIP_LABEL_CLICKED) ?: false
+    }
+
+    fun saveVeryFirstGuideShow(shown : Boolean?){
+        saveBoolean(VERY_FIRST_GUIDE_DISPLAY,shown ?: false)
+    }
+
+    fun getVeryFirstGuideShow():Boolean{
+        return fetchBoolean(VERY_FIRST_GUIDE_DISPLAY) ?: false
     }
 
     fun fetchFCMTokenData():String?{

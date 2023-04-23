@@ -1167,12 +1167,12 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                 req.owner = prefhelper.fetchUserData()?.mid
                 req.is_send_sms = viewModel.inviteSendSMS?.value
                 viewModel.checkFamilyMemberExists(req,file)
-            }else if(((viewModel.userData?.owner_id == prefhelper.fetchUserData()?.mid!!) && (viewModel.userData?.mid!! != prefhelper.fetchUserData()?.mid!!))){
+            }else if((viewModel.userData != null) && ((((viewModel.userData?.owner_id == prefhelper.fetchUserData()?.mid!!) && (viewModel.userData?.mid!! != prefhelper.fetchUserData()?.mid!!))) || (viewModel.userData?.mid!! != prefhelper.fetchUserData()?.mid!!))){
                 req.userid = viewModel.userData?.mid
                 req.id = viewModel.userData?.id
                 req.country_code = primaryCC
                 req.mobile = primaryMobileNumber
-                req.owner = prefhelper.fetchUserData()?.mid
+                req.owner = viewModel.userData?.owner_id
                 viewModel.saveFamilyDetails(req,file)
             }else {
                 req.userid = prefhelper.fetchUserData()?.mid

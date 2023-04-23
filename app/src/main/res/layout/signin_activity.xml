@@ -127,7 +127,7 @@
                             android:textColorHint="@color/gray_text_color"
                             android:includeFontPadding="false"
                             android:inputType="phone"
-                            android:maxLength="10"
+                            android:maxLength="11"
                             android:singleLine="true"
                             android:text="@={viewModel.phoneNumber}"
                             android:textColor="@color/edit_phone_number_color"

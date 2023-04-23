@@ -41,6 +41,7 @@ class OTPActivity : AppBaseActivity() {
         initObservers()
         getIntentData()
         viewModel?.otpSMSKey = generateOTPKey()
+        prefhelper.saveVeryFirstGuideShow(true)
     }
 
     override fun dialogPositiveCallBack(id: Int?) {

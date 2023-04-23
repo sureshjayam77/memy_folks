@@ -61,6 +61,9 @@ class SignInActivity : AppBaseActivity(), AdapterListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(prefhelper.getVeryFirstGuideShow() == false){
+            startActivity(Intent(this@SignInActivity,GuideActivity::class.java))
+        }
         initBinding()
         initViewModel()
         initObservers()

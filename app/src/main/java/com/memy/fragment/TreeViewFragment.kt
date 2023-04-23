@@ -36,6 +36,10 @@ import androidx.databinding.adapters.SeekBarBindingAdapter
 import com.memy.MemyApplication
 import com.memy.utils.PermissionUtil
 import java.io.File
+import android.webkit.MimeTypeMap
+import com.memy.dialog.CommunicationDialog
+import com.memy.listener.DialogClickCallBack
+import com.memy.pojo.CommunicationDialogData
 
 
 class TreeViewFragment : BaseFragment() {
@@ -87,7 +91,6 @@ class TreeViewFragment : BaseFragment() {
         var moshi: Moshi
         var viewModel : DashboardViewModel? = null
         var prefHelper: PreferenceHelper? = null
-        var manager: DownloadManager? = null
 
         /** Instantiate the interface and set the context  */
         constructor(c: Activity?,vm : DashboardViewModel, w: WebView?) {
@@ -191,7 +194,10 @@ class TreeViewFragment : BaseFragment() {
         }
 
         fun downloadTreeSS(){
-            manager = mContext?.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            if(MemyApplication.instance?.manager == null) {
+                MemyApplication.instance?.manager =
+                    mContext?.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            }
             /*val uri =
                 Uri.parse(viewModel?.downloadURL ?: "")
             val request: DownloadManager.Request = DownloadManager.Request(uri)*/
@@ -213,8 +219,10 @@ class TreeViewFragment : BaseFragment() {
 
 
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            MemyApplication.downloadFileUniqueId = manager?.enqueue(request) ?: 0
+            MemyApplication.downloadFileUniqueId = MemyApplication.instance?.manager?.enqueue(request) ?: 0
         }
+
+
     }
 
     override fun onResume() {
@@ -236,12 +244,55 @@ class TreeViewFragment : BaseFragment() {
                 if (MemyApplication.downloadFileUniqueId == id) {
                     // Toast.makeText(requireActivity().applicationContext, "Download Completed", Toast.LENGTH_SHORT).show()
                     loadProfileTree()
+                    showDownloadSuccessPopup()
                 }
             }catch (e : Exception){
                 e.printStackTrace()
             }
         }
     }
+
+
+    private fun showDownloadSuccessPopup(){
+        if(isAdded) {
+            showAlertDialog(
+                (requireActivity() as AppBaseActivity),
+                R.id.do_nothing,
+                "MeMyFolks Family Tree downloaded successfully",
+                getString(R.string.label_ok),
+                "",
+                object : DialogClickCallBack{
+                    override fun dialogPositiveCallBack(id: Int?) {
+                        dismissAlertDialog()
+                        openDownloadFile()
+                    }
+
+                    override fun dialogNegativeCallBack() {
+                        dismissAlertDialog()
+                    }
+
+                }
+            )
+        }
+    }
+
+    fun openDownloadFile(){
+        try{
+            if(isAdded) {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.setDataAndType(
+                    MemyApplication.instance?.manager?.getUriForDownloadedFile(
+                        MemyApplication.downloadFileUniqueId
+                    ), "*/*"
+                )
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                (requireActivity() as AppBaseActivity).startActivity(intent)
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+    }
+
 
 
 }

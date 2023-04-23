@@ -1,6 +1,7 @@
 package com.memy
 
 import android.app.Application
+import android.app.DownloadManager
 import android.content.Context
 import android.content.res.Configuration
 import com.memy.MemyApplication
@@ -9,6 +10,7 @@ import java.util.*
 
 class MemyApplication : Application() {
     private var localeHelper : LocaleHelper? = LocaleHelper()
+    var manager: DownloadManager? = null
 
     companion object {
         var instance: MemyApplication? = null
