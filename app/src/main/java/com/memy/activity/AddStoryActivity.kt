@@ -300,7 +300,7 @@ class AddStoryActivity : AppBaseActivity(), View.OnClickListener, ItemClickListe
             var desc = viewModel.storyDesc.value?.trim()!!
             var storyAccess = viewModel.storyAccess.value!!
             var storyMedia = viewModel.storyMedia.value
-            val userId = prefhelper.fetchUserData()?.mid
+            val userId = viewModel.userId!! //prefhelper.fetchUserData()?.mid
             val profileId = viewModel.userId!!
             val fileList = ArrayList<File>()
 

@@ -31,6 +31,7 @@ import androidx.activity.result.contract.ActivityResultContracts.GetContent
 
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.memy.pojo.ProfileData
 
 
 class StoryVIewFragment : BaseFragment(){
@@ -59,7 +60,7 @@ class StoryVIewFragment : BaseFragment(){
             WebAppInterface(
                 activity,
                 binding.webview,
-                        startForResult), "Android")
+                        startForResult,viewModel,prefhelper.fetchUserData()), "Android")
         binding.webview.setWebChromeClient(object : WebChromeClient() {
             override fun onProgressChanged(view: WebView, progress: Int) {
                 //Make the bar disappear after URL is loaded, and changes string to Loading...
@@ -91,13 +92,17 @@ class StoryVIewFragment : BaseFragment(){
         var mView: WebView? = null
         lateinit var moshi: Moshi
         var startForResult :ActivityResultLauncher<Intent>? = null
+        var viewModel : DashboardViewModel? = null
+        var userData : ProfileData? = null
 
         /** Instantiate the interface and set the context  */
-        constructor(c: Context?, w: WebView?,sResult :ActivityResultLauncher<Intent>?) {
+        constructor(c: Context?, w: WebView?,sResult :ActivityResultLauncher<Intent>?,vm : DashboardViewModel?,profData : ProfileData?) {
             mContext = c
             mView = w
             moshi = Moshi.Builder().build()
             startForResult = sResult
+            viewModel = vm
+            userData = profData
         }
 
         @JavascriptInterface
@@ -119,8 +124,13 @@ class StoryVIewFragment : BaseFragment(){
 
         @JavascriptInterface
         fun addStoryCallBack(userId: String?) {
+            var userIdValue = userData?.mid?.toString()
+            if ((viewModel?.userData?.value?.mid == userData?.mid) || (viewModel?.userData?.value?.owner_id == userData?.mid) || (userData?.is_admin == true) || (userData?.is_super_admin == true)) {
+                userIdValue = userId
+            }
+
             val intent = Intent(mContext, AddStoryActivity::class.java)
-            intent.putExtra(Constents.ADD_STORY_USER_ID_INTENT_TAG, userId)
+            intent.putExtra(Constents.ADD_STORY_USER_ID_INTENT_TAG, userIdValue)
             startForResult?.launch(intent)
         }
     }

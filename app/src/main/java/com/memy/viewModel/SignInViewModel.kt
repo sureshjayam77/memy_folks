@@ -12,6 +12,7 @@ class SignInViewModel : AppBaseViewModel() {
     var isEnableGenerateOtpBtn = MediatorLiveData<Boolean>()
     var isTermsChecked = MediatorLiveData<Boolean>()
     var phoneNumber = MutableLiveData<String>()
+    var emailAddress = MutableLiveData<String>()
     var countryCode = MutableLiveData<String>()
     private val MAX_MOBILE_NUMBER_LENGTH: Int = 9
     private val loginRepository : LoginRepository
@@ -21,6 +22,7 @@ class SignInViewModel : AppBaseViewModel() {
     init {
         isEnableGenerateOtpBtn.value = false
         isTermsChecked.value = false
+        emailAddress.value = ""
         loginRepository  = LoginRepository()
         loginResponse = loginRepository.loginResponse
     }

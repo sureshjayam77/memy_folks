@@ -59,6 +59,7 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         } else if (id == R.id.delete_account_res_id) {
             if (viewModel.selectedMemberId?.toInt() == prefhelper.fetchUserData()?.mid) {
                 prefhelper.clearPref()
+                prefhelper.saveVeryFirstGuideShow(true)
                 val intent = Intent(this, SignInActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
