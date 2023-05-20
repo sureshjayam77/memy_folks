@@ -32,13 +32,14 @@ class StoryRepository : BaseRepository() {
             fileMultiPartList.add(body)
         }
 
-        val userId: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), ""+req.author)
+        val author: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), ""+req.author)
+        val userId: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(), ""+req.profile)
         val title: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(),req.title)
         val description: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(),req.content)
         val publishAs: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(),req.publishas)
         val publishStatus: RequestBody = RequestBody.create("text/plain".toMediaTypeOrNull(),""+req.status)
 
-        val relationShipCall = retrofit.create(APIInterface::class.java).addStory(BaseRepository.APP_KEY_VALUE,userId,userId,title,description,publishAs,publishStatus,fileMultiPartList)
+        val relationShipCall = retrofit.create(APIInterface::class.java).addStory(BaseRepository.APP_KEY_VALUE,author,userId,title,description,publishAs,publishStatus,fileMultiPartList)
          relationShipCall?.enqueue(object : Callback<CommonResponse?> {
             override fun onResponse(
                 call: Call<CommonResponse?>?,

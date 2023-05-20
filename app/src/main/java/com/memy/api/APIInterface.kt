@@ -64,7 +64,7 @@ interface APIInterface {
 
     @Multipart
     @POST("api/v1/post/")
-    fun addStory(@Query("apikey") apikey: String, @Part("profile")  userId: RequestBody?, @Part("author")  profileId: RequestBody?, @Part("title")  title: RequestBody?, @Part("content")  desc: RequestBody?, @Part("publishas")  publishas: RequestBody?, @Part("status")  storyStatus: RequestBody?, @Part file: List<MultipartBody.Part>) : Call<CommonResponse?>?
+    fun addStory(@Query("apikey") apikey: String, @Part("author")  profileId: RequestBody?, @Part("profile")  userId: RequestBody?, @Part("title")  title: RequestBody?, @Part("content")  desc: RequestBody?, @Part("publishas")  publishas: RequestBody?, @Part("status")  storyStatus: RequestBody?, @Part file: List<MultipartBody.Part>) : Call<CommonResponse?>?
 
     @GET("api/v1/post/")
     fun fetchAllOwnStory(@Query("apikey") apikey: String,@Query("author") loginUserId: Int?,@Query("page") pageNo: Int?,@Query("limit") limitNo: Int? ) : Call<StoryListRes?>?

@@ -300,7 +300,7 @@ class AddStoryActivity : AppBaseActivity(), View.OnClickListener, ItemClickListe
             var desc = viewModel.storyDesc.value?.trim()!!
             var storyAccess = viewModel.storyAccess.value!!
             var storyMedia = viewModel.storyMedia.value
-            val userId = viewModel.userId!! //prefhelper.fetchUserData()?.mid
+            val author = prefhelper.fetchUserData()?.mid
             val profileId = viewModel.userId!!
             val fileList = ArrayList<File>()
 
@@ -310,7 +310,7 @@ class AddStoryActivity : AppBaseActivity(), View.OnClickListener, ItemClickListe
                 }
             }
 
-            val req = AddStoryReqObj(storyAccess,userId?.toInt()!!,profileId.toInt(),fileList,title, desc,0)
+            val req = AddStoryReqObj(storyAccess,author?.toInt()!!,profileId.toInt(),fileList,title, desc,0)
             showProgressBar()
             viewModel.addStoryRepository.addStoryReq(req)
         }
