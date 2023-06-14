@@ -72,6 +72,7 @@ class DashboardActivity : AppBaseActivity() {
                 val intent = Intent(this, SignInActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                intent.putExtra(Constents.INTENT_BUNDLE_IS_USER_LOGGED_OUT,true)
                 startActivityIntent(intent, true)
             } else {
                 val intent = Intent(this, DashboardActivity::class.java)
@@ -496,6 +497,7 @@ class DashboardActivity : AppBaseActivity() {
         val intent = Intent(this@DashboardActivity, SignInActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        intent.putExtra(Constents.INTENT_BUNDLE_IS_USER_LOGGED_OUT,true)
         startActivityIntent(intent, true)
         /* val popup = PopupMenu(this, v)
          popup.getMenuInflater().inflate(R.menu.menu, popup.getMenu())

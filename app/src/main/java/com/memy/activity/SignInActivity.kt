@@ -62,7 +62,10 @@ class SignInActivity : AppBaseActivity(), AdapterListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if(prefhelper.getVeryFirstGuideShow() == false){
-            startActivity(Intent(this@SignInActivity,GuideActivity::class.java))
+            val isUsedLoggedOut = intent?.getBooleanExtra(Constents.INTENT_BUNDLE_IS_USER_LOGGED_OUT,false) ?: false
+            if(isUsedLoggedOut == false) {
+                startActivity(Intent(this@SignInActivity, GuideActivity::class.java))
+            }
         }
         initBinding()
         initViewModel()

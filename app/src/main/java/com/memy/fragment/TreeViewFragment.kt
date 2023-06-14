@@ -258,7 +258,7 @@ class TreeViewFragment : BaseFragment() {
             showAlertDialog(
                 (requireActivity() as AppBaseActivity),
                 R.id.do_nothing,
-                "MeMyFolks Family Tree downloaded successfully",
+                "MeMyFolks Family Tree downloaded successfully. \n\nPlease check your mobile download folder.",
                 getString(R.string.label_ok),
                 "",
                 object : DialogClickCallBack{
