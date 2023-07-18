@@ -103,11 +103,12 @@ class TreeViewFragment : BaseFragment() {
 
         /** Show a toast from the web page  */
         @JavascriptInterface
-        fun addNewMember(userId: String?) {
+        fun addNewMember(userId: String?) { //While click plus in tree
             /*var userDataObj = moshi.adapter(ProfileData::class.java).fromJson(userData)
             if(userDataObj != null){
 
             }*/
+            viewModel?.selectedMemberIdForEdit = ""
             viewModel?.selectedMemberId = userId
             if(mContext is DashboardActivity) {
                 (mContext as DashboardActivity).fetchTempProfileData(userId)
@@ -123,19 +124,6 @@ class TreeViewFragment : BaseFragment() {
         }
 
         @JavascriptInterface
-        fun addNewMember(userId: String?,userName: String?) {
-            /*var userDataObj = moshi.adapter(ProfileData::class.java).fromJson(userData)
-            if(userDataObj != null){
-
-            }*/
-            val intent = Intent(mContext, AddFamilyActivity::class.java)
-            intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, false)
-            intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, userId?.toInt())
-            intent.putExtra(Constents.FAMILY_MEMBER_INTENT_TAG, true)
-            (mContext as AppBaseActivity).startActivityIntent(intent, false)
-        }
-
-        @JavascriptInterface
         fun editFamilyMember(user: String?) {
             val intent = Intent(mContext, AddFamilyActivity::class.java)
             intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, false)
@@ -145,13 +133,22 @@ class TreeViewFragment : BaseFragment() {
         }
 
         @JavascriptInterface
-        fun viewFamilyMemberProfile(user: String?) {
-            if (user?.toInt() != viewModel?.userData?.value?.mid) {
+        fun viewFamilyMemberProfile(userId: String?) { // while click photo in tree
+            viewModel?.selectedMemberIdForEdit = userId
+            viewModel?.selectedMemberId = ""
+
+            if(mContext is DashboardActivity) {
+                (mContext as DashboardActivity).fetchTempProfileData(userId)
+            }else if(mContext is FamilyMemberProfileActivity) {
+                (mContext as FamilyMemberProfileActivity).fetchTempProfileData(userId)
+            }
+
+            /*if (user?.toInt() != viewModel?.userData?.value?.mid) {
                 val intent = Intent(mContext, FamilyMemberProfileActivity::class.java)
                 intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, user?.toInt())
                 intent.putExtra(Constents.SHOW_PROFILE_INTENT_TAG, true)
                 (mContext as AppBaseActivity).startActivityIntent(intent, false)
-            }
+            }*/
         }
 
         @JavascriptInterface
@@ -218,7 +215,6 @@ class TreeViewFragment : BaseFragment() {
                 .setAllowedOverRoaming(true) // Set if download is allowed on roaming network
 
 
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             MemyApplication.downloadFileUniqueId = MemyApplication.instance?.manager?.enqueue(request) ?: 0
         }
 
@@ -243,8 +239,9 @@ class TreeViewFragment : BaseFragment() {
                 //Checking if the received broadcast is for our enqueued download by matching download id
                 if (MemyApplication.downloadFileUniqueId == id) {
                     // Toast.makeText(requireActivity().applicationContext, "Download Completed", Toast.LENGTH_SHORT).show()
-                    loadProfileTree()
-                    showDownloadSuccessPopup()
+
+                        showDownloadSuccessPopup()
+
                 }
             }catch (e : Exception){
                 e.printStackTrace()
@@ -264,7 +261,8 @@ class TreeViewFragment : BaseFragment() {
                 object : DialogClickCallBack{
                     override fun dialogPositiveCallBack(id: Int?) {
                         dismissAlertDialog()
-                        openDownloadFile()
+                        loadProfileTree()
+                       // openDownloadFile()
                     }
 
                     override fun dialogNegativeCallBack() {
@@ -279,11 +277,19 @@ class TreeViewFragment : BaseFragment() {
     fun openDownloadFile(){
         try{
             if(isAdded) {
+                var mimeType = ""
+                val extension = MimeTypeMap.getFileExtensionFromUrl(viewModel.downloadURL)
+                if (extension != null) {
+                    mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: ""
+                }
+                if(TextUtils.isEmpty(mimeType)){
+                    mimeType =  "*/*"
+                }
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.setDataAndType(
                     MemyApplication.instance?.manager?.getUriForDownloadedFile(
                         MemyApplication.downloadFileUniqueId
-                    ), "*/*"
+                    ), mimeType
                 )
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 (requireActivity() as AppBaseActivity).startActivity(intent)

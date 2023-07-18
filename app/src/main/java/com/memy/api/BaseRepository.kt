@@ -76,7 +76,7 @@ open class BaseRepository {
                     R.raw.stage_memyfolks
                 )*/
             inputStream = MemyApplication.instance?.resources?.openRawResource(
-                    R.raw.memyfolks_july
+                    R.raw.memyfolks_july_2023
                 )
             if (inputStream != null) {
                 var x509Certificate: X509Certificate = CertificateFactory.getInstance("X509")

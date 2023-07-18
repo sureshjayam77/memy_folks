@@ -89,7 +89,7 @@
     <string name="label_lineage">Lineage</string>
     <string name="label_atleast_one_parent">Add one parent of %s to enable the addition of a brother or sister</string>
     <string name="label_delete_acc_info">If the name you entered is  incorrect, you can just change the name. No need to delete the member.</string>
-
+    <string name="label_access_denied">Access denied</string>
 
     //Add family validation message
     <string name="select_relation_ship">Please select relationship</string>

@@ -15,6 +15,9 @@
     <external-path
         name="external"
         path="." />
+    <external-path
+        name="external_files"
+        path="." />
     <external-files-path
         name="my_images"
         path="/"/>

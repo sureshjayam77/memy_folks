@@ -47,15 +47,18 @@ class GuideActivity : AppBaseActivity() {
 
 
     private fun guideShowEnable(){
+        val guideListCount = intent.getIntExtra(Constents.INTENT_BUNDLE_GUIDE_LIST_COUNT,0)
         viewModel.showGuideListView.value = true
         guideImageList.add(R.drawable.guide_1)
         guideImageList.add(R.drawable.guide_2)
         guideImageList.add(R.drawable.guide_3)
         guideImageList.add(R.drawable.guide_4)
-        guideImageList.add(R.drawable.guide_5)
-        guideImageList.add(R.drawable.guide_6)
-        guideImageList.add(R.drawable.guide_7)
-        guideImageList.add(R.drawable.guide_8)
+        if(guideListCount != 4) {
+            guideImageList.add(R.drawable.guide_5)
+            guideImageList.add(R.drawable.guide_6)
+            guideImageList.add(R.drawable.guide_7)
+            guideImageList.add(R.drawable.guide_8)
+        }
         val adapter = GuideFragmentAdapter(supportFragmentManager,lifecycle, guideImageList)
         binding.guideViewPager.adapter = adapter
         TabLayoutMediator(binding.tabLayout, binding.guideViewPager) { tab, position ->

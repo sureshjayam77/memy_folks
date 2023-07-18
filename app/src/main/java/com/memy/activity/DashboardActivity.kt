@@ -860,10 +860,8 @@ class DashboardActivity : AppBaseActivity() {
     }
 
     fun fetchTempProfileData(userId: String?) {
-        GlobalScope.launch(Dispatchers.Main) {
-            binding.progressFrameLayout.visibility = View.VISIBLE
-        }
-        viewModel.fetchProfileForEdit(viewModel.selectedMemberId?.toInt())
+        viewModel.showProgressBar.postValue(true)
+        viewModel.fetchProfileForEdit(userId?.toInt())
     }
 
     fun closeMemberRelationPopup(v: View) {
@@ -1087,7 +1085,34 @@ class DashboardActivity : AppBaseActivity() {
         binding.progressFrameLayout.visibility = View.GONE
         if (res != null) {
             if ((res.statusCode == 200) && (res.data != null)) {
-                fetchMemberRelationShipData(viewModel.selectedMemberId)
+                if ((res?.data?.mid == prefhelper.fetchUserData()?.mid) || (res?.data?.owner_id == prefhelper.fetchUserData()?.mid) || (prefhelper?.fetchUserData()?.is_admin == true) || (prefhelper?.fetchUserData()?.is_super_admin == true)) {
+                    if(!TextUtils.isEmpty(viewModel?.selectedMemberId)) {
+                        fetchMemberRelationShipData(viewModel.selectedMemberId)
+                    }else if(!TextUtils.isEmpty(viewModel?.selectedMemberIdForEdit)) {
+                        if (res?.data?.mid?.toInt() != viewModel?.userData?.value?.mid) {
+                            /*val intent = Intent(this, FamilyMemberProfileActivity::class.java)
+                            intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, res?.data?.mid?.toInt())
+                            intent.putExtra(Constents.SHOW_PROFILE_INTENT_TAG, true)
+                            startActivityIntent(intent, false)*/
+
+                            val intent = Intent(this, AddFamilyActivity::class.java)
+                            intent.putExtra(Constents.OWN_PROFILE_INTENT_TAG, true)
+                            intent.putExtra(Constents.FAMILY_MEMBER_EDIT_INTENT_TAG, true)
+                            intent.putExtra(Constents.FAMILY_MEMBER_ID_INTENT_TAG, res?.data?.mid)
+                            intent.putExtra(
+                                Constents.FAMILY_MEMBER_FNAME_INTENT_TAG,
+                                res?.data?.firstname
+                            )
+                            startActivityIntent(intent, false)
+                        }
+                    }
+                } else{
+                    if(!TextUtils.isEmpty(viewModel?.selectedMemberId)) {
+                        showAlertDialog(R.id.do_nothing, getString(R.string.label_access_denied), getString(R.string.label_ok), "")
+                    }else if(!TextUtils.isEmpty(viewModel?.selectedMemberIdForEdit)) {
+                        showAlertDialog(R.id.do_nothing, getString(R.string.label_access_denied), getString(R.string.label_ok), "")
+                    }
+                }
             } else {
                 var message = ""
                 if (res.errorDetails != null) {

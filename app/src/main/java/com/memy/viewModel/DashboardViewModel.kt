@@ -41,6 +41,7 @@ class DashboardViewModel : AppBaseViewModel() {
     var memberRelationData = MutableLiveData<MemberRelationShipResData>()
     var showProgressBar : MutableLiveData<Boolean> = MutableLiveData()
     var shareResData = MutableLiveData<ShareResponse>()
+    var selectedMemberIdForEdit : String? = ""
     var selectedMemberId : String? = ""
     var selectedMemberAction : Int? = 0
     var deleteAccountRes = MutableLiveData<CommonResponse>()

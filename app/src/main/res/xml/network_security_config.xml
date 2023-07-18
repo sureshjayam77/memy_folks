@@ -4,7 +4,7 @@
         <domain includeSubdomains="true">memyfolks.com</domain>
         <trust-anchors>
             <!--<certificates src="@raw/stage_memyfolks"/>-->
-            <certificates src="@raw/memyfolks_july"/>
+            <certificates src="@raw/memyfolks_july_2023"/>
         </trust-anchors>
     </domain-config>
 </network-security-config>

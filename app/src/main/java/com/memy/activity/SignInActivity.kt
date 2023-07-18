@@ -64,7 +64,9 @@ class SignInActivity : AppBaseActivity(), AdapterListener {
         if(prefhelper.getVeryFirstGuideShow() == false){
             val isUsedLoggedOut = intent?.getBooleanExtra(Constents.INTENT_BUNDLE_IS_USER_LOGGED_OUT,false) ?: false
             if(isUsedLoggedOut == false) {
-                startActivity(Intent(this@SignInActivity, GuideActivity::class.java))
+                val intent = Intent(this@SignInActivity, GuideActivity::class.java)
+                intent.putExtra(Constents.INTENT_BUNDLE_GUIDE_LIST_COUNT,4)
+                startActivity(intent)
             }
         }
         initBinding()
