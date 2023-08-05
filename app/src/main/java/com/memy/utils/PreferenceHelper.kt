@@ -19,6 +19,7 @@ class PreferenceHelper {
     private val FCM_PUSH_NOTIFICATION_DATA_KEY = "FCM_PUSH_NOTIFICATION_DATA_KEY"
     private val GUIDE_SKIP_LABEL_CLICKED = "GUIDE_SKIP_LABEL_CLICKED"
     private val VERY_FIRST_GUIDE_DISPLAY = "VERY_FIRST_GUIDE_DISPLAY"
+    private val ASK_CAMERA_PERMISSION = "ASK_CAMERA_PERMISSION"
 
     companion object {
         var commonPreference: SharedPreferences? = null
@@ -136,6 +137,10 @@ class PreferenceHelper {
     fun getVeryFirstGuideShow():Boolean{
         return fetchBoolean(VERY_FIRST_GUIDE_DISPLAY) ?: false
     }
+
+    var askCameraPermission : Boolean
+            get() = fetchBoolean(ASK_CAMERA_PERMISSION) ?: true
+            set(value) {saveBoolean(ASK_CAMERA_PERMISSION,value ?: true)}
 
     fun fetchFCMTokenData():String?{
         val strProfileData = fetchString(FCM_PUSH_NOTIFICATION_DATA_KEY)

@@ -42,7 +42,11 @@ class RelationSelectionAdapter(ctx : Context,val list : List<RelationSelectionOb
                     binding.iconImageView.setImageResource(R.drawable.ic_add_mother_popup)
                 }
                 3 -> {
-                    binding.iconImageView.setImageResource(R.drawable.ic_add_wife_popup)
+                    if(obj.gender.equals("f",true)) {
+                        binding.iconImageView.setImageResource(R.drawable.ic_add_wife_popup)
+                    }else{
+                        binding.iconImageView.setImageResource(R.drawable.ic_add_husband_popup)
+                    }
                 }
                 4 -> {
                     binding.iconImageView.setImageResource(R.drawable.ic_add_son_popup)

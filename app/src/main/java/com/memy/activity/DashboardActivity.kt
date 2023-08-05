@@ -35,6 +35,7 @@ import com.memy.listener.AdapterListener
 import com.memy.pojo.*
 import com.memy.utils.Constents
 import com.memy.utils.PermissionUtil
+import com.memy.utils.PreferenceHelper
 import com.memy.viewModel.DashboardViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -52,12 +53,17 @@ class DashboardActivity : AppBaseActivity() {
         setupUIBinding()
         setupViewModel()
         setupObservers()
-        PermissionUtil().initRequestPermissionForCamera(this, true)
+
         updateFCMToken()
         checkDeepLink()
         fetchProfileData(false)
         if ((!prefhelper.getGuideSkipClick())) {
             fetchMemberRelationShipData(viewModel.userData.value?.mid?.toString())
+        }
+
+        if(PreferenceHelper().getInstance(this).askCameraPermission == false){
+            PreferenceHelper().getInstance(this).askCameraPermission = true
+            PermissionUtil().initRequestPermissionForCamera(this, true)
         }
     }
 

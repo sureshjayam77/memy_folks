@@ -33,7 +33,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import androidx.fragment.app.Fragment
+import com.memy.MemyApplication
 import com.memy.fragment.ShareFragment
+import com.memy.utils.PreferenceHelper
 
 
 class FamilyMemberProfileActivity : AppBaseActivity() {
@@ -48,7 +50,10 @@ class FamilyMemberProfileActivity : AppBaseActivity() {
         setupUIBinding()
         setupViewModel()
         setupObservers()
-        PermissionUtil().initRequestPermissionForCamera(this, true)
+        if(PreferenceHelper().getInstance(this).askCameraPermission == false){
+            PreferenceHelper().getInstance(this).askCameraPermission = true
+            PermissionUtil().initRequestPermissionForCamera(this, true)
+        }
         fetchProfileData(false)
     }
 

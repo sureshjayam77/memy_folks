@@ -17,6 +17,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.memy.MemyApplication
 import com.memy.R
 import com.memy.adapter.AddStoryMediaAdapter
 import com.memy.adapter.ItemClickListener
@@ -25,10 +26,7 @@ import com.memy.databinding.StoryMediaBottomSheetBinding
 import com.memy.pojo.AddStoryMediaObj
 import com.memy.pojo.AddStoryReqObj
 import com.memy.pojo.CommonResponse
-import com.memy.utils.Constents
-import com.memy.utils.PermissionUtil
-import com.memy.utils.StoryMediaType
-import com.memy.utils.Utils
+import com.memy.utils.*
 import com.memy.viewModel.AddStoryViewModel
 import java.io.File
 
@@ -51,7 +49,10 @@ class AddStoryActivity : AppBaseActivity(), View.OnClickListener, ItemClickListe
         initViewModel()
         initRecyclerView()
         initObserver()
-        PermissionUtil().initRequestPermissionForCamera(this, true)
+        if(PreferenceHelper().getInstance(this).askCameraPermission == false){
+            PreferenceHelper().getInstance(this).askCameraPermission = true
+            PermissionUtil().initRequestPermissionForCamera(this, true)
+        }
         updatePrivatePost(binding.privateTextView)
     }
 
