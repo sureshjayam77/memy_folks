@@ -325,6 +325,11 @@ class AddFamilyActivity : AppBaseActivity(), View.OnClickListener, AdapterListen
                                 if (mobileNumber.length >= 10) mobileNumber.substring(
                                     mobileNumber.length - 10
                                 ) else mobileNumber
+
+                        val mobilePair = Utils.splitMobileNumber(mobileNumber)
+                            viewModel.mainCountryCode.value = mobilePair.first
+                            viewModel.mainMobileNumber.value = mobilePair.second
+
                         }else{
                            // viewModel.mainCountryCode.value = ""
                             viewModel.mainMobileNumber.value = ""

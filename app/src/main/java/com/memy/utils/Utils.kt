@@ -1,44 +1,39 @@
-package com.memy.utils;
+package com.memy.utils
 
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.net.ConnectivityManager;
-import android.net.Uri;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.text.TextUtils;
-import android.text.format.DateFormat;
-import android.util.Base64;
-import android.view.Display;
-import android.webkit.MimeTypeMap;
-
-import java.io.ByteArrayOutputStream;
-import java.net.URLConnection;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
+import android.app.Activity
+import android.net.ConnectivityManager
+import android.graphics.Bitmap
+import android.content.ContentResolver
+import android.content.Context
+import android.database.Cursor
+import android.graphics.Point
+import android.net.Uri
+import android.webkit.MimeTypeMap
+import android.provider.DocumentsContract
+import android.provider.MediaStore
+import android.text.TextUtils
+import android.text.format.DateFormat
+import android.util.Base64
+import com.google.i18n.phonenumbers.PhoneNumberUtil
+import java.io.ByteArrayOutputStream
+import java.lang.Exception
+import java.net.URLConnection
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Common util class
  */
-public class Utils {
-
-
+object Utils {
     /**
      * Method Handling to get current country code
      *
      * @param cID country code id
      * @return country code
      */
-    public static String getCountryName(String cID) {
-        Locale loc = new Locale("en", cID);
-        return loc.getDisplayCountry().trim();
+    fun getCountryName(cID: String?): String {
+        val loc = Locale("en", cID)
+        return loc.displayCountry.trim { it <= ' ' }
     }
 
     /**
@@ -47,208 +42,225 @@ public class Utils {
      * @param context activity context
      * @return point value
      */
-    public static Point getMeasurementDetail(Context context) {
-        Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        return size;
+    fun getMeasurementDetail(context: Context): Point {
+        val display = (context as Activity).windowManager.defaultDisplay
+        val size = Point()
+        display.getSize(size)
+        return size
     }
 
-    public static boolean isNetworkConnected(Context ctx) {
-        ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    fun isNetworkConnected(ctx: Context): Boolean {
+        val cm = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return cm.activeNetworkInfo != null && cm.activeNetworkInfo!!.isConnected
     }
 
-    public static String encodeImage(Bitmap bm)
-    {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG,100,baos);
-        byte[] b = baos.toByteArray();
-        String encImage = Base64.encodeToString(b, Base64.DEFAULT);
-        return encImage;
+    fun encodeImage(bm: Bitmap): String {
+        val baos = ByteArrayOutputStream()
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val b = baos.toByteArray()
+        return Base64.encodeToString(b, Base64.DEFAULT)
     }
 
-    public static String getMimeType(Context context,Uri uri) {
-        String mimeType = null;
-        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
-            ContentResolver cr = context.getContentResolver();
-            mimeType = cr.getType(uri);
+    fun getMimeType(context: Context, uri: Uri): String? {
+        var mimeType: String? = null
+        mimeType = if (ContentResolver.SCHEME_CONTENT == uri.scheme) {
+            val cr = context.contentResolver
+            cr.getType(uri)
         } else {
-            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
-                    .toString());
-            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                    fileExtension.toLowerCase());
+            val fileExtension = MimeTypeMap.getFileExtensionFromUrl(
+                uri
+                    .toString()
+            )
+            MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                fileExtension.toLowerCase()
+            )
         }
-        return mimeType;
+        return mimeType
     }
 
-    public static String getRealPath(Context context,Uri uri) {
-
-        String docId = "";
-
-        try{
-            docId = DocumentsContract.getDocumentId(uri);
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-            try{
-                docId = DocumentsContract.getTreeDocumentId(uri);
-            }catch (Exception e1)
-            {
-                e.printStackTrace();
-            }
-        }
-
-        String[] split = docId.split(":");
-        String type = split[0];
-        Uri contentUri;
-        switch (type) {
-            case "image":
-                contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                break;
-            case "video":
-                contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                break;
-            case "audio":
-                contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                break;
-            default:
-                contentUri = MediaStore.Files.getContentUri("external");
-        }
-        String selection = "_id=?";
-        String[] selectionArgs = new String[]{
-                split[1]
-        };
-
-        return getDataColumn(context, contentUri, selection, selectionArgs);
-    }
-
-    public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
-        Cursor cursor = null;
-        String column = "_data";
-        String[] projection = {
-                column
-        };
+    fun getRealPath(context: Context, uri: Uri?): String? {
+        var docId = ""
         try {
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                int column_index = cursor.getColumnIndexOrThrow(column);
-                String value = cursor.getString(column_index);
-                if (value.startsWith("content://") || !value.startsWith("/") && !value.startsWith("file://")) {
-                    return null;
-                }
-                return value;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
+            docId = DocumentsContract.getDocumentId(uri)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            try {
+                docId = DocumentsContract.getTreeDocumentId(uri)
+            } catch (e1: Exception) {
+                e.printStackTrace()
             }
         }
-        return null;
+        val split = docId.split(":").toTypedArray()
+        val type = split[0]
+        val contentUri: Uri
+        contentUri = when (type) {
+            "image" -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            "video" -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+            "audio" -> MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+            else -> MediaStore.Files.getContentUri("external")
+        }
+        val selection = "_id=?"
+        val selectionArgs = arrayOf(
+            split[1]
+        )
+        return getDataColumn(context, contentUri, selection, selectionArgs)
     }
 
-    public static String getFilePathFromContentUri(Uri selectedVideoUri,
-                                             ContentResolver contentResolver) {
-        String filePath;
-        String[] filePathColumn = {MediaStore.MediaColumns.DATA};
-        Cursor cursor = contentResolver.query(selectedVideoUri, filePathColumn, null, null, null);
-        cursor.moveToFirst();
-
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        filePath = cursor.getString(columnIndex);
-        cursor.close();
-        return filePath;
+    fun getDataColumn(
+        context: Context,
+        uri: Uri?,
+        selection: String?,
+        selectionArgs: Array<String>?
+    ): String? {
+        var cursor: Cursor? = null
+        val column = "_data"
+        val projection = arrayOf(
+            column
+        )
+        try {
+            cursor =
+                context.contentResolver.query(uri!!, projection, selection, selectionArgs, null)
+            if (cursor != null && cursor.moveToFirst()) {
+                val column_index = cursor.getColumnIndexOrThrow(column)
+                val value = cursor.getString(column_index)
+                return if (value.startsWith("content://") || !value.startsWith("/") && !value.startsWith(
+                        "file://"
+                    )
+                ) {
+                    null
+                } else value
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            cursor?.close()
+        }
+        return null
     }
 
-    public static String getImageRealPath(ContentResolver contentResolver, Uri uri, String whereClause)
-    {
-        String ret = "";
+    fun getFilePathFromContentUri(
+        selectedVideoUri: Uri?,
+        contentResolver: ContentResolver
+    ): String {
+        val filePath: String
+        val filePathColumn = arrayOf(MediaStore.MediaColumns.DATA)
+        val cursor = contentResolver.query(selectedVideoUri!!, filePathColumn, null, null, null)
+        cursor!!.moveToFirst()
+        val columnIndex = cursor.getColumnIndex(filePathColumn[0])
+        filePath = cursor.getString(columnIndex)
+        cursor.close()
+        return filePath
+    }
+
+    fun getImageRealPath(contentResolver: ContentResolver, uri: Uri, whereClause: String?): String {
+        var ret = ""
         // Query the URI with the condition.
-        Cursor cursor = contentResolver.query(uri, null, whereClause, null, null);
-        if(cursor!=null)
-        {
-            boolean moveToFirst = cursor.moveToFirst();
-            if(moveToFirst)
-            {
+        val cursor = contentResolver.query(uri, null, whereClause, null, null)
+        if (cursor != null) {
+            val moveToFirst = cursor.moveToFirst()
+            if (moveToFirst) {
                 // Get columns name by URI type.
-                String columnName = MediaStore.Images.Media.DATA;
-                if( uri==MediaStore.Images.Media.EXTERNAL_CONTENT_URI )
-                {
-                    columnName = MediaStore.Images.Media.DATA;
-                }else if( uri==MediaStore.Audio.Media.EXTERNAL_CONTENT_URI )
-                {
-                    columnName = MediaStore.Audio.Media.DATA;
-                }else if( uri==MediaStore.Video.Media.EXTERNAL_CONTENT_URI )
-                {
-                    columnName = MediaStore.Video.Media.DATA;
+                var columnName = MediaStore.Images.Media.DATA
+                if (uri === MediaStore.Images.Media.EXTERNAL_CONTENT_URI) {
+                    columnName = MediaStore.Images.Media.DATA
+                } else if (uri === MediaStore.Audio.Media.EXTERNAL_CONTENT_URI) {
+                    columnName = MediaStore.Audio.Media.DATA
+                } else if (uri === MediaStore.Video.Media.EXTERNAL_CONTENT_URI) {
+                    columnName = MediaStore.Video.Media.DATA
                 }
                 // Get column index.
-                int imageColumnIndex = cursor.getColumnIndex(columnName);
+                val imageColumnIndex = cursor.getColumnIndex(columnName)
                 // Get column value which is the uri related file local path.
-                ret = cursor.getString(imageColumnIndex);
+                ret = cursor.getString(imageColumnIndex)
             }
         }
-        return ret;
+        return ret
     }
 
-    public static boolean isImageFile(String path) {
-        String mimeType = URLConnection.guessContentTypeFromName(path);
-        return mimeType != null && ((mimeType.toLowerCase()).startsWith("image"));
+    @JvmStatic
+    fun isImageFile(path: String?): Boolean {
+        val mimeType = URLConnection.guessContentTypeFromName(path)
+        return mimeType != null && mimeType.toLowerCase().startsWith("image")
     }
 
-    public static boolean isVideoFile(String path) {
-        String mimeType = URLConnection.guessContentTypeFromName(path);
-        return mimeType != null && ((mimeType.toLowerCase()).startsWith("video"));
+    @JvmStatic
+    fun isVideoFile(path: String?): Boolean {
+        val mimeType = URLConnection.guessContentTypeFromName(path)
+        return mimeType != null && mimeType.toLowerCase().startsWith("video")
     }
 
-    public static boolean isAudioFile(String path) {
-        String mimeType = URLConnection.guessContentTypeFromName(path);
-        return mimeType != null && ((mimeType.toLowerCase()).startsWith("audio"));
+    @JvmStatic
+    fun isAudioFile(path: String?): Boolean {
+        val mimeType = URLConnection.guessContentTypeFromName(path)
+        return mimeType != null && mimeType.toLowerCase().startsWith("audio")
     }
 
-    public static String getFormattedDate(String dateStr) {
+    @JvmStatic
+    fun getFormattedDate(dateStr: String?): String {
         try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
-            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date date = simpleDateFormat.parse(dateStr);
-            Calendar smsTime = Calendar.getInstance();
-            smsTime.setTimeInMillis(date.getTime());
-
-            Calendar now = Calendar.getInstance();
-
-            final String timeFormatString = "hh:mm aa";
-            final String dateTimeFormatString = "MMMM d, hh:mm aa";
-            final long HOURS = 60 * 60 * 60;
-            if (now.get(Calendar.DATE) == smsTime.get(Calendar.DATE)) {
-                return "Today " + DateFormat.format(timeFormatString, smsTime);
-            } else if (now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1) {
-                return "Yesterday " + DateFormat.format(timeFormatString, smsTime);
-            } else if (now.get(Calendar.YEAR) == smsTime.get(Calendar.YEAR)) {
-                return DateFormat.format(dateTimeFormatString, smsTime).toString();
+            val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH)
+            simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+            val date = simpleDateFormat.parse(dateStr)
+            val smsTime = Calendar.getInstance()
+            smsTime.timeInMillis = date.time
+            val now = Calendar.getInstance()
+            val timeFormatString = "hh:mm aa"
+            val dateTimeFormatString = "MMMM d, hh:mm aa"
+            val HOURS = (60 * 60 * 60).toLong()
+            return if (now[Calendar.DATE] == smsTime[Calendar.DATE]) {
+                "Today " + DateFormat.format(timeFormatString, smsTime)
+            } else if (now[Calendar.DATE] - smsTime[Calendar.DATE] == 1) {
+                "Yesterday " + DateFormat.format(timeFormatString, smsTime)
+            } else if (now[Calendar.YEAR] == smsTime[Calendar.YEAR]) {
+                DateFormat.format(dateTimeFormatString, smsTime).toString()
             } else {
-                return DateFormat.format("MMMM dd yyyy, hh:mm aa", smsTime).toString();
+                DateFormat.format("MMMM dd yyyy, hh:mm aa", smsTime).toString()
             }
-        }catch (Exception e){
-            e.printStackTrace();
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        return "";
+        return ""
     }
 
-    public static boolean isValidMobileNumber(String countryCode, String mobileNumber){
-       if(TextUtils.isEmpty(countryCode)){
-           countryCode = "";
-       }
+    fun isValidMobileNumber(countryCode: String?, mobileNumber: String?): Boolean {
+        var countryCode = countryCode
+        var mobileNumber = mobileNumber
+        if (TextUtils.isEmpty(countryCode)) {
+            countryCode = ""
+        }
+        if (TextUtils.isEmpty(mobileNumber) || TextUtils.isEmpty(mobileNumber?.trim { it <= ' ' })) {
+            mobileNumber = ""
+        }
+        return if (countryCode.equals("+91", ignoreCase = true) || countryCode.equals(
+                "91",
+                ignoreCase = true
+            )
+        ) {
+            mobileNumber?.length == 10
+        } else {
+            mobileNumber?.length ?: 0 >= 8
+        }
+    }
 
-       if((TextUtils.isEmpty(mobileNumber)) || (TextUtils.isEmpty(mobileNumber.trim()))){
-           mobileNumber = "";
-       }
+    fun splitMobileNumber(mobileNumber: String) : Pair<String,String> {
+        val phoneNumberUtil = PhoneNumberUtil.getInstance()
 
-       if((countryCode.equalsIgnoreCase("+91")) || (countryCode.equalsIgnoreCase("91"))){
-           return (mobileNumber.length() == 10);
-       }else{
-           return (mobileNumber.length() >= 8);
-       }
+        try {
+            // Parse the input mobile number
+            val phoneNumber = phoneNumberUtil.parse(mobileNumber, null)
+
+            // Get the country code and phone number
+            val countryCode = "+" + phoneNumber.countryCode
+            val localPhoneNumber = phoneNumber.nationalNumber.toString()
+
+            // Print or use the components as needed
+            println("Country Code: $countryCode")
+            println("Phone Number: $localPhoneNumber")
+            return Pair(countryCode,localPhoneNumber)
+        } catch (e: Exception) {
+            // Handle parsing errors here
+            println("Error parsing mobile number: ${e.message}")
+        }
+        return Pair("+91","")
     }
 }
