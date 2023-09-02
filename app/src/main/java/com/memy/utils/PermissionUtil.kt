@@ -7,6 +7,7 @@ import android.content.Context
 import androidx.core.app.ActivityCompat
 
 import android.content.pm.PackageManager
+import android.os.Build
 
 
 open class PermissionUtil {
@@ -49,8 +50,14 @@ open class PermissionUtil {
         var status = true
         val permissionList: MutableList<String> = ArrayList()
         addPermission(permissionList, Manifest.permission.CAMERA, context!!)
-        addPermission(permissionList, Manifest.permission.READ_EXTERNAL_STORAGE, context)
-        addPermission(permissionList, Manifest.permission.WRITE_EXTERNAL_STORAGE, context)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            addPermission(permissionList, Manifest.permission.READ_MEDIA_AUDIO, context)
+            addPermission(permissionList, Manifest.permission.READ_MEDIA_IMAGES, context)
+            addPermission(permissionList, Manifest.permission.READ_MEDIA_VIDEO, context)
+        }else{
+            addPermission(permissionList, Manifest.permission.READ_EXTERNAL_STORAGE, context)
+            addPermission(permissionList, Manifest.permission.WRITE_EXTERNAL_STORAGE, context)
+        }
         if (permissionList.size > 0) {
             if(showRationalDialog == true) {
                 ActivityCompat.requestPermissions(
@@ -124,8 +131,14 @@ open class PermissionUtil {
         var status = true
         val permissionList: MutableList<String> = ArrayList()
         addPermission(permissionList, Manifest.permission.CAMERA, context!!)
-        addPermission(permissionList, Manifest.permission.READ_EXTERNAL_STORAGE, context)
-        addPermission(permissionList, Manifest.permission.WRITE_EXTERNAL_STORAGE, context)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            addPermission(permissionList, Manifest.permission.READ_MEDIA_AUDIO, context)
+            addPermission(permissionList, Manifest.permission.READ_MEDIA_IMAGES, context)
+            addPermission(permissionList, Manifest.permission.READ_MEDIA_VIDEO, context)
+        }else{
+            addPermission(permissionList, Manifest.permission.READ_EXTERNAL_STORAGE, context)
+            addPermission(permissionList, Manifest.permission.WRITE_EXTERNAL_STORAGE, context)
+        }
         if (permissionList.size > 0) {
             if(showRationalDialog == true) {
                 ActivityCompat.requestPermissions(
